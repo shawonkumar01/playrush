@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Neon Dodge - Play Online Arcade Game | PlayRush</title>
+  
+  <meta name="description" content="Play Neon Dodge online for free. Pilot your glowing pulse spaceship, dodge deadly geometric hazards, gather energy orbs, and beat your best score!">
+  <meta name="keywords" content="neon dodge, arcade game, browser game, retro scifi, dodge hazards, high score, canvas game">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="game">
+  <meta property="og:title" content="Neon Dodge - High Octane Arcade Reflex Game | PlayRush">
+  <meta property="og:description" content="Pilot your glowing ship, dodge hazards, gather orbs and set your record score!">
+  <meta property="og:url" content="https://playrush.games/games/neon-dodge.html">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2300f0ff'/><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%2305070f'/></svg>">
+
+  <!-- Game Stylesheet -->
+  <link rel="stylesheet" href="neon-dodge.css">
+</head>
+<body>
+
+  <div class="arcade-viewport">
+    <!-- Top Arcade Bar -->
+    <header class="arcade-header">
+      <a href="../index.html" class="arcade-brand" title="Return to PlayRush Home">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        PLAYRUSH
+      </a>
+
+      <div class="arcade-title-tag">
+        NEON DODGE v1.0
+      </div>
+
+      <div class="arcade-controls-top">
+        <!-- Sound Toggle -->
+        <button class="arcade-btn-icon sound-btn-icon" id="btnHeaderSound" title="Mute/Unmute Sound (M)" aria-label="Toggle sound">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+        </button>
+
+        <!-- Pause / Resume -->
+        <button class="arcade-btn-icon" id="btnHeaderPause" title="Pause Game (P / Esc)" aria-label="Pause game">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+
+        <!-- Fullscreen -->
+        <button class="arcade-btn-icon" id="btnHeaderFullscreen" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+          <svg viewBox="0 0 24 24">
+            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Canvas Container -->
+    <main class="game-stage-container" role="main">
+      <canvas id="gameCanvas" width="720" height="900" aria-label="Neon Dodge Arcade Game Canvas"></canvas>
+
+      <!-- In-Game HUD -->
+      <div class="game-hud" aria-live="polite">
+        <div class="hud-panel">
+          <span class="hud-label">SCORE</span>
+          <span class="hud-value glow-cyan" id="hudScoreVal">0</span>
+        </div>
+
+        <div class="hud-multiplier" id="hudMultiplier">
+          2X BOOST!
+        </div>
+
+        <div class="hud-shield-indicator" id="hudShield">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          SHIELD ON
+        </div>
+
+        <div class="hud-panel">
+          <span class="hud-label">BEST</span>
+          <span class="hud-value glow-gold" id="hudBestVal">0</span>
+        </div>
+      </div>
+
+      <!-- Overlay Screen 1: Start Menu -->
+      <section class="screen-overlay" id="startScreen" aria-labelledby="startTitle">
+        <div class="screen-box">
+          <h1 class="game-logo-large" id="startTitle">NEON<br>DODGE</h1>
+          <p class="screen-subtitle">Endless Reflex Sci-Fi Survival</p>
+
+          <div class="score-stats-container">
+            <div class="score-stat-box">
+              <span class="score-stat-title">YOUR BEST</span>
+              <span class="score-stat-number gold" id="menuHighScoreVal">0</span>
+            </div>
+            <div class="score-stat-box">
+              <span class="score-stat-title">DIFFICULTY</span>
+              <span class="score-stat-number primary">DYNAMIC</span>
+            </div>
+          </div>
+
+          <div class="screen-buttons-col">
+            <button class="game-btn btn-play" id="btnStartGame">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              START GAME
+            </button>
+          </div>
+
+          <div class="controls-tips">
+            <span>⌨️ Keys: WASD / Arrows</span>
+            <span>📱 Touch: Drag Ship</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overlay Screen 2: Paused -->
+      <section class="screen-overlay hidden" id="pauseScreen" aria-labelledby="pauseTitle">
+        <div class="screen-box">
+          <h2 class="game-logo-large" id="pauseTitle">PAUSED</h2>
+          <p class="screen-subtitle">Take a breather, Pilot.</p>
+
+          <div class="screen-buttons-col">
+            <button class="game-btn btn-play" id="btnResumeGame">
+              RESUME GAME
+            </button>
+            <button class="game-btn btn-outline" id="btnPauseRestart">
+              RESTART RUN
+            </button>
+            <a href="../index.html" class="game-btn btn-outline">
+              BACK TO PORTAL
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overlay Screen 3: Game Over -->
+      <section class="screen-overlay hidden" id="gameOverScreen" aria-labelledby="gameOverTitle">
+        <div class="screen-box">
+          <h2 class="game-logo-large" id="gameOverTitle">GAME OVER</h2>
+          <div class="new-record-tag" id="newRecordBanner" style="display: none;">
+            ★ NEW ALL-TIME RECORD! ★
+          </div>
+          <p class="screen-subtitle" id="runStatsSummary">Survived: 0s &bull; Orbs: 0</p>
+
+          <div class="score-stats-container">
+            <div class="score-stat-box">
+              <span class="score-stat-title">FINAL SCORE</span>
+              <span class="score-stat-number primary" id="finalScoreVal">0</span>
+            </div>
+            <div class="score-stat-box">
+              <span class="score-stat-title">BEST SCORE</span>
+              <span class="score-stat-number gold" id="gameOverBestVal">0</span>
+            </div>
+          </div>
+
+          <div class="screen-buttons-col">
+            <button class="game-btn btn-play" id="btnRestartGame">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+              </svg>
+              PLAY AGAIN
+            </button>
+            <a href="../index.html" class="game-btn btn-outline">
+              BACK TO PORTAL
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mobile Touch Drag Indicator -->
+      <div class="mobile-touch-bar">
+        <div class="touch-hint">Touch &amp; Drag ship directly to move</div>
+      </div>
+    </main>
+
+    <!-- Monetization: Bottom Non-Intrusive Sponsored Placement -->
+    <aside class="game-bottom-ad" aria-label="Sponsored Space">
+      <div class="game-bottom-ad-text">
+        SPONSORED PLACEMENT &bull; CLEAN SEPARATED CONTAINER &bull; GOOGLE ADSENSE READY
+      </div>
+    </aside>
+  </div>
+
+  <!-- Game Logic Script -->
+  <script src="neon-dodge.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About PlayRush - Next-Gen Browser Arcade Gaming</title>
+  
+  <meta name="description" content="Discover the story behind PlayRush, our philosophy on free, instant-play browser gaming, and the engineering powering our high-performance Canvas arcade titles.">
+  <meta name="keywords" content="about playrush, browser arcade games, indie game development, html5 gaming, neon dodge">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://playrush.games/about.html">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2300f0ff'/><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%2305070f'/></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" role="banner">
+    <div class="container">
+      <a href="index.html" class="brand" aria-label="PlayRush Home">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        PLAY<span class="brand-accent">RUSH</span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li><a href="index.html#hero" class="nav-link">Home</a></li>
+          <li><a href="index.html#featured" class="nav-link">Featured</a></li>
+          <li><a href="index.html#games" class="nav-link">All Games</a></li>
+          <li><a href="index.html#challenges" class="nav-link">Daily Quests</a></li>
+          <li><a href="about.html" class="nav-link active">About</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="games/neon-dodge.html" class="btn-primary">
+          PLAY NOW
+        </a>
+        <button class="mobile-toggle" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="static-page-header">
+        <span class="section-tag">OUR MISSION &amp; PHILOSOPHY</span>
+        <h1 class="section-title">ABOUT <span>PLAYRUSH</span></h1>
+        <p class="section-desc">Pioneering instantaneous, adrenaline-fueled arcade games directly in the modern web browser.</p>
+      </div>
+
+      <article class="static-content-card">
+        <h2>The PlayRush Vision</h2>
+        <p>
+          Founded with a passion for classic 80s arcade responsiveness fused with sleek neo-cyberpunk aesthetics, <strong>PlayRush</strong> is dedicated to delivering barrier-free gaming. In an era dominated by multi-gigabyte downloads, intrusive launchers, and invasive sign-up flows, we believe the essence of gaming should remain instant, exhilarating, and accessible on any device.
+        </p>
+
+        <h2>Engineered for Zero Latency</h2>
+        <p>
+          Every title on PlayRush is built with uncompromising technical principles:
+        </p>
+        <ul>
+          <li><strong>Pure Vanilla JavaScript &amp; HTML5 Canvas:</strong> Zero framework bloat. Sub-millisecond physics calculations run smoothly at a locked 60 frames per second.</li>
+          <li><strong>Web Audio API Synthesizers:</strong> Real-time synthesized chimes, sub-bass explosions, and frequency filters. No bulky audio downloads that fail or stall.</li>
+          <li><strong>Zero Client Storage Footprint:</strong> High scores and player milestones are saved locally via standard browser LocalStorage—no mandatory cloud logins or tracking cookies.</li>
+          <li><strong>Universal Responsiveness:</strong> From 4K ultrawide monitors to compact mobile smartphones, touch drag and keyboard controls adapt seamlessly.</li>
+        </ul>
+
+        <h2>Monetization &amp; Player Respect</h2>
+        <p>
+          PlayRush is 100% free to play. We believe monetization should never hinder gameplay. Advertisements are kept strictly outside the game canvas and control surfaces to prevent accidental clicks or visual distraction. We prepare standard compliant IAB ad spaces without disrupting your flow state.
+        </p>
+
+        <h2 id="contact">Get in Touch</h2>
+        <p>
+          Have game concepts, feedback, or high-score challenges you'd like to share? Connect with our development team via email at <code>support@playrush.games</code> or join our community discussions on Discord and GitHub.
+        </p>
+        <div style="margin-top: 1.5rem;">
+          <a href="games/neon-dodge.html" class="btn-primary">TEST YOUR SKILLS IN NEON DODGE</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2026 PlayRush Games. All rights reserved.</div>
+        <div><a href="privacy.html" style="color: var(--neon-cyan);">Privacy Policy</a> &bull; <a href="index.html" style="color: var(--neon-cyan);">Home</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
