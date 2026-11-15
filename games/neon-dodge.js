@@ -14,6 +14,8 @@
   const STORAGE_HIGH_SCORE = 'playrush_neon_dodge_highscore';
   const STORAGE_TOTAL_ORBS = 'playrush_total_orbs';
   const STORAGE_MUTED = 'playrush_sound_muted';
+  const STORAGE_MUSIC_ENABLED = 'playrush_music_enabled';
+  const STORAGE_MUSIC_VOLUME = 'playrush_music_volume';
 
   // Safe LocalStorage helpers with exception handling and validation
   function safeGetStorage(key, defaultVal = 0, maxVal = 999999999) {
@@ -47,6 +49,7 @@
       } catch (e) {}
       this.isMuted = muted;
       this.masterGain = null;
+      this.sfxGain = null;
     }
 
     init() {
@@ -55,8 +58,12 @@
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         this.ctx = new AudioCtx();
         this.masterGain = this.ctx.createGain();
-        this.masterGain.gain.value = this.isMuted ? 0 : 0.35;
+        this.masterGain.gain.value = 1.0;
         this.masterGain.connect(this.ctx.destination);
+
+        this.sfxGain = this.ctx.createGain();
+        this.sfxGain.gain.value = this.isMuted ? 0 : 0.35;
+        this.sfxGain.connect(this.masterGain);
       } catch (e) {
         console.warn('Web Audio API not supported:', e);
       }
@@ -71,8 +78,8 @@
     toggleMute() {
       this.isMuted = !this.isMuted;
       safeSetStorage(STORAGE_MUTED, String(this.isMuted));
-      if (this.masterGain) {
-        this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.35, this.ctx.currentTime, 0.05);
+      if (this.sfxGain) {
+        this.sfxGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.35, this.ctx.currentTime, 0.05);
       }
       return this.isMuted;
     }
@@ -85,14 +92,14 @@
       const gain = this.ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, t); // D5
-      osc.frequency.exponentialRampToValueAtTime(880, t + 0.12); // A5
+      osc.frequency.setValueAtTime(587.33, t);
+      osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
 
       gain.gain.setValueAtTime(0.4, t);
       gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
 
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.18);
     }
@@ -111,7 +118,7 @@
         gain.gain.exponentialRampToValueAtTime(0.01, t + idx * 0.06 + 0.25);
 
         osc.connect(gain);
-        gain.connect(this.masterGain);
+        gain.connect(this.sfxGain);
         osc.start(t + idx * 0.06);
         osc.stop(t + idx * 0.06 + 0.25);
       });
@@ -132,7 +139,7 @@
       gain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
 
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.35);
     }
@@ -152,7 +159,7 @@
       gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
 
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.25);
     }
@@ -162,7 +169,6 @@
       this.resume();
       const t = this.ctx.currentTime;
 
-      // Noise buffer for blast crunch
       const bufferSize = this.ctx.sampleRate * 0.4;
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -184,10 +190,9 @@
 
       noise.connect(filter);
       filter.connect(noiseGain);
-      noiseGain.connect(this.masterGain);
+      noiseGain.connect(this.sfxGain);
       noise.start(t);
 
-      // Deep rumble sub oscillator
       const subOsc = this.ctx.createOscillator();
       const subGain = this.ctx.createGain();
       subOsc.type = 'sawtooth';
@@ -198,7 +203,7 @@
       subGain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
 
       subOsc.connect(subGain);
-      subGain.connect(this.masterGain);
+      subGain.connect(this.sfxGain);
       subOsc.start(t);
       subOsc.stop(t + 0.5);
     }
@@ -217,7 +222,7 @@
         gain.gain.exponentialRampToValueAtTime(0.01, t + idx * 0.15 + 0.4);
 
         osc.connect(gain);
-        gain.connect(this.masterGain);
+        gain.connect(this.sfxGain);
         osc.start(t + idx * 0.15);
         osc.stop(t + idx * 0.15 + 0.4);
       });
@@ -238,13 +243,465 @@
       gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
 
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.05);
     }
   }
 
   const audio = new SoundEngine();
+
+  /* ==========================================================================
+     Synthwave Background Music Engine (Web Audio API)
+     ========================================================================== */
+  class MusicEngine {
+    constructor(soundEngine) {
+      this.soundEngine = soundEngine;
+      this.musicGain = null;
+      this.isPlaying = false;
+      this.isFading = false;
+      this.schedulerTimer = null;
+      this.nextNoteTime = 0;
+      this.currentBeat = 0;
+
+      // Active oscillator/source tracking for cleanup
+      this.activeNodes = [];
+
+      // Load preferences
+      let enabled = false;
+      let volume = 0.35;
+      try {
+        enabled = localStorage.getItem(STORAGE_MUSIC_ENABLED) === 'true';
+        const storedVol = parseFloat(localStorage.getItem(STORAGE_MUSIC_VOLUME));
+        if (!isNaN(storedVol) && storedVol >= 0 && storedVol <= 1) volume = storedVol;
+      } catch (e) {}
+      this.enabled = enabled;
+      this.volume = volume;
+
+      // Music composition data — A minor synthwave loop (4 bars of 4/4 at 128 BPM)
+      this.bpm = 128;
+      this.beatsPerBar = 4;
+      this.totalBeats = 16; // 4 bars
+      this.secondsPerBeat = 60 / this.bpm;
+
+      // Bass sequence (root notes, A minor scale) — plays on every beat
+      this.bassPattern = [
+        // Bar 1: Am
+        { beat: 0,  note: 110.00, dur: 0.4 },   // A2
+        { beat: 1,  note: 110.00, dur: 0.2 },
+        { beat: 1.5,note: 130.81, dur: 0.2 },   // C3
+        { beat: 2,  note: 146.83, dur: 0.4 },   // D3
+        { beat: 3,  note: 130.81, dur: 0.2 },
+        { beat: 3.5,note: 110.00, dur: 0.2 },
+        // Bar 2: Em
+        { beat: 4,  note: 82.41,  dur: 0.4 },   // E2
+        { beat: 5,  note: 82.41,  dur: 0.2 },
+        { beat: 5.5,note: 98.00,  dur: 0.2 },   // G2
+        { beat: 6,  note: 110.00, dur: 0.4 },   // A2
+        { beat: 7,  note: 98.00,  dur: 0.2 },
+        { beat: 7.5,note: 82.41,  dur: 0.2 },
+        // Bar 3: F
+        { beat: 8,  note: 87.31,  dur: 0.4 },   // F2
+        { beat: 9,  note: 87.31,  dur: 0.2 },
+        { beat: 9.5,note: 110.00, dur: 0.2 },   // A2
+        { beat: 10, note: 130.81, dur: 0.4 },   // C3
+        { beat: 11, note: 110.00, dur: 0.2 },
+        { beat: 11.5,note: 87.31, dur: 0.2 },
+        // Bar 4: G -> Am
+        { beat: 12, note: 98.00,  dur: 0.4 },   // G2
+        { beat: 13, note: 98.00,  dur: 0.2 },
+        { beat: 13.5,note: 123.47,dur: 0.2 },   // B2
+        { beat: 14, note: 110.00, dur: 0.4 },   // A2
+        { beat: 15, note: 130.81, dur: 0.2 },
+        { beat: 15.5,note: 110.00,dur: 0.2 },
+      ];
+
+      // Synth lead melody (upper register arpeggios)
+      this.leadPattern = [
+        // Bar 1: Am arpeggios
+        { beat: 0,   note: 440.00, dur: 0.35 },  // A4
+        { beat: 0.75,note: 523.25, dur: 0.2  },  // C5
+        { beat: 1.5, note: 659.25, dur: 0.35 },  // E5
+        { beat: 2.5, note: 523.25, dur: 0.4  },  // C5
+        { beat: 3.25,note: 440.00, dur: 0.3  },  // A4
+        // Bar 2: Em arpeggios
+        { beat: 4,   note: 329.63, dur: 0.35 },  // E4
+        { beat: 4.75,note: 392.00, dur: 0.2  },  // G4
+        { beat: 5.5, note: 493.88, dur: 0.35 },  // B4
+        { beat: 6.5, note: 440.00, dur: 0.4  },  // A4
+        { beat: 7.25,note: 392.00, dur: 0.3  },  // G4
+        // Bar 3: F arpeggios
+        { beat: 8,   note: 349.23, dur: 0.35 },  // F4
+        { beat: 8.75,note: 440.00, dur: 0.2  },  // A4
+        { beat: 9.5, note: 523.25, dur: 0.35 },  // C5
+        { beat: 10.5,note: 440.00, dur: 0.4  },  // A4
+        { beat: 11.25,note: 349.23,dur: 0.3  },  // F4
+        // Bar 4: G -> resolve to Am
+        { beat: 12,  note: 392.00, dur: 0.35 },  // G4
+        { beat: 12.75,note: 493.88,dur: 0.2  },  // B4
+        { beat: 13.5,note: 587.33, dur: 0.35 },  // D5
+        { beat: 14,  note: 523.25, dur: 0.4  },  // C5
+        { beat: 15,  note: 440.00, dur: 0.45 },  // A4 (resolve)
+      ];
+
+      // Pad chords (sustained chords per bar)
+      this.padPattern = [
+        { beat: 0,  notes: [220.00, 261.63, 329.63], dur: 3.6 }, // Am
+        { beat: 4,  notes: [164.81, 196.00, 246.94], dur: 3.6 }, // Em
+        { beat: 8,  notes: [174.61, 220.00, 261.63], dur: 3.6 }, // F
+        { beat: 12, notes: [196.00, 246.94, 293.66], dur: 3.6 }, // G
+      ];
+
+      // Hi-hat pattern (every 8th note with accents)
+      this.hihatAccents = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];
+
+      // Kick/snare pattern per bar
+      this.kickBeats = [0, 2];
+      this.snareBeats = [1, 3];
+    }
+
+    initGain() {
+      if (this.musicGain || !this.soundEngine.ctx) return;
+      this.musicGain = this.soundEngine.ctx.createGain();
+      this.musicGain.gain.value = this.enabled ? this.volume : 0;
+      this.musicGain.connect(this.soundEngine.masterGain);
+    }
+
+    setVolume(val) {
+      this.volume = Math.max(0, Math.min(1, val));
+      safeSetStorage(STORAGE_MUSIC_VOLUME, String(this.volume));
+      if (this.musicGain && this.enabled && this.isPlaying) {
+        this.musicGain.gain.setTargetAtTime(this.volume, this.soundEngine.ctx.currentTime, 0.05);
+      }
+    }
+
+    setEnabled(on) {
+      this.enabled = on;
+      safeSetStorage(STORAGE_MUSIC_ENABLED, String(on));
+      if (on && !this.isPlaying && currentState === GameState.PLAYING) {
+        this.start();
+      } else if (!on && this.isPlaying) {
+        this.stop();
+      }
+    }
+
+    start() {
+      if (!this.enabled || this.isPlaying) return;
+      const ctx = this.soundEngine.ctx;
+      if (!ctx) return;
+      this.soundEngine.resume();
+      this.initGain();
+      this.isFading = false;
+      this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
+      this.musicGain.gain.setTargetAtTime(this.volume, ctx.currentTime, 0.08);
+      this.isPlaying = true;
+      this.currentBeat = 0;
+      this.nextNoteTime = ctx.currentTime + 0.1; // small delay for context to warm up
+      this._startScheduler();
+    }
+
+    pause() {
+      if (!this.isPlaying) return;
+      this._stopScheduler();
+      if (this.musicGain && this.soundEngine.ctx) {
+        this.musicGain.gain.setTargetAtTime(0, this.soundEngine.ctx.currentTime, 0.08);
+      }
+      // Don't set isPlaying to false — we want to resume from where we paused
+    }
+
+    unpause() {
+      if (!this.enabled || !this.isPlaying) return;
+      const ctx = this.soundEngine.ctx;
+      if (!ctx) return;
+      this.soundEngine.resume();
+      this.isFading = false;
+      this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
+      this.musicGain.gain.setTargetAtTime(this.volume, ctx.currentTime, 0.08);
+      this.nextNoteTime = ctx.currentTime + 0.05;
+      this._startScheduler();
+    }
+
+    fadeOutAndStop(duration) {
+      if (!this.isPlaying) return;
+      this.isFading = true;
+      const ctx = this.soundEngine.ctx;
+      if (ctx && this.musicGain) {
+        this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
+        this.musicGain.gain.setTargetAtTime(0, ctx.currentTime, duration / 4);
+      }
+      setTimeout(() => {
+        if (this.isFading) {
+          this.stop();
+        }
+      }, duration * 1000 + 200);
+    }
+
+    stop() {
+      this._stopScheduler();
+      this._cleanupNodes();
+      this.isPlaying = false;
+      this.isFading = false;
+      this.currentBeat = 0;
+      if (this.musicGain && this.soundEngine.ctx) {
+        this.musicGain.gain.cancelScheduledValues(this.soundEngine.ctx.currentTime);
+        this.musicGain.gain.value = 0;
+      }
+    }
+
+    _startScheduler() {
+      this._stopScheduler();
+      this.schedulerTimer = setInterval(() => this._schedule(), 50);
+    }
+
+    _stopScheduler() {
+      if (this.schedulerTimer !== null) {
+        clearInterval(this.schedulerTimer);
+        this.schedulerTimer = null;
+      }
+    }
+
+    _cleanupNodes() {
+      for (const node of this.activeNodes) {
+        try { node.stop(); } catch (e) {}
+        try { node.disconnect(); } catch (e) {}
+      }
+      this.activeNodes = [];
+    }
+
+    _schedule() {
+      const ctx = this.soundEngine.ctx;
+      if (!ctx || !this.isPlaying) return;
+
+      // Look ahead 0.15 seconds and schedule any beats that fall in that window
+      const lookAhead = 0.15;
+      while (this.nextNoteTime < ctx.currentTime + lookAhead) {
+        this._scheduleBeat(this.currentBeat % this.totalBeats, this.nextNoteTime);
+        this.nextNoteTime += this.secondsPerBeat / 2; // schedule on 8th notes
+        this.currentBeat += 0.5;
+      }
+    }
+
+    _scheduleBeat(beat, time) {
+      const ctx = this.soundEngine.ctx;
+
+      // --- Bass synth (sawtooth with filter) ---
+      for (const note of this.bassPattern) {
+        if (Math.abs(note.beat - beat) < 0.01) {
+          this._playBass(ctx, note.note, time, note.dur);
+        }
+      }
+
+      // --- Lead synth (pulse-like with detuning) ---
+      for (const note of this.leadPattern) {
+        if (Math.abs(note.beat - beat) < 0.01) {
+          this._playLead(ctx, note.note, time, note.dur);
+        }
+      }
+
+      // --- Pad chords (filtered sawtooth ensemble) ---
+      for (const pad of this.padPattern) {
+        if (Math.abs(pad.beat - beat) < 0.01) {
+          this._playPad(ctx, pad.notes, time, pad.dur);
+        }
+      }
+
+      // --- Drums ---
+      const barBeat = beat % 4;
+
+      // Hi-hat on every 8th note
+      for (const hh of this.hihatAccents) {
+        if (Math.abs(hh - barBeat) < 0.01) {
+          this._playHihat(ctx, time, barBeat % 1 === 0 ? 0.25 : 0.12);
+        }
+      }
+
+      // Kick
+      for (const kb of this.kickBeats) {
+        if (Math.abs(kb - barBeat) < 0.01) {
+          this._playKick(ctx, time);
+        }
+      }
+
+      // Snare
+      for (const sb of this.snareBeats) {
+        if (Math.abs(sb - barBeat) < 0.01) {
+          this._playSnare(ctx, time);
+        }
+      }
+    }
+
+    _trackNode(node) {
+      this.activeNodes.push(node);
+      // Auto-remove after it stops
+      if (node.addEventListener) {
+        node.addEventListener('ended', () => {
+          const idx = this.activeNodes.indexOf(node);
+          if (idx >= 0) this.activeNodes.splice(idx, 1);
+        });
+      }
+    }
+
+    _playBass(ctx, freq, time, dur) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, time);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(400, time);
+      filter.frequency.exponentialRampToValueAtTime(180, time + dur);
+      filter.Q.value = 4;
+
+      gain.gain.setValueAtTime(0.45, time);
+      gain.gain.setValueAtTime(0.4, time + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + dur + 0.05);
+      this._trackNode(osc);
+    }
+
+    _playLead(ctx, freq, time, dur) {
+      // Two detuned sawtooths for a rich synth lead
+      for (const detune of [-8, 8]) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, time);
+        osc.detune.setValueAtTime(detune, time);
+
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.12, time + 0.03);
+        gain.gain.setValueAtTime(0.1, time + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+        osc.connect(gain);
+        gain.connect(this.musicGain);
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+        this._trackNode(osc);
+      }
+    }
+
+    _playPad(ctx, freqs, time, dur) {
+      for (const freq of freqs) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, time);
+        osc.detune.setValueAtTime((Math.random() - 0.5) * 10, time);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(600, time);
+        filter.Q.value = 1;
+
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.06, time + 0.4);
+        gain.gain.setValueAtTime(0.05, time + dur * 0.7);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.musicGain);
+        osc.start(time);
+        osc.stop(time + dur + 0.1);
+        this._trackNode(osc);
+      }
+    }
+
+    _playKick(ctx, time) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(150, time);
+      osc.frequency.exponentialRampToValueAtTime(40, time + 0.12);
+
+      gain.gain.setValueAtTime(0.7, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + 0.25);
+      this._trackNode(osc);
+    }
+
+    _playSnare(ctx, time) {
+      // Noise burst
+      const bufLen = Math.floor(ctx.sampleRate * 0.08);
+      const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 3000;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.35, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+      noise.start(time);
+      noise.stop(time + 0.12);
+      this._trackNode(noise);
+
+      // Tonal body
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(200, time);
+      osc.frequency.exponentialRampToValueAtTime(80, time + 0.06);
+      oscGain.gain.setValueAtTime(0.3, time);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+      osc.connect(oscGain);
+      oscGain.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + 0.1);
+      this._trackNode(osc);
+    }
+
+    _playHihat(ctx, time, vol) {
+      const bufLen = Math.floor(ctx.sampleRate * 0.03);
+      const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 8000;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(vol, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.04);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+      noise.start(time);
+      noise.stop(time + 0.05);
+      this._trackNode(noise);
+    }
+  }
+
+  const music = new MusicEngine(audio);
 
   /* ==========================================================================
      Game Engine State
@@ -837,6 +1294,27 @@
 
     hideAllScreens();
     updateHUD();
+    updatePauseButtonIcon(false);
+
+    // Music game-state integration: start fresh music session if enabled
+    music.stop();
+    if (music.enabled) {
+      music.start();
+    }
+  }
+
+  const ICON_PAUSE = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+  const ICON_PLAY  = 'M8 5v14l11-7z';
+
+  function updatePauseButtonIcon(isPaused) {
+    const btn = document.getElementById('btnHeaderPause');
+    if (!btn) return;
+    const path = btn.querySelector('svg path');
+    if (path) {
+      path.setAttribute('d', isPaused ? ICON_PLAY : ICON_PAUSE);
+    }
+    btn.setAttribute('title', isPaused ? 'Resume Game (Space / P / Esc)' : 'Pause Game (Space / P / Esc)');
+    btn.setAttribute('aria-label', isPaused ? 'Resume game' : 'Pause game');
   }
 
   function pauseGame() {
@@ -844,6 +1322,8 @@
       currentState = GameState.PAUSED;
       audio.playClick();
       showScreen('pauseScreen');
+      updatePauseButtonIcon(true);
+      music.pause();
     }
   }
 
@@ -852,12 +1332,16 @@
       currentState = GameState.PLAYING;
       audio.playClick();
       hideAllScreens();
+      updatePauseButtonIcon(false);
+      music.unpause();
     }
   }
 
   function triggerGameOver() {
     currentState = GameState.GAMEOVER;
     audio.playGameOver();
+    updatePauseButtonIcon(false);
+    music.fadeOutAndStop(1.2);
 
     // Check & persist high score safely
     let isNewRecord = false;
@@ -1230,6 +1714,17 @@
           else if (currentState === GameState.PAUSED) resumeGame();
           break;
         case 'Space':
+          if (currentState === GameState.PLAYING) {
+            e.preventDefault();
+            pauseGame();
+          } else if (currentState === GameState.PAUSED) {
+            e.preventDefault();
+            resumeGame();
+          } else if (currentState === GameState.MENU || currentState === GameState.GAMEOVER) {
+            e.preventDefault();
+            startGame();
+          }
+          break;
         case 'Enter':
           if (currentState === GameState.MENU || currentState === GameState.GAMEOVER) {
             startGame();
@@ -1328,18 +1823,63 @@
   /* ==========================================================================
      UI Buttons & Interactivity
      ========================================================================== */
-  function toggleMuteBtn() {
-    const isMuted = audio.toggleMute();
+  function updateAudioUI() {
+    // Update SFX header buttons and panel toggle
+    const isSfxMuted = audio.isMuted;
     const muteIcons = document.querySelectorAll('.sound-btn-icon');
     muteIcons.forEach(icon => {
-      if (isMuted) {
+      if (isSfxMuted) {
         icon.classList.add('muted');
-        icon.setAttribute('title', 'Unmute Sound (M)');
+        icon.setAttribute('title', 'Unmute SFX (M)');
       } else {
         icon.classList.remove('muted');
-        icon.setAttribute('title', 'Mute Sound (M)');
+        icon.setAttribute('title', 'Mute SFX (M)');
       }
     });
+
+    const sfxBtn = document.getElementById('btnToggleSFX');
+    const sfxText = document.getElementById('sfxToggleText');
+    if (sfxBtn && sfxText) {
+      if (isSfxMuted) {
+        sfxBtn.classList.remove('active');
+        sfxBtn.setAttribute('aria-pressed', 'false');
+        sfxText.textContent = 'OFF';
+      } else {
+        sfxBtn.classList.add('active');
+        sfxBtn.setAttribute('aria-pressed', 'true');
+        sfxText.textContent = 'ON';
+      }
+    }
+
+    // Update Music toggle button and slider in panel
+    const musicBtn = document.getElementById('btnToggleMusic');
+    const musicText = document.getElementById('musicToggleText');
+    const musicSlider = document.getElementById('musicVolumeSlider');
+    const musicVolVal = document.getElementById('musicVolumeVal');
+
+    if (musicBtn && musicText) {
+      if (music.enabled) {
+        musicBtn.classList.add('active');
+        musicBtn.setAttribute('aria-pressed', 'true');
+        musicText.textContent = 'ON';
+      } else {
+        musicBtn.classList.remove('active');
+        musicBtn.setAttribute('aria-pressed', 'false');
+        musicText.textContent = 'OFF';
+      }
+    }
+
+    if (musicSlider) {
+      musicSlider.value = Math.round(music.volume * 100);
+    }
+    if (musicVolVal) {
+      musicVolVal.textContent = `${Math.round(music.volume * 100)}%`;
+    }
+  }
+
+  function toggleMuteBtn() {
+    audio.toggleMute();
+    updateAudioUI();
   }
 
   function initUI() {
@@ -1382,10 +1922,79 @@
       });
     }
 
-    // Header Sound button
+    // Header Sound button (quick SFX mute)
     const btnHeaderSound = document.getElementById('btnHeaderSound');
     if (btnHeaderSound) {
       btnHeaderSound.addEventListener('click', toggleMuteBtn);
+    }
+
+    // Audio Settings Panel Open/Close
+    const btnAudioSettings = document.getElementById('btnAudioSettings');
+    const audioPanel = document.getElementById('audioSettingsPanel');
+    const btnCloseAudioPanel = document.getElementById('btnCloseAudioPanel');
+
+    if (btnAudioSettings && audioPanel) {
+      btnAudioSettings.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = audioPanel.classList.toggle('hidden');
+        btnAudioSettings.setAttribute('aria-expanded', String(!isHidden));
+      });
+    }
+
+    if (btnCloseAudioPanel && audioPanel && btnAudioSettings) {
+      btnCloseAudioPanel.addEventListener('click', (e) => {
+        e.stopPropagation();
+        audioPanel.classList.add('hidden');
+        btnAudioSettings.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    // Close settings panel when clicking outside
+    document.addEventListener('click', (e) => {
+      if (audioPanel && !audioPanel.classList.contains('hidden')) {
+        const wrapper = document.querySelector('.audio-settings-wrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+          audioPanel.classList.add('hidden');
+          if (btnAudioSettings) btnAudioSettings.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    // Panel Music Toggle Button
+    const btnToggleMusic = document.getElementById('btnToggleMusic');
+    if (btnToggleMusic) {
+      btnToggleMusic.addEventListener('click', (e) => {
+        e.stopPropagation();
+        audio.init();
+        audio.resume();
+        music.initGain();
+        music.setEnabled(!music.enabled);
+        updateAudioUI();
+      });
+    }
+
+    // Panel SFX Toggle Button
+    const btnToggleSFX = document.getElementById('btnToggleSFX');
+    if (btnToggleSFX) {
+      btnToggleSFX.addEventListener('click', (e) => {
+        e.stopPropagation();
+        audio.init();
+        audio.resume();
+        toggleMuteBtn();
+      });
+    }
+
+    // Music Volume Slider
+    const musicSlider = document.getElementById('musicVolumeSlider');
+    const musicVolVal = document.getElementById('musicVolumeVal');
+    if (musicSlider) {
+      musicSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        music.setVolume(val);
+        if (musicVolVal) {
+          musicVolVal.textContent = `${e.target.value}%`;
+        }
+      });
     }
 
     // Fullscreen toggle
@@ -1400,10 +2009,8 @@
       });
     }
 
-    // Set initial mute button state from storage
-    if (audio.isMuted) {
-      document.querySelectorAll('.sound-btn-icon').forEach(icon => icon.classList.add('muted'));
-    }
+    // Initialize UI states from storage
+    updateAudioUI();
   }
 
   /* ==========================================================================
