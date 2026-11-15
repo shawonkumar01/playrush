@@ -102,15 +102,15 @@
         </p>
         <ul>
           <li><strong>Name:</strong> The name you enter to identify yourself.</li>
-          <li><strong>Email Address:</strong> Used solely to reply to your inquiry.</li>
-          <li><strong>Subject:</strong> The topic category you select (e.g., General Feedback, Bug Report, Business Inquiry).</li>
+          <li><strong>Email Address:</strong> Used to communicate with you and reply to your inquiry.</li>
+          <li><strong>Subject:</strong> The topic category you select (such as General Feedback, Bug Report, or Business Inquiry).</li>
           <li><strong>Message Content:</strong> The text details of your message, suggestion, or question.</li>
         </ul>
         <p>
-          <strong>Purpose of Processing:</strong> We process this information exclusively to review your communication, respond to your inquiries, investigate reported game issues, and provide technical support. We do not use contact form submissions for unsolicited marketing lists or sell this information to third parties.
+          <strong>Purpose of Processing:</strong> We process this information to review your communication, respond to your inquiries, investigate reported game issues, and provide player support. We do not sell this contact information or use it for unsolicited marketing lists.
         </p>
         <p>
-          <strong>Third-Party Form Processor (Formspree):</strong> Our contact form is powered by <strong>Formspree</strong> (Formspree, Inc.). When you submit the form, your entries are securely routed through Formspree's API and forwarded directly to our team inbox at <code>contact.playrush@gmail.com</code>. Formspree acts as a service provider processing these form transmissions on our behalf. For details on how Formspree processes and protects data, please review the <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Formspree Privacy Policy</a>.
+          <strong>Third-Party Form Processor (Formspree):</strong> Our contact form utilizes <strong>Formspree</strong> (Formspree, Inc.) as a third-party service provider to process and transmit form submissions to our inbox at <code>contact.playrush@gmail.com</code>. Formspree handles this data in accordance with their service terms and privacy practices. For details regarding their processing and handling of submitted information, please review the <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Formspree Privacy Policy</a>.
         </p>
 
         <h3>B. Information We Do NOT Collect</h3>
@@ -122,85 +122,86 @@
 
         <h2>3. Browser LocalStorage (Game State Persistence)</h2>
         <p>
-          To maintain gameplay metrics and high scores locally without transmitting data to remote servers or requiring user accounts, PlayRush uses your web browser's built-in <code>localStorage</code> API.
+          To maintain gameplay metrics and high scores across sessions without requiring player accounts or server-side user databases, PlayRush uses your web browser's built-in <code>localStorage</code> API.
         </p>
         <p>
-          The following specific keys are stored on your local device:
+          The following specific keys are stored locally on your device:
         </p>
         <ul>
-          <li><code>playrush_neon_dodge_highscore</code>: Stores your highest numeric score achieved in <em>Neon Dodge</em> so you can track personal records.</li>
+          <li><code>playrush_neon_dodge_highscore</code>: Stores your highest numeric score achieved in <em>Neon Dodge</em> for personal record tracking.</li>
           <li><code>playrush_total_orbs</code>: Records the cumulative number of energy orbs collected across game runs for daily challenge quest progress.</li>
           <li><code>playrush_best_survival_time</code>: Records your longest continuous survival time (in seconds) in a single run of <em>Neon Dodge</em> to verify quest completion.</li>
           <li><code>playrush_sound_muted</code>: Stores your audio toggle preference (<code>"true"</code> or <code>"false"</code>) so the sound synthesizer respects your choice on return visits.</li>
         </ul>
         <p>
-          <strong>Data Retention and User Control:</strong> These keys exist solely on your local device and are not automatically transmitted to our servers. You can inspect, modify, or delete them at any time by clearing site data in your browser settings or executing <code>localStorage.clear()</code> in your browser Developer Tools console.
+          <strong>Data Storage and User Control:</strong> These values are stored locally within your browser and are not transmitted to PlayRush servers. You can clear or reset these values at any time through your browser's site data settings or developer tools.
         </p>
 
-        <h2>4. Web Hosting &amp; Server Diagnostics (Vercel)</h2>
+        <h2>4. Web Hosting &amp; Server Logs (Vercel)</h2>
         <p>
-          PlayRush is deployed on <strong>Vercel</strong> (Vercel Inc.). When you request pages or assets from <code>https://playrush-peach.vercel.app/</code>, Vercel's edge network and hosting infrastructure may automatically process standard HTTP request logs.
+          PlayRush is hosted on infrastructure provided by <strong>Vercel Inc.</strong> When you access <code>https://playrush-peach.vercel.app/</code>, Vercel's edge network and hosting systems may automatically process standard technical request information to deliver website content and maintain network security.
         </p>
         <p>
-          These technical server logs may include:
+          This technical data processed by Vercel may include:
         </p>
         <ul>
           <li>Internet Protocol (IP) addresses</li>
-          <li>Browser user-agent string and operating system information</li>
-          <li>Referring URLs, requested resource paths, and timestamps</li>
-          <li>HTTP status codes and data transfer metrics</li>
+          <li>Browser user-agent strings and operating system details</li>
+          <li>Referring URLs, requested resource paths, and access timestamps</li>
+          <li>HTTP status codes and data transfer volume</li>
         </ul>
         <p>
-          This technical data is processed by the hosting provider for core infrastructure operations, including delivering requested web assets, traffic routing, performance monitoring, and defending against malicious cyber activity (such as Distributed Denial of Service attacks). PlayRush does not maintain a private server database linking these logs to identified individuals. For information regarding Vercel's infrastructure practices, please consult the <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Vercel Privacy Policy</a>.
+          This network data is processed by Vercel as our hosting provider for infrastructure operations, routing, performance monitoring, and service reliability. PlayRush does not directly operate a separate logging database to track individual visitors. For information on how Vercel handles server and network data, please refer to the <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Vercel Privacy Policy</a>.
         </p>
 
         <h2 id="cookies">5. Advertising Practices (Future Conditional Disclosure)</h2>
         <p>
-          <strong>Current Status:</strong> PlayRush currently operates without active third-party display advertisements. There are no live advertising network scripts (such as Google AdSense) running on this site today. The advertisement slots visible on certain pages are styled layout placeholders prepared for potential future monetization.
+          <strong>Current Status:</strong> PlayRush currently operates without active third-party display advertisements. There are no active third-party advertising scripts running on this site today. The ad spaces visible on the website are structural layout placeholders for potential future monetization.
         </p>
         <p>
-          <strong>Conditional Future Advertising Disclosure:</strong> In the future, PlayRush may partner with third-party advertising providers (such as Google AdSense) to help cover hosting and ongoing game development costs. If third-party advertising is introduced:
+          <strong>Conditional Future Advertising Disclosure:</strong> In the future, PlayRush may consider third-party advertising services, such as Google AdSense, to help support platform operations. If third-party advertising is introduced:
         </p>
         <ul>
-          <li>Third-party advertising vendors, including Google, may use cookies, web beacons, or similar technologies to serve advertisements based on a user's prior visits to this website or other sites on the Internet.</li>
-          <li>Google's use of advertising cookies enables it and its partners to serve ads based on browsing activity across participating websites.</li>
-          <li>Users will be able to review Google's advertising practices and opt out of personalized advertising by visiting <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Google Technologies &amp; Advertising Policies</a> and adjusting preferences on <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Google Ads Settings</a>.</li>
-          <li>Users can also opt out of participating third-party vendor cookies for interest-based advertising through the <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Network Advertising Initiative (NAI)</a> and the <a href="https://optout.aboutads.info/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Digital Advertising Alliance (DAA)</a>.</li>
+          <li>Third-party vendors, including Google, may use cookies or similar identifiers to serve ads based on prior visits to this website or other websites on the internet.</li>
+          <li>Google's use of advertising cookies would enable it and its partners to serve ads based on user visits to this and other sites.</li>
+          <li>Users will be able to opt out of personalized advertising by visiting <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Google Technologies &amp; Advertising Policies</a> and managing preferences on <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Google Ads Settings</a>.</li>
+          <li>Users can also manage preferences for participating third-party advertising networks through the <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Network Advertising Initiative (NAI)</a> and the <a href="https://optout.aboutads.info/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">Digital Advertising Alliance (DAA)</a>.</li>
         </ul>
 
-        <h2>6. California Privacy Notice (CCPA / CPRA)</h2>
+        <h2>6. Notice for California Residents (CCPA / CPRA)</h2>
         <p>
-          This section provides disclosures for residents of California pursuant to the California Consumer Privacy Act, as amended by the California Privacy Rights Act (CCPA/CPRA).
+          This notice provides information for California residents concerning personal information associated with visits to PlayRush under the California Consumer Privacy Act, as amended by the California Privacy Rights Act (CCPA/CPRA).
         </p>
         <ul>
-          <li><strong>Categories Collected:</strong> In the preceding 12 months, personal information collected by PlayRush has been limited to identifiers voluntarily provided through our contact form (name, email address) and technical network identifiers (such as IP addresses) collected in standard hosting logs.</li>
-          <li><strong>Business Purpose:</strong> Contact form details are used solely to communicate with you and address your messages. Server logs are used to deliver content and secure our platform.</li>
-          <li><strong>Sale or Sharing:</strong> PlayRush does not sell personal information or share personal information for cross-context behavioral advertising.</li>
-          <li><strong>Your Rights:</strong> California residents may request access to or deletion of contact form communications they have submitted by emailing us at <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a>. We do not discriminate against users who exercise their privacy rights.</li>
+          <li><strong>Information Submitted Directly:</strong> If you voluntarily use the contact form, PlayRush receives identifiers such as your name, email address, and message content.</li>
+          <li><strong>Technical Network Data:</strong> Our hosting provider, Vercel, processes technical connection information, including IP addresses, as part of serving web requests.</li>
+          <li><strong>Sales and Sharing:</strong> PlayRush does not sell personal information or share personal information for cross-context behavioral advertising.</li>
+          <li><strong>Privacy Requests:</strong> California residents who have submitted communications through our contact form may contact us at <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a> to request access to or deletion of their submitted messages.</li>
         </ul>
 
-        <h2>7. European Privacy Notice (GDPR / UK GDPR)</h2>
+        <h2>7. Notice for Visitors in the EEA and UK (GDPR)</h2>
         <p>
-          For visitors residing in the European Economic Area (EEA) or the United Kingdom:
+          For visitors located in the European Economic Area (EEA) or the United Kingdom:
         </p>
         <ul>
-          <li><strong>Data Controller:</strong> PlayRush is the operator of <code>https://playrush-peach.vercel.app/</code>.</li>
+          <li><strong>Website Operator:</strong> PlayRush is operated by the individual website operator of <code>https://playrush-peach.vercel.app/</code>.</li>
           <li><strong>Legal Bases for Processing:</strong>
             <ul>
-              <li><em>Contact Inquiries:</em> We process your voluntarily submitted name, email, and message based on our legitimate interest in responding to user communications and providing player support.</li>
-              <li><em>Hosting Diagnostics:</em> Processing of server log technical data is based on legitimate interest in ensuring network security, uptime, and proper delivery of web assets.</li>
+              <li><em>Contact Communications:</em> When you voluntarily submit a message, processing your name, email address, and message content is based on our legitimate interest in responding to user inquiries and providing player support.</li>
+              <li><em>Technical Delivery:</em> Technical request data processed by our hosting provider is based on legitimate interest in delivering website content and maintaining network security.</li>
             </ul>
           </li>
-          <li><strong>Data Subject Rights:</strong> Under the General Data Protection Regulation, you have the right to request access to, correction of, or erasure of personal data you have submitted to us, as well as the right to restrict or object to our processing. To make a request, contact us at <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a>.</li>
-          <li><strong>Supervisory Authorities:</strong> You also have the right to lodge a complaint with your local data protection supervisory authority.</li>
+          <li><strong>International Data Processing:</strong> Third-party service providers utilized for site hosting (Vercel) and form transmission (Formspree) may process data on servers located outside the EEA or UK, including in the United States.</li>
+          <li><strong>Data Subject Rights:</strong> Under applicable data protection regulations, you have rights to request access to, correction of, or deletion of personal data you have submitted, or to object to processing. Inquiries or requests can be directed to <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a>.</li>
+          <li><strong>Supervisory Authorities:</strong> You also have the right to lodge a complaint with your relevant national or regional data protection supervisory authority.</li>
         </ul>
 
-        <h2>8. Children's Privacy Notice (COPPA)</h2>
+        <h2>8. Children's Privacy Notice</h2>
         <p>
-          PlayRush is a general-audience website offering arcade-style browser games. We do not intentionally target, solicit, or collect personal information from children under the age of 13 (or under 16 where applicable under European law).
+          PlayRush is a general-audience browser gaming website. We do not intentionally target, solicit, or collect personal information from children under 13 years of age, or under the applicable age of digital consent in relevant jurisdictions (which may range up to 16 in certain European member states).
         </p>
         <p>
-          Gameplay does not require personal details or registration. If you are a parent or guardian and believe that your child has submitted personal details through our contact form without parental consent, please contact us at <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a> so we can locate and remove the submitted message.
+          Playing games on PlayRush does not require creating an account or providing personal details. If a parent or guardian believes that a child has submitted personal information through our contact form without parental consent, please contact us at <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a> so we can identify and remove the communication.
         </p>
 
         <h2>9. External Links</h2>
@@ -208,17 +209,13 @@
           Our website contains links to external services and resources (such as GitHub, Discord, Formspree, Vercel, and Google). We do not control the content, security, or privacy policies of third-party websites. We encourage you to review the privacy notices of any external site you visit.
         </p>
 
-        <h2 id="terms">10. Terms of Service &amp; Fair Use</h2>
-        <p>
-          All browser games and content on PlayRush are provided free of charge for personal, non-commercial entertainment on an "as-is" basis. By accessing our portal, you agree not to attempt to disrupt server operations, bypass security controls, or interfere with other visitors' use of the website.
-        </p>
-
-        <h2>11. Changes to This Privacy Policy</h2>
+        <span id="terms"></span>
+        <h2>10. Changes to This Privacy Policy</h2>
         <p>
           We may update this Privacy Policy from time to time to reflect changes in our site features, third-party integrations, or applicable legal requirements. Any modifications will be posted directly on this page with an updated "Last Updated" date at the top.
         </p>
 
-        <h2 id="contact">12. Contact Information</h2>
+        <h2 id="contact">11. Contact Information</h2>
         <p>
           If you have questions, feedback, or requests concerning this Privacy Policy or our data handling practices, please contact our team:
         </p>
