@@ -3,13 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About PlayRush - Next-Gen Browser Arcade Gaming</title>
+  <title>About PlayRush - Next-Gen Browser Arcade Gaming Platform</title>
   
-  <meta name="description" content="Discover the story behind PlayRush, our philosophy on free, instant-play browser gaming, and the engineering powering our high-performance Canvas arcade titles.">
-  <meta name="keywords" content="about playrush, browser arcade games, indie game development, html5 gaming, neon dodge">
+  <meta name="description" content="Discover the story behind PlayRush, our philosophy on free, instant-play browser gaming, and the engineering powering our high-performance 60 FPS Canvas arcade titles.">
+  <meta name="keywords" content="about playrush, browser arcade games, indie game development, html5 gaming, neon dodge, web audio api">
+  <meta name="author" content="PlayRush Gaming">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://playrush.games/about.html">
+  <link rel="canonical" href="https://playrush-peach.vercel.app/about.html">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PlayRush">
+  <meta property="og:url" content="https://playrush-peach.vercel.app/about.html">
+  <meta property="og:title" content="About PlayRush - Next-Gen Browser Arcade Gaming">
+  <meta property="og:description" content="Discover our philosophy on barrier-free, instant browser arcade gaming with zero latency.">
+  <meta property="og:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About PlayRush - Next-Gen Browser Arcade Gaming">
+  <meta name="twitter:description" content="Zero installations, instant 60 FPS gameplay, and pure retro-modern arcade thrills.">
+  <meta name="twitter:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2300f0ff'/><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%2305070f'/></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -19,27 +36,35 @@
   <header class="navbar" role="banner">
     <div class="container">
       <a href="index.html" class="brand" aria-label="PlayRush Home">
-        <div class="brand-icon">
+        <div class="brand-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         PLAY<span class="brand-accent">RUSH</span>
       </a>
 
+      <!-- Desktop Nav -->
       <nav aria-label="Main Navigation">
         <ul class="nav-menu">
           <li><a href="index.html#hero" class="nav-link">Home</a></li>
           <li><a href="index.html#featured" class="nav-link">Featured</a></li>
           <li><a href="index.html#games" class="nav-link">All Games</a></li>
           <li><a href="index.html#challenges" class="nav-link">Daily Quests</a></li>
+          <li><a href="index.html#howtoplay" class="nav-link">How to Play</a></li>
           <li><a href="about.html" class="nav-link active">About</a></li>
+          <li><a href="privacy.html" class="nav-link">Privacy</a></li>
         </ul>
       </nav>
 
+      <!-- Nav Actions -->
       <div class="nav-actions">
-        <a href="games/neon-dodge.html" class="btn-primary">
+        <div class="nav-score-badge" title="Your Neon Dodge High Score">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          BEST: <span id="navBestScore">0</span>
+        </div>
+        <a href="games/neon-dodge.html" class="btn-primary" aria-label="Play Neon Dodge immediately">
           PLAY NOW
         </a>
-        <button class="mobile-toggle" aria-label="Toggle navigation menu">
+        <button class="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -49,53 +74,223 @@
   <main>
     <div class="container">
       <div class="static-page-header">
-        <span class="section-tag">OUR MISSION &amp; PHILOSOPHY</span>
+        <span class="section-tag">ENGINEERING &amp; VALUES</span>
         <h1 class="section-title">ABOUT <span>PLAYRUSH</span></h1>
         <p class="section-desc">Pioneering instantaneous, adrenaline-fueled arcade games directly in the modern web browser.</p>
       </div>
 
       <article class="static-content-card">
-        <h2>The PlayRush Vision</h2>
+        <h2>The PlayRush Mission</h2>
         <p>
-          Founded with a passion for classic 80s arcade responsiveness fused with sleek neo-cyberpunk aesthetics, <strong>PlayRush</strong> is dedicated to delivering barrier-free gaming. In an era dominated by multi-gigabyte downloads, intrusive launchers, and invasive sign-up flows, we believe the essence of gaming should remain instant, exhilarating, and accessible on any device.
+          Founded with a passion for classic 80s arcade responsiveness fused with sleek neo-cyberpunk aesthetics, <strong>PlayRush</strong> is dedicated to delivering barrier-free gaming. In an era dominated by multi-gigabyte downloads, intrusive launchers, invasive sign-up flows, and pay-to-win mechanics, we believe the essence of gaming should remain instant, exhilarating, and accessible on any device.
+        </p>
+        <p>
+          Our games load within seconds, require zero plugins or downloads, and respect player attention by getting directly to the action.
         </p>
 
-        <h2>Engineered for Zero Latency</h2>
+        <h2>Engineered for Zero Latency &amp; Web Standards</h2>
         <p>
-          Every title on PlayRush is built with uncompromising technical principles:
+          Every title on PlayRush is built with uncompromising frontend technical principles:
         </p>
         <ul>
-          <li><strong>Pure Vanilla JavaScript &amp; HTML5 Canvas:</strong> Zero framework bloat. Sub-millisecond physics calculations run smoothly at a locked 60 frames per second.</li>
-          <li><strong>Web Audio API Synthesizers:</strong> Real-time synthesized chimes, sub-bass explosions, and frequency filters. No bulky audio downloads that fail or stall.</li>
-          <li><strong>Zero Client Storage Footprint:</strong> High scores and player milestones are saved locally via standard browser LocalStorage—no mandatory cloud logins or tracking cookies.</li>
-          <li><strong>Universal Responsiveness:</strong> From 4K ultrawide monitors to compact mobile smartphones, touch drag and keyboard controls adapt seamlessly.</li>
+          <li><strong>Pure Vanilla JavaScript &amp; HTML5 Canvas:</strong> Zero framework bloat. Physics calculations, collision detection, and particle systems run smoothly within a strict 16.6ms budget (locked 60 frames per second).</li>
+          <li><strong>Web Audio API Synthesizers:</strong> Real-time synthesized chimes, sub-bass explosions, and frequency sweeps. No bulky audio files to download, avoiding streaming delays or 404 network errors.</li>
+          <li><strong>Privacy-First Local Persistence:</strong> High scores and player milestones are saved locally via standard browser LocalStorage APIs—no mandatory accounts, passwords, or tracking cookies.</li>
+          <li><strong>Universal Responsiveness:</strong> From 4K desktop setups to touch-screen smartphones, touch drag and keyboard controls adapt automatically.</li>
         </ul>
 
-        <h2>Monetization &amp; Player Respect</h2>
+        <h2>Monetization &amp; Player Respect Policy</h2>
         <p>
-          PlayRush is 100% free to play. We believe monetization should never hinder gameplay. Advertisements are kept strictly outside the game canvas and control surfaces to prevent accidental clicks or visual distraction. We prepare standard compliant IAB ad spaces without disrupting your flow state.
+          PlayRush is 100% free to play. We believe monetization should never hinder gameplay or compromise player trust:
+        </p>
+        <ul>
+          <li><strong>Strict Placement Boundaries:</strong> Advertisements are kept strictly outside the game canvas and control surfaces. You will never encounter interstitial popups during an active run or ads placed where accidental clicks might occur.</li>
+          <li><strong>Compliance with Better Ads Standards:</strong> We prepare compliant IAB display units that respect user experience, avoiding auto-playing sound, pop-unders, or deceptive layouts.</li>
+          <li><strong>Transparent Labeling:</strong> All promotional and sponsored sections are clearly designated with standard labels ("Advertisement").</li>
+        </ul>
+
+        <h2>Upcoming Releases &amp; Catalog Roadmap</h2>
+        <p>
+          Our flagship title, <em>Neon Dodge</em>, represents our vision for high-octane reflex arcade play. We are actively expanding the PlayRush catalog with upcoming original titles:
+        </p>
+        <ul>
+          <li><strong>Cyber Runner:</strong> A high-velocity procedural rooftop runner featuring wall-slides and neon hurdles.</li>
+          <li><strong>Void Breaker:</strong> A roguelite brick-breaker with directional shields and particle lasers.</li>
+          <li><strong>Quantum Drift:</strong> Time-attack neon hover-car racing with micro-drift physics.</li>
+          <li><strong>Pixel Siege:</strong> Wave-based defense against escalating alien descending fleets.</li>
+          <li><strong>Pulse Beats:</strong> Rhythm arcade timing challenges set to energetic synthwave pulses.</li>
+        </ul>
+
+        <!-- Functional Contact Section -->
+        <h2 id="contact">Contact Support &amp; Community Feedback</h2>
+        <p>
+          We welcome bug reports, gameplay suggestions, high-score challenges, and partnership inquiries. Reach out to our development team using the form below or via direct email.
         </p>
 
-        <h2 id="contact">Get in Touch</h2>
-        <p>
-          Have game concepts, feedback, or high-score challenges you'd like to share? Connect with our development team via email at <code>support@playrush.games</code> or join our community discussions on Discord and GitHub.
-        </p>
-        <div style="margin-top: 1.5rem;">
-          <a href="games/neon-dodge.html" class="btn-primary">TEST YOUR SKILLS IN NEON DODGE</a>
+        <form id="contactForm" class="contact-form-box" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactName">Your Name</label>
+              <input type="text" id="contactName" name="name" placeholder="Pilot Name" required autocomplete="name">
+              <span class="form-error" id="nameError"></span>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Email Address</label>
+              <input type="email" id="contactEmail" name="email" placeholder="pilot@domain.com" required autocomplete="email">
+              <span class="form-error" id="emailError"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contactSubject">Subject</label>
+            <select id="contactSubject" name="subject" required>
+              <option value="feedback">General Feedback &amp; Suggestions</option>
+              <option value="bug">Report a Bug / Issue in Neon Dodge</option>
+              <option value="business">Advertising &amp; Partnership Inquiries</option>
+              <option value="other">Other Inquiry</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contactMessage">Message</label>
+            <textarea id="contactMessage" name="message" rows="5" placeholder="Share your feedback, bug details, or high-score milestone..." required></textarea>
+            <span class="form-error" id="messageError"></span>
+          </div>
+
+          <div class="form-submit-row">
+            <button type="submit" class="btn-primary" id="btnSubmitContact">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+              SEND MESSAGE
+            </button>
+            <span class="contact-direct-hint">
+              Or email us directly at: <a href="mailto:contact.playrush@gmail.com" class="direct-email-link">contact.playrush@gmail.com</a>
+            </span>
+          </div>
+
+          <div class="form-feedback-banner" id="formSuccessBanner" style="display: none;" role="status">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#00ff88">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Thank you for your message! Our development team has received your inquiry and will reply shortly.</span>
+          </div>
+        </form>
+
+        <div style="margin-top: 2.5rem; text-align: center;">
+          <a href="games/neon-dodge.html" class="btn-primary">TEST YOUR REFLEXES IN NEON DODGE</a>
         </div>
       </article>
     </div>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="brand">
+            <div class="brand-icon">
+              <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            PLAY<span class="brand-accent">RUSH</span>
+          </a>
+          <p>
+            The premier destination for free, lightning-fast browser arcade entertainment. Instant play, competitive reflex challenges, zero installs.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>GAMES</h4>
+          <ul class="footer-links">
+            <li><a href="games/neon-dodge.html">Neon Dodge</a></li>
+            <li><a href="index.html#games">Cyber Runner</a></li>
+            <li><a href="index.html#games">Void Breaker</a></li>
+            <li><a href="index.html#games">Quantum Drift</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>NAVIGATION</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#hero">Home</a></li>
+            <li><a href="index.html#featured">Featured Game</a></li>
+            <li><a href="index.html#challenges">Daily Quests</a></li>
+            <li><a href="about.html">About Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>LEGAL</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="privacy.html#cookies">Cookie Information</a></li>
+            <li><a href="privacy.html#terms">Terms of Service</a></li>
+            <li><a href="about.html#contact">Contact Support</a></li>
+          </ul>
+        </div>
+      </div>
+
       <div class="footer-bottom">
-        <div>&copy; 2026 PlayRush Games. All rights reserved.</div>
-        <div><a href="privacy.html" style="color: var(--neon-cyan);">Privacy Policy</a> &bull; <a href="index.html" style="color: var(--neon-cyan);">Home</a></div>
+        <div>&copy; <span id="copyrightYear">2026</span> PlayRush Games. All rights reserved.</div>
+        <div>Built with pure HTML5 Canvas &bull; 100% Client-side &bull; Zero Lag</div>
       </div>
     </div>
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Functional Contact Form Submission
+    document.addEventListener('DOMContentLoaded', () => {
+      const contactForm = document.getElementById('contactForm');
+      const successBanner = document.getElementById('formSuccessBanner');
+
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          let isValid = true;
+
+          const nameInput = document.getElementById('contactName');
+          const emailInput = document.getElementById('contactEmail');
+          const messageInput = document.getElementById('contactMessage');
+
+          const nameErr = document.getElementById('nameError');
+          const emailErr = document.getElementById('emailError');
+          const messageErr = document.getElementById('messageError');
+
+          nameErr.textContent = '';
+          emailErr.textContent = '';
+          messageErr.textContent = '';
+
+          if (!nameInput.value.trim()) {
+            nameErr.textContent = 'Please enter your name.';
+            isValid = false;
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+            emailErr.textContent = 'Please enter a valid email address.';
+            isValid = false;
+          }
+
+          if (!messageInput.value.trim() || messageInput.value.trim().length < 10) {
+            messageErr.textContent = 'Please enter a message with at least 10 characters.';
+            isValid = false;
+          }
+
+          if (isValid) {
+            // Display confirmation feedback
+            successBanner.style.display = 'flex';
+            contactForm.reset();
+            if (typeof showToast === 'function') {
+              showToast('✓ Message sent successfully! Thank you for reaching out.');
+            }
+            setTimeout(() => {
+              successBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

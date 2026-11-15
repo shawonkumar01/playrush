@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initDailyChallenges();
   initWishlistButtons();
   initCopyright();
+
+  // Re-sync scores and quest progress when user switches back to this tab
+  window.addEventListener('focus', () => {
+    initScoreSync();
+    initDailyChallenges();
+  });
+  window.addEventListener('storage', () => {
+    initScoreSync();
+    initDailyChallenges();
+  });
 });
 
 /* ==========================================================================
@@ -34,10 +44,11 @@ function initNavbar() {
 
   // Mobile menu toggle
   if (toggleBtn && navMenu) {
-    toggleBtn.addEventListener('click', () => {
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = navMenu.classList.toggle('open');
       toggleBtn.classList.toggle('active');
-      toggleBtn.setAttribute('aria-expanded', isOpen);
+      toggleBtn.setAttribute('aria-expanded', String(isOpen));
     });
 
     // Close menu when clicking link
@@ -45,8 +56,27 @@ function initNavbar() {
       link.addEventListener('click', () => {
         navMenu.classList.remove('open');
         toggleBtn.classList.remove('active');
-        toggleBtn.setAttribute('aria-expanded', false);
+        toggleBtn.setAttribute('aria-expanded', 'false');
       });
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+        navMenu.classList.remove('open');
+        toggleBtn.classList.remove('active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+        navMenu.classList.remove('open');
+        toggleBtn.classList.remove('active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.focus();
+      }
     });
   }
 }
@@ -412,6 +442,21 @@ function initDailyChallenges() {
       c2Bar.closest('.challenge-item').classList.add('completed');
     }
   }
+
+  // Challenge 3: Survive 45 seconds in a single run
+  const c3Target = 45;
+  const bestSurvival = parseInt(localStorage.getItem('playrush_best_survival_time') || '0', 10);
+  const c3Val = Math.min(bestSurvival, c3Target);
+  const c3Pct = Math.min(100, (c3Val / c3Target) * 100);
+  const c3Bar = document.getElementById('c3Progress');
+  const c3Label = document.getElementById('c3Label');
+  if (c3Bar && c3Label) {
+    c3Bar.style.width = `${c3Pct}%`;
+    c3Label.textContent = `${c3Val}s / ${c3Target}s`;
+    if (c3Val >= c3Target) {
+      c3Bar.closest('.challenge-item').classList.add('completed');
+    }
+  }
 }
 
 /* ==========================================================================
@@ -444,11 +489,14 @@ function showToast(message) {
   if (!container) {
     container = document.createElement('div');
     container.className = 'toast-container';
+    container.setAttribute('aria-live', 'polite');
+    container.setAttribute('aria-atomic', 'true');
     document.body.appendChild(container);
   }
 
   const toast = document.createElement('div');
   toast.className = 'toast';
+  toast.setAttribute('role', 'status');
   toast.innerHTML = `
     <svg class="toast-icon" viewBox="0 0 24 24">
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/>

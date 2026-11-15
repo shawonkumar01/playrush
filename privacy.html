@@ -3,12 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy - PlayRush Online Gaming</title>
+  <title>Privacy Policy &amp; Cookie Information | PlayRush Games</title>
   
-  <meta name="description" content="PlayRush Privacy Policy: Learn how we protect player privacy, utilize local storage for high scores, and manage compliant advertising.">
+  <meta name="description" content="PlayRush Privacy Policy: Learn how we protect player privacy, utilize browser LocalStorage for arcade high scores, and manage compliant Google AdSense advertising.">
+  <meta name="keywords" content="playrush privacy policy, game privacy, localstorage gaming, adsense privacy policy, coppa, gdpr compliance">
+  <meta name="author" content="PlayRush Gaming">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://playrush.games/privacy.html">
+  <link rel="canonical" href="https://playrush-peach.vercel.app/privacy.html">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PlayRush">
+  <meta property="og:url" content="https://playrush-peach.vercel.app/privacy.html">
+  <meta property="og:title" content="Privacy Policy &amp; Cookie Information | PlayRush Games">
+  <meta property="og:description" content="Transparent privacy policies, LocalStorage usage, and advertising disclosure for PlayRush.">
+  <meta property="og:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Privacy Policy | PlayRush Games">
+  <meta name="twitter:description" content="Transparent player privacy policies, LocalStorage usage, and advertising disclosure.">
+  <meta name="twitter:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2300f0ff'/><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%2305070f'/></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -18,27 +36,35 @@
   <header class="navbar" role="banner">
     <div class="container">
       <a href="index.html" class="brand" aria-label="PlayRush Home">
-        <div class="brand-icon">
+        <div class="brand-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         PLAY<span class="brand-accent">RUSH</span>
       </a>
 
+      <!-- Desktop Nav -->
       <nav aria-label="Main Navigation">
         <ul class="nav-menu">
           <li><a href="index.html#hero" class="nav-link">Home</a></li>
           <li><a href="index.html#featured" class="nav-link">Featured</a></li>
           <li><a href="index.html#games" class="nav-link">All Games</a></li>
+          <li><a href="index.html#challenges" class="nav-link">Daily Quests</a></li>
+          <li><a href="index.html#howtoplay" class="nav-link">How to Play</a></li>
           <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="privacy.html" class="nav-link active">Privacy</a></li>
         </ul>
       </nav>
 
+      <!-- Nav Actions -->
       <div class="nav-actions">
-        <a href="games/neon-dodge.html" class="btn-primary">
+        <div class="nav-score-badge" title="Your Neon Dodge High Score">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          BEST: <span id="navBestScore">0</span>
+        </div>
+        <a href="games/neon-dodge.html" class="btn-primary" aria-label="Play Neon Dodge immediately">
           PLAY NOW
         </a>
-        <button class="mobile-toggle" aria-label="Toggle navigation menu">
+        <button class="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -50,59 +76,164 @@
       <div class="static-page-header">
         <span class="section-tag">LEGAL TRANSPARENCY</span>
         <h1 class="section-title">PRIVACY <span>POLICY</span></h1>
-        <p class="section-desc">Last updated: November 2026</p>
+        <p class="section-desc">Effective Date: November 15, 2026 &bull; Deployed at: https://playrush-peach.vercel.app/</p>
       </div>
 
       <article class="static-content-card">
-        <h2>1. Information We Collect</h2>
+        <h2>1. Introduction &amp; Commitment to Player Privacy</h2>
         <p>
-          At <strong>PlayRush</strong>, privacy is fundamentally embedded into our technical architecture. We do not require account registration, passwords, credit card details, or sensitive personal data to play our games.
+          At <strong>PlayRush</strong> ("we", "our", or "us"), we prioritize the privacy of our visitors. This Privacy Policy outlines the types of information that is gathered and recorded when you visit our website at <code>https://playrush-peach.vercel.app/</code>, as well as how that information is utilized in accordance with global data protection regulations and advertising network standards.
         </p>
 
-        <h2>2. Use of Browser LocalStorage</h2>
+        <h2>2. Information We Do NOT Collect</h2>
         <p>
-          To deliver a persistent arcade experience without sending your gameplay data to remote servers, we store game state directly on your own device using standard browser <code>localStorage</code> APIs:
+          Unlike conventional gaming platforms, PlayRush is engineered for barrier-free instant play:
         </p>
         <ul>
-          <li><code>playrush_neon_dodge_highscore</code>: Stores your personal record score so you can track improvements.</li>
-          <li><code>playrush_total_orbs</code>: Tracks cumulative orbs collected for daily challenges.</li>
-          <li><code>playrush_sound_muted</code>: Remembers your audio preferences (muted or active sound).</li>
+          <li>We <strong>do not</strong> require account registration, usernames, or passwords.</li>
+          <li>We <strong>do not</strong> collect credit card numbers, billing information, or financial details.</li>
+          <li>We <strong>do not</strong> track, buy, or sell personally identifiable information (PII).</li>
+        </ul>
+
+        <h2>3. Use of Browser LocalStorage</h2>
+        <p>
+          To maintain high scores and game progression without requiring remote user profiles or backend databases, PlayRush utilizes your web browser's standard <code>localStorage</code> API. The following keys are stored exclusively on your local device:
+        </p>
+        <ul>
+          <li><code>playrush_neon_dodge_highscore</code>: Stores your personal record score in <em>Neon Dodge</em> so you can measure improvement across runs.</li>
+          <li><code>playrush_total_orbs</code>: Records the cumulative number of energy orbs gathered across runs for daily challenge quest tracking.</li>
+          <li><code>playrush_best_survival_time</code>: Stores your longest continuous survival time in seconds to verify challenge completion.</li>
+          <li><code>playrush_sound_muted</code>: Remembers your audio synthesizer preference (muted vs. active sound).</li>
         </ul>
         <p>
-          This data remains exclusively on your device and can be cleared at any time through your browser settings.
+          <strong>Player Control:</strong> This data never leaves your device. You can clear or reset this data at any time through your browser's Developer Tools or by clearing site data in your browser privacy settings.
         </p>
 
-        <h2 id="cookies">3. Advertising &amp; Cookies</h2>
+        <h2 id="cookies">4. Third-Party Advertising &amp; Google AdSense Compliance</h2>
         <p>
-          PlayRush is funded through display advertising to remain 100% free for everyone. Third-party advertising vendors, including Google AdSense, may use cookies or web beacons to serve ads based on prior visits to our website or other sites on the Internet.
+          PlayRush is supported by digital advertising to keep all arcade titles free for all players. We partner with reputable third-party advertising networks, including <strong>Google AdSense</strong>.
         </p>
         <p>
-          You may opt out of personalized advertising by visiting <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">aboutads.info</a> or adjusting your Google Ad Settings. We strictly forbid misleading, intrusive, or pop-under advertising units.
+          In accordance with Google's advertising policies and industry transparency standards:
+        </p>
+        <ul>
+          <li>Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites on the Internet.</li>
+          <li>Google's use of advertising cookies enables it and its partners to serve personalized or contextual advertisements to our users based on their browsing activity across the web.</li>
+          <li>Users may opt out of personalized advertising by visiting Google's official Ad Settings page at <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">https://www.google.com/settings/ads</a>.</li>
+          <li>Alternatively, you may opt out of third-party vendors' use of cookies for interest-based advertising by visiting the Network Advertising Initiative (NAI) opt-out page at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan);">www.aboutads.info/choices/</a>.</li>
+        </ul>
+
+        <h2>5. Web Beacons &amp; Standard Server Logs</h2>
+        <p>
+          Like most modern websites deployed on content delivery networks (including Vercel), server log files are generated automatically. These files log visitors when they access pages. Information gathered may include:
+        </p>
+        <ul>
+          <li>Internet Protocol (IP) addresses (anonymized/truncated where required by law)</li>
+          <li>Browser user-agent and operating system</li>
+          <li>Referring / exit pages and date/time stamps</li>
+          <li>Number of clicks to analyze trends and monitor infrastructure security against DDoS attacks</li>
+        </ul>
+        <p>
+          This information is not linked to any information that is personally identifiable.
         </p>
 
-        <h2 id="terms">4. Terms of Service &amp; Fair Play</h2>
+        <h2 id="terms">6. California Consumer Privacy Act (CCPA / CPRA)</h2>
         <p>
-          All games and media assets on PlayRush are provided "as-is" for personal entertainment. Users agree not to reverse-engineer malicious exploits or disrupt services.
+          Under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), California residents have specific privacy rights:
+        </p>
+        <ul>
+          <li><strong>Right to Know:</strong> You may request disclosure of what personal data a business collects. PlayRush collects zero personal identity data.</li>
+          <li><strong>Right to Delete:</strong> You can delete all locally stored gameplay metrics at any time by clearing your browser cache.</li>
+          <li><strong>Right to Opt-Out:</strong> PlayRush does not sell or share personal information as defined under the CCPA.</li>
+        </ul>
+
+        <h2>7. General Data Protection Regulation (GDPR) for EEA/UK Players</h2>
+        <p>
+          If you reside in the European Economic Area (EEA) or the United Kingdom:
+        </p>
+        <ul>
+          <li>The legal basis for processing server log data is legitimate interest in maintaining site security, uptime, and delivering requested game assets.</li>
+          <li>Where consent is required for non-essential cookies (such as personalized advertising cookies), users are provided options through standard consent management frameworks.</li>
+          <li>You retain the right to request access, rectification, erasure, or restriction of processing of any personal information we may hold.</li>
+        </ul>
+
+        <h2>8. Children's Online Privacy Protection Act (COPPA)</h2>
+        <p>
+          Protecting the safety of children online is critically important. PlayRush offers casual arcade games suitable for general audiences and does not knowingly collect any personally identifiable information from children under the age of 13 (or under 16 in the European Union). If a parent or guardian believes that PlayRush has collected personal information, please contact us immediately so we can promptly take appropriate action.
         </p>
 
-        <h2>5. Children's Online Privacy Protection (COPPA)</h2>
+        <h2>9. External Links &amp; Third-Party Sites</h2>
         <p>
-          We do not knowingly collect personal information from children under the age of 13. Our browser arcade games are family-friendly and accessible without personal data entry.
+          Our portal may contain links to external sites (such as our community Discord or GitHub repositories). Please be aware that we have no control over the content and practices of these external sites and cannot accept responsibility or liability for their respective privacy policies.
         </p>
 
-        <h2>6. Contact Us</h2>
+        <h2>10. Updates to This Privacy Policy</h2>
         <p>
-          If you have any questions regarding this Privacy Policy, please reach out to our privacy officer at <code>privacy@playrush.games</code>.
+          We may update our Privacy Policy periodically to reflect changes in regulatory standards, ad serving guidelines, or platform enhancements. Updates will be posted on this page with a revised effective date.
         </p>
+
+        <h2>11. Contacting Us</h2>
+        <p>
+          If you have questions, inquiries, or suggestions regarding our Privacy Policy, please contact our privacy compliance team directly:
+        </p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:contact.playrush@gmail.com" style="color: var(--neon-cyan);">contact.playrush@gmail.com</a></li>
+          <li><strong>Support Portal:</strong> <a href="about.html#contact" style="color: var(--neon-cyan);">PlayRush Feedback Form</a></li>
+          <li><strong>Platform:</strong> <a href="https://playrush-peach.vercel.app/" style="color: var(--neon-cyan);">https://playrush-peach.vercel.app/</a></li>
+        </ul>
       </article>
     </div>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="brand">
+            <div class="brand-icon">
+              <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            PLAY<span class="brand-accent">RUSH</span>
+          </a>
+          <p>
+            The premier destination for free, lightning-fast browser arcade entertainment. Instant play, competitive reflex challenges, zero installs.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>GAMES</h4>
+          <ul class="footer-links">
+            <li><a href="games/neon-dodge.html">Neon Dodge</a></li>
+            <li><a href="index.html#games">Cyber Runner</a></li>
+            <li><a href="index.html#games">Void Breaker</a></li>
+            <li><a href="index.html#games">Quantum Drift</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>NAVIGATION</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#hero">Home</a></li>
+            <li><a href="index.html#featured">Featured Game</a></li>
+            <li><a href="index.html#challenges">Daily Quests</a></li>
+            <li><a href="about.html">About Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>LEGAL</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="privacy.html#cookies">Cookie Information</a></li>
+            <li><a href="privacy.html#terms">Terms of Service</a></li>
+            <li><a href="about.html#contact">Contact Support</a></li>
+          </ul>
+        </div>
+      </div>
+
       <div class="footer-bottom">
-        <div>&copy; 2026 PlayRush Games. All rights reserved.</div>
-        <div><a href="about.html" style="color: var(--neon-cyan);">About Us</a> &bull; <a href="index.html" style="color: var(--neon-cyan);">Home</a></div>
+        <div>&copy; <span id="copyrightYear">2026</span> PlayRush Games. All rights reserved.</div>
+        <div>Built with pure HTML5 Canvas &bull; 100% Client-side &bull; Zero Lag</div>
       </div>
     </div>
   </footer>

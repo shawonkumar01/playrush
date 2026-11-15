@@ -77,10 +77,38 @@ links.forEach(l => {
 console.log('\n--- Checking Links in games/neon-dodge.html ---');
 const gameLinks = [...gameHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
 gameLinks.forEach(l => {
-  if (l.startsWith('http') || l.startsWith('data:')) return;
+  if (l.startsWith('http') || l.startsWith('data:') || l.startsWith('mailto:')) return;
   const target = path.join(rootDir, 'games', l);
   if (!fs.existsSync(target)) {
     console.error(`[ERROR] Broken link in games/neon-dodge.html: ${l}`);
+    errors++;
+  } else {
+    console.log(`[OK] Link "${l}" resolves to ${target}`);
+  }
+});
+
+console.log('\n--- Checking Links in about.html ---');
+const aboutHtml = fs.readFileSync(path.join(rootDir, 'about.html'), 'utf8');
+const aboutLinks = [...aboutHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
+aboutLinks.forEach(l => {
+  if (l.startsWith('http') || l.startsWith('data:') || l.startsWith('mailto:')) return;
+  const target = path.join(rootDir, l);
+  if (!fs.existsSync(target)) {
+    console.error(`[ERROR] Broken link in about.html: ${l}`);
+    errors++;
+  } else {
+    console.log(`[OK] Link "${l}" resolves to ${target}`);
+  }
+});
+
+console.log('\n--- Checking Links in privacy.html ---');
+const privacyHtml = fs.readFileSync(path.join(rootDir, 'privacy.html'), 'utf8');
+const privacyLinks = [...privacyHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
+privacyLinks.forEach(l => {
+  if (l.startsWith('http') || l.startsWith('data:') || l.startsWith('mailto:')) return;
+  const target = path.join(rootDir, l);
+  if (!fs.existsSync(target)) {
+    console.error(`[ERROR] Broken link in privacy.html: ${l}`);
     errors++;
   } else {
     console.log(`[OK] Link "${l}" resolves to ${target}`);

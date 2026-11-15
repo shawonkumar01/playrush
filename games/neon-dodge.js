@@ -847,6 +847,13 @@
     const currentOrbs = parseInt(localStorage.getItem(STORAGE_TOTAL_ORBS) || '0', 10);
     localStorage.setItem(STORAGE_TOTAL_ORBS, String(currentOrbs + orbsCollectedInRun));
 
+    // Update best survival time for daily challenge
+    const seconds = Math.floor(survivalFrames / 60);
+    const bestSurvival = parseInt(localStorage.getItem('playrush_best_survival_time') || '0', 10);
+    if (seconds > bestSurvival) {
+      localStorage.setItem('playrush_best_survival_time', String(seconds));
+    }
+
     // Fill Game Over UI
     const finalScoreEl = document.getElementById('finalScoreVal');
     const bestScoreEl = document.getElementById('gameOverBestVal');
@@ -858,7 +865,6 @@
     if (newRecordTag) newRecordTag.style.display = isNewRecord ? 'block' : 'none';
 
     if (statsSummary) {
-      const seconds = Math.floor(survivalFrames / 60);
       statsSummary.textContent = `Survived: ${seconds}s  •  Orbs: ${orbsCollectedInRun}`;
     }
 
