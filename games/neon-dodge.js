@@ -15,13 +15,37 @@
   const STORAGE_TOTAL_ORBS = 'playrush_total_orbs';
   const STORAGE_MUTED = 'playrush_sound_muted';
 
+  // Safe LocalStorage helpers with exception handling and validation
+  function safeGetStorage(key, defaultVal = 0, maxVal = 999999999) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return defaultVal;
+      const parsed = parseInt(raw, 10);
+      return isNaN(parsed) || parsed < 0 ? defaultVal : Math.min(parsed, maxVal);
+    } catch (e) {
+      return defaultVal;
+    }
+  }
+
+  function safeSetStorage(key, val) {
+    try {
+      localStorage.setItem(key, String(val));
+    } catch (e) {
+      // Storage quota exceeded or blocked in restricted browser modes
+    }
+  }
+
   /* ==========================================================================
      Web Audio API - Pure Synthesized Retro Arcade Sounds
      ========================================================================== */
   class SoundEngine {
     constructor() {
       this.ctx = null;
-      this.isMuted = localStorage.getItem(STORAGE_MUTED) === 'true';
+      let muted = false;
+      try {
+        muted = localStorage.getItem(STORAGE_MUTED) === 'true';
+      } catch (e) {}
+      this.isMuted = muted;
       this.masterGain = null;
     }
 
@@ -46,7 +70,7 @@
 
     toggleMute() {
       this.isMuted = !this.isMuted;
-      localStorage.setItem(STORAGE_MUTED, String(this.isMuted));
+      safeSetStorage(STORAGE_MUTED, String(this.isMuted));
       if (this.masterGain) {
         this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.35, this.ctx.currentTime, 0.05);
       }
@@ -242,7 +266,7 @@
 
   let score = 0;
   let displayScore = 0;
-  let highScore = parseInt(localStorage.getItem(STORAGE_HIGH_SCORE) || '0', 10);
+  let highScore = safeGetStorage(STORAGE_HIGH_SCORE, 0);
   let survivalFrames = 0;
   let orbsCollectedInRun = 0;
   let multiplier = 1;
@@ -835,23 +859,23 @@
     currentState = GameState.GAMEOVER;
     audio.playGameOver();
 
-    // Check & persist high score
+    // Check & persist high score safely
     let isNewRecord = false;
     if (score > highScore) {
       highScore = score;
-      localStorage.setItem(STORAGE_HIGH_SCORE, String(highScore));
+      safeSetStorage(STORAGE_HIGH_SCORE, highScore);
       isNewRecord = true;
     }
 
-    // Update cumulative orbs collected for daily challenge
-    const currentOrbs = parseInt(localStorage.getItem(STORAGE_TOTAL_ORBS) || '0', 10);
-    localStorage.setItem(STORAGE_TOTAL_ORBS, String(currentOrbs + orbsCollectedInRun));
+    // Update cumulative orbs collected for daily challenge safely
+    const currentOrbs = safeGetStorage(STORAGE_TOTAL_ORBS, 0);
+    safeSetStorage(STORAGE_TOTAL_ORBS, currentOrbs + orbsCollectedInRun);
 
-    // Update best survival time for daily challenge
+    // Update best survival time for daily challenge safely
     const seconds = Math.floor(survivalFrames / 60);
-    const bestSurvival = parseInt(localStorage.getItem('playrush_best_survival_time') || '0', 10);
+    const bestSurvival = safeGetStorage('playrush_best_survival_time', 0);
     if (seconds > bestSurvival) {
-      localStorage.setItem('playrush_best_survival_time', String(seconds));
+      safeSetStorage('playrush_best_survival_time', seconds);
     }
 
     // Fill Game Over UI

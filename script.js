@@ -82,11 +82,22 @@ function initNavbar() {
 }
 
 /* ==========================================================================
-   LocalStorage Score Synchronization
+   LocalStorage Helper & Score Synchronization
    ========================================================================== */
+function getSafeStorageInt(key, defaultVal = 0, maxVal = 999999999) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return defaultVal;
+    const parsed = parseInt(raw, 10);
+    return isNaN(parsed) || parsed < 0 ? defaultVal : Math.min(parsed, maxVal);
+  } catch (e) {
+    return defaultVal;
+  }
+}
+
 function initScoreSync() {
   const HIGH_SCORE_KEY = 'playrush_neon_dodge_highscore';
-  const savedScore = parseInt(localStorage.getItem(HIGH_SCORE_KEY) || '0', 10);
+  const savedScore = getSafeStorageInt(HIGH_SCORE_KEY, 0);
 
   const navScoreEl = document.getElementById('navBestScore');
   const featuredScoreEl = document.getElementById('featuredBestScore');
@@ -394,14 +405,24 @@ function initGameFilters() {
 function initDailyChallenges() {
   const countdownEl = document.getElementById('dailyCountdown');
 
+  // Clear any previously running countdown timer
+  if (window._countdownTimer) {
+    clearInterval(window._countdownTimer);
+  }
+
   function updateTimer() {
     if (!countdownEl) return;
     const now = new Date();
-    const tomorrow = new Date();
-    tomorrow.setHours(24, 0, 0, 0);
+    let midnight = new Date();
+    midnight.setHours(24, 0, 0, 0); // next local midnight
 
-    const diffMs = tomorrow - now;
-    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    let diffMs = midnight - now;
+    if (diffMs <= 0) {
+      // Midnight rollover: set target to the following midnight
+      midnight.setDate(midnight.getDate() + 1);
+      diffMs = midnight - now;
+    }
+    const hours   = Math.floor(diffMs / (1000 * 60 * 60));
     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
@@ -409,11 +430,11 @@ function initDailyChallenges() {
   }
 
   updateTimer();
-  setInterval(updateTimer, 1000);
+  window._countdownTimer = setInterval(updateTimer, 1000);
 
-  // Sync challenge progress with LocalStorage
-  const bestScore = parseInt(localStorage.getItem('playrush_neon_dodge_highscore') || '0', 10);
-  const totalOrbs = parseInt(localStorage.getItem('playrush_total_orbs') || '0', 10);
+  // Sync challenge progress with LocalStorage safely
+  const bestScore = getSafeStorageInt('playrush_neon_dodge_highscore', 0);
+  const totalOrbs = getSafeStorageInt('playrush_total_orbs', 0);
 
   // Challenge 1: Score 500+ in Neon Dodge
   const c1Target = 500;
@@ -445,7 +466,7 @@ function initDailyChallenges() {
 
   // Challenge 3: Survive 45 seconds in a single run
   const c3Target = 45;
-  const bestSurvival = parseInt(localStorage.getItem('playrush_best_survival_time') || '0', 10);
+  const bestSurvival = getSafeStorageInt('playrush_best_survival_time', 0);
   const c3Val = Math.min(bestSurvival, c3Target);
   const c3Pct = Math.min(100, (c3Val / c3Target) * 100);
   const c3Bar = document.getElementById('c3Progress');
@@ -482,7 +503,7 @@ function initWishlistButtons() {
 }
 
 /* ==========================================================================
-   Toast Notification System
+   Toast Notification System (DOM XSS-Safe)
    ========================================================================== */
 function showToast(message) {
   let container = document.querySelector('.toast-container');
@@ -497,13 +518,22 @@ function showToast(message) {
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.setAttribute('role', 'status');
-  toast.innerHTML = `
-    <svg class="toast-icon" viewBox="0 0 24 24">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/>
-    </svg>
-    <div class="toast-msg">${message}</div>
-  `;
 
+  // Build SVG icon securely without innerHTML injection
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'toast-icon');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z');
+  svg.appendChild(path);
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'toast-msg';
+  msgDiv.textContent = String(message);
+
+  toast.appendChild(svg);
+  toast.appendChild(msgDiv);
   container.appendChild(toast);
 
   setTimeout(() => {

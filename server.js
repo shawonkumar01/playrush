@@ -30,9 +30,16 @@ const server = http.createServer((req, res) => {
     reqPath = '/index.html';
   }
 
-  // Prevent directory traversal
+  // Prevent directory traversal attacks
   const safePath = path.normalize(reqPath).replace(/^(\.\.[\/\\])+/, '');
-  let filePath = path.join(PUBLIC_DIR, safePath);
+  let filePath = path.resolve(PUBLIC_DIR, '.' + path.sep + safePath);
+
+  // Enforce boundary check
+  if (!filePath.startsWith(PUBLIC_DIR)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=UTF-8' });
+    res.end('403 Forbidden');
+    return;
+  }
 
   // If directory, check index.html
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
@@ -42,6 +49,7 @@ const server = http.createServer((req, res) => {
   fs.readFile(filePath, (err, content) => {
     if (err) {
       if (err.code === 'ENOENT') {
+        const escapedPath = reqPath.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
         res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' });
         res.end(`
           <!DOCTYPE html>
@@ -49,7 +57,7 @@ const server = http.createServer((req, res) => {
           <head><title>404 Not Found - PlayRush</title><style>body{background:#070913;color:#00f0ff;font-family:sans-serif;text-align:center;padding:50px;}</style></head>
           <body>
             <h1>404 - Page Not Found</h1>
-            <p>The requested file <code>${reqPath}</code> was not found on PlayRush.</p>
+            <p>The requested file <code>${escapedPath}</code> was not found on PlayRush.</p>
             <p><a href="/" style="color:#a855f7;">Return to Portal</a></p>
           </body>
           </html>

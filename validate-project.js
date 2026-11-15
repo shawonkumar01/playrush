@@ -25,9 +25,15 @@ const requiredFiles = [
   'games/neon-dodge.js',
   'privacy.html',
   'about.html',
+  'about.js',
   'robots.txt',
   'sitemap.xml',
-  'server.js'
+  'server.js',
+  'vercel.json',
+  '.gitignore',
+  'SECURITY_AUDIT.md',
+  'FINAL_SITE_AUDIT.md',
+  'FINAL_SECURITY_REVIEW.md'
 ];
 
 requiredFiles.forEach(checkFileExists);
@@ -113,6 +119,23 @@ privacyLinks.forEach(l => {
   } else {
     console.log(`[OK] Link "${l}" resolves to ${target}`);
   }
+});
+
+console.log('\n--- Checking Script Src in HTML Files ---');
+['index.html', 'about.html', 'privacy.html', 'games/neon-dodge.html'].forEach(htmlFile => {
+  const content = fs.readFileSync(path.join(rootDir, htmlFile), 'utf8');
+  const baseDir = path.dirname(path.join(rootDir, htmlFile));
+  const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]);
+  scripts.forEach(s => {
+    if (s.startsWith('http')) return;
+    const target = path.join(baseDir, s);
+    if (!fs.existsSync(target)) {
+      console.error(`[ERROR] Script "${s}" in ${htmlFile} not found at ${target}`);
+      errors++;
+    } else {
+      console.log(`[OK] Script "${s}" in ${htmlFile} resolves to ${target}`);
+    }
+  });
 });
 
 console.log(`\n================================`);
