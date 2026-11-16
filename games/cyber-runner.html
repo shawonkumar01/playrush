@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cyber Runner - Free Online Endless Runner Game | PlayRush</title>
+
+  <meta name="description" content="Play Cyber Runner online for free. Sprint across futuristic cyberpunk rooftops, jump over gaps, slide under barriers, collect energy orbs, and beat your best score on PlayRush!">
+  <meta name="keywords" content="cyber runner, endless runner, browser game, cyberpunk, rooftop runner, arcade game, canvas game, free game">
+  <meta name="author" content="PlayRush Gaming">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://playrush-peach.vercel.app/games/cyber-runner.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="game">
+  <meta property="og:site_name" content="PlayRush">
+  <meta property="og:title" content="Cyber Runner - Cyberpunk Rooftop Endless Runner | PlayRush">
+  <meta property="og:description" content="Sprint across neon-lit rooftops, dodge obstacles, and collect energy orbs! Free instant browser play.">
+  <meta property="og:url" content="https://playrush-peach.vercel.app/games/cyber-runner.html">
+  <meta property="og:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cyber Runner - Free Online Endless Runner Game | PlayRush">
+  <meta name="twitter:description" content="Sprint across cyberpunk rooftops, jump gaps, slide under barriers and survive in Cyber Runner.">
+  <meta name="twitter:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2300f0ff'/><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%2305070f'/></svg>">
+
+  <!-- Game Stylesheet -->
+  <link rel="stylesheet" href="cyber-runner.css">
+</head>
+<body>
+
+  <div class="arcade-viewport">
+    <!-- Top Arcade Bar -->
+    <header class="arcade-header">
+      <a href="../index.html" class="arcade-brand" title="Return to PlayRush Home">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        PLAYRUSH
+      </a>
+
+      <div class="arcade-title-tag">
+        CYBER RUNNER v1.0
+      </div>
+
+      <div class="arcade-controls-top">
+        <!-- Sound Toggle -->
+        <button class="arcade-btn-icon" id="btnHeaderSound" title="Mute/Unmute Sound (M)" aria-label="Toggle sound effects">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+        </button>
+
+        <!-- Pause / Resume -->
+        <button class="arcade-btn-icon" id="btnHeaderPause" title="Pause Game (P / Esc)" aria-label="Pause game">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+
+        <!-- Fullscreen -->
+        <button class="arcade-btn-icon" id="btnHeaderFullscreen" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+          <svg viewBox="0 0 24 24">
+            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Canvas Container -->
+    <main class="game-stage-container" role="main">
+      <canvas id="gameCanvas" width="800" height="500" aria-label="Cyber Runner Arcade Game Canvas"></canvas>
+
+      <!-- In-Game HUD -->
+      <div class="game-hud" aria-live="polite">
+        <div class="hud-panel">
+          <span class="hud-label">SCORE</span>
+          <span class="hud-value glow-cyan" id="hudScoreVal">0</span>
+        </div>
+
+        <div class="hud-panel hud-center">
+          <span class="hud-label">DISTANCE</span>
+          <span class="hud-value" id="hudDistanceVal">0m</span>
+        </div>
+
+        <div class="hud-panel hud-orb-panel">
+          <span class="hud-label">ORBS</span>
+          <span class="hud-value glow-green" id="hudOrbVal">0</span>
+        </div>
+
+        <div class="hud-panel">
+          <span class="hud-label">BEST</span>
+          <span class="hud-value glow-gold" id="hudBestVal">0</span>
+        </div>
+      </div>
+
+      <!-- Overlay Screen 1: Start Menu -->
+      <section class="screen-overlay" id="startScreen" aria-labelledby="startTitle">
+        <div class="screen-box">
+          <h1 class="game-logo-large" id="startTitle">CYBER<br>RUNNER</h1>
+          <p class="screen-subtitle">Cyberpunk Rooftop Endless Runner</p>
+
+          <div class="score-stats-container">
+            <div class="score-stat-box">
+              <span class="score-stat-title">YOUR BEST</span>
+              <span class="score-stat-number gold" id="menuHighScoreVal">0</span>
+            </div>
+            <div class="score-stat-box">
+              <span class="score-stat-title">DIFFICULTY</span>
+              <span class="score-stat-number primary">ADAPTIVE</span>
+            </div>
+          </div>
+
+          <div class="screen-buttons-col">
+            <button class="game-btn btn-play" id="btnStartGame">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              START RUNNING
+            </button>
+          </div>
+
+          <div class="controls-tips">
+            <span>⌨️ Space/↑/W: Jump • ↓/S: Slide • P/Esc: Pause</span>
+            <span>📱 Touch: Jump & Slide Buttons</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overlay Screen 2: Paused -->
+      <section class="screen-overlay hidden" id="pauseScreen" aria-labelledby="pauseTitle">
+        <div class="screen-box">
+          <h2 class="game-logo-large" id="pauseTitle">PAUSED</h2>
+          <p class="screen-subtitle">Take a breather, Runner.</p>
+
+          <div class="screen-buttons-col">
+            <button class="game-btn btn-play" id="btnResumeGame">
+              RESUME GAME
+            </button>
+            <button class="game-btn btn-outline" id="btnPauseRestart">
+              RESTART RUN
+            </button>
+            <a href="../index.html" class="game-btn btn-outline">
+              BACK TO PORTAL
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overlay Screen 3: Game Over -->
+      <section class="screen-overlay hidden" id="gameOverScreen" aria-labelledby="gameOverTitle">
+        <div class="screen-box">
+          <h2 class="game-logo-large" id="gameOverTitle">GAME OVER</h2>
+          <div class="new-record-tag" id="newRecordBanner" style="display: none;">
+            ★ NEW RECORD! ★
+          </div>
+          <p class="screen-subtitle" id="runStatsSummary">Distance: 0m • Orbs: 0</p>
+
+          <div class="score-stats-container">
+            <div class="score-stat-box">
+              <span class="score-stat-title">FINAL SCORE</span>
+              <span class="score-stat-number primary" id="finalScoreVal">0</span>
+            </div>
+            <div class="score-stat-box">
+              <span class="score-stat-title">BEST SCORE</span>
+              <span class="score-stat-number gold" id="gameOverBestVal">0</span>
+            </div>
+          </div>
+
+          <div class="screen-buttons-col">
+            <button class="game-btn btn-play" id="btnRestartGame">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+              </svg>
+              PLAY AGAIN
+            </button>
+            <a href="../index.html" class="game-btn btn-outline">
+              BACK TO PORTAL
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mobile Touch Controls -->
+      <div class="mobile-touch-controls" id="mobileControls">
+        <button class="touch-btn touch-btn-jump" id="btnTouchJump" aria-label="Jump">
+          <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+          JUMP
+        </button>
+        <button class="touch-btn touch-btn-slide" id="btnTouchSlide" aria-label="Slide">
+          <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+          SLIDE
+        </button>
+      </div>
+    </main>
+
+    <!-- Monetization: Bottom Non-Intrusive Sponsored Placement -->
+    <aside class="game-bottom-ad" aria-label="Advertisement Banner">
+      <div class="game-bottom-ad-text">
+        ADVERTISEMENT &bull; RESERVED DISPLAY PLACEMENT
+      </div>
+    </aside>
+  </div>
+
+  <!-- Game Logic Script -->
+  <script src="cyber-runner.js"></script>
+</body>
+</html>

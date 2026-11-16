@@ -23,6 +23,9 @@ const requiredFiles = [
   'games/neon-dodge.html',
   'games/neon-dodge.css',
   'games/neon-dodge.js',
+  'games/cyber-runner.html',
+  'games/cyber-runner.css',
+  'games/cyber-runner.js',
   'privacy.html',
   'about.html',
   'about.js',
@@ -67,6 +70,20 @@ gameIds.forEach(id => {
   }
 });
 
+console.log('\n--- Checking cyber-runner.html ID References in cyber-runner.js ---');
+const crHtml = fs.readFileSync(path.join(rootDir, 'games/cyber-runner.html'), 'utf8');
+const crJs = fs.readFileSync(path.join(rootDir, 'games/cyber-runner.js'), 'utf8');
+
+const crIds = [...crJs.matchAll(/getElementById\(['"]([^'"]+)['"]\)/g)].map(m => m[1]);
+crIds.forEach(id => {
+  if (!crHtml.includes(`id="${id}"`)) {
+    console.error(`[ERROR] ID "${id}" in cyber-runner.js not found in games/cyber-runner.html`);
+    errors++;
+  } else {
+    console.log(`[OK] ID "${id}" verified in games/cyber-runner.html`);
+  }
+});
+
 console.log('\n--- Checking Links in index.html ---');
 const links = [...indexHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
 links.forEach(l => {
@@ -87,6 +104,19 @@ gameLinks.forEach(l => {
   const target = path.join(rootDir, 'games', l);
   if (!fs.existsSync(target)) {
     console.error(`[ERROR] Broken link in games/neon-dodge.html: ${l}`);
+    errors++;
+  } else {
+    console.log(`[OK] Link "${l}" resolves to ${target}`);
+  }
+});
+
+console.log('\n--- Checking Links in games/cyber-runner.html ---');
+const crLinks = [...crHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
+crLinks.forEach(l => {
+  if (l.startsWith('http') || l.startsWith('data:') || l.startsWith('mailto:')) return;
+  const target = path.join(rootDir, 'games', l);
+  if (!fs.existsSync(target)) {
+    console.error(`[ERROR] Broken link in games/cyber-runner.html: ${l}`);
     errors++;
   } else {
     console.log(`[OK] Link "${l}" resolves to ${target}`);
@@ -122,7 +152,7 @@ privacyLinks.forEach(l => {
 });
 
 console.log('\n--- Checking Script Src in HTML Files ---');
-['index.html', 'about.html', 'privacy.html', 'games/neon-dodge.html'].forEach(htmlFile => {
+['index.html', 'about.html', 'privacy.html', 'games/neon-dodge.html', 'games/cyber-runner.html'].forEach(htmlFile => {
   const content = fs.readFileSync(path.join(rootDir, htmlFile), 'utf8');
   const baseDir = path.dirname(path.join(rootDir, htmlFile));
   const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]);
