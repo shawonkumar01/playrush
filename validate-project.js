@@ -26,6 +26,9 @@ const requiredFiles = [
   'games/cyber-runner.html',
   'games/cyber-runner.css',
   'games/cyber-runner.js',
+  'games/killer-killer.html',
+  'games/killer-killer.css',
+  'games/killer-killer.js',
   'privacy.html',
   'about.html',
   'about.js',
@@ -84,6 +87,23 @@ crIds.forEach(id => {
   }
 });
 
+console.log('\n--- Checking killer-killer.html ID References in killer-killer.js ---');
+const kkHtml = fs.readFileSync(path.join(rootDir, 'games/killer-killer.html'), 'utf8');
+const kkJs = fs.readFileSync(path.join(rootDir, 'games/killer-killer.js'), 'utf8');
+
+const kkIds = [...kkJs.matchAll(/getElementById\(['"]([^'"]+)['"]\)/g)].map(m => m[1]);
+kkIds.forEach(id => {
+  if (id.startsWith('editPlayerInput_') || id.startsWith('btnSaveEdit_') || id.startsWith('btnEditPlayer_') || id.startsWith('btnRemovePlayer_')) {
+    return;
+  }
+  if (!kkHtml.includes(`id="${id}"`)) {
+    console.error(`[ERROR] ID "${id}" in killer-killer.js not found in games/killer-killer.html`);
+    errors++;
+  } else {
+    console.log(`[OK] ID "${id}" verified in games/killer-killer.html`);
+  }
+});
+
 console.log('\n--- Checking Links in index.html ---');
 const links = [...indexHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
 links.forEach(l => {
@@ -123,6 +143,19 @@ crLinks.forEach(l => {
   }
 });
 
+console.log('\n--- Checking Links in games/killer-killer.html ---');
+const kkLinks = [...kkHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
+kkLinks.forEach(l => {
+  if (l.startsWith('http') || l.startsWith('data:') || l.startsWith('mailto:')) return;
+  const target = path.join(rootDir, 'games', l);
+  if (!fs.existsSync(target)) {
+    console.error(`[ERROR] Broken link in games/killer-killer.html: ${l}`);
+    errors++;
+  } else {
+    console.log(`[OK] Link "${l}" resolves to ${target}`);
+  }
+});
+
 console.log('\n--- Checking Links in about.html ---');
 const aboutHtml = fs.readFileSync(path.join(rootDir, 'about.html'), 'utf8');
 const aboutLinks = [...aboutHtml.matchAll(/href="([^"#]+)(#[^"]*)?"/g)].map(m => m[1]);
@@ -152,7 +185,7 @@ privacyLinks.forEach(l => {
 });
 
 console.log('\n--- Checking Script Src in HTML Files ---');
-['index.html', 'about.html', 'privacy.html', 'games/neon-dodge.html', 'games/cyber-runner.html'].forEach(htmlFile => {
+['index.html', 'about.html', 'privacy.html', 'games/neon-dodge.html', 'games/cyber-runner.html', 'games/killer-killer.html'].forEach(htmlFile => {
   const content = fs.readFileSync(path.join(rootDir, htmlFile), 'utf8');
   const baseDir = path.dirname(path.join(rootDir, htmlFile));
   const scripts = [...content.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]);
