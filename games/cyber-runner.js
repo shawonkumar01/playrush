@@ -13,6 +13,8 @@
   const V_HEIGHT = 500;
   const STORAGE_HIGH_SCORE = 'playrush_cyber_runner_highscore';
   const STORAGE_MUTED = 'playrush_cr_sound_muted';
+  const STORAGE_MUSIC_ENABLED = 'playrush_cr_music_enabled';
+  const STORAGE_MUSIC_VOLUME = 'playrush_cr_music_volume';
 
   // Physics constants (all per-second values for fixed-timestep)
   const GRAVITY = 2800;            // px/s^2
@@ -90,6 +92,7 @@
       this.ctx = null;
       this.isMuted = safeGetStorage(STORAGE_MUTED, 'false') === 'true';
       this.masterGain = null;
+      this.sfxGain = null;
     }
 
     init() {
@@ -98,8 +101,12 @@
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         this.ctx = new AudioCtx();
         this.masterGain = this.ctx.createGain();
-        this.masterGain.gain.value = this.isMuted ? 0 : 0.35;
+        this.masterGain.gain.value = 1.0;
         this.masterGain.connect(this.ctx.destination);
+
+        this.sfxGain = this.ctx.createGain();
+        this.sfxGain.gain.value = this.isMuted ? 0 : 0.35;
+        this.sfxGain.connect(this.masterGain);
       } catch (e) {
         console.warn('Web Audio API not supported:', e);
       }
@@ -111,17 +118,22 @@
       }
     }
 
-    toggleMute() {
-      this.isMuted = !this.isMuted;
+    setMuted(muted) {
+      this.isMuted = !!muted;
       safeSetStorage(STORAGE_MUTED, String(this.isMuted));
-      if (this.masterGain) {
-        this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.35, this.ctx.currentTime, 0.05);
+      if (this.sfxGain && this.ctx) {
+        this.sfxGain.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.sfxGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.35, this.ctx.currentTime, 0.05);
       }
       return this.isMuted;
     }
 
+    toggleMute() {
+      return this.setMuted(!this.isMuted);
+    }
+
     playJump() {
-      if (this.isMuted || !this.ctx) return;
+      if (this.isMuted || !this.ctx || !this.sfxGain) return;
       this.resume();
       const t = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
@@ -132,13 +144,13 @@
       gain.gain.setValueAtTime(0.25, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.18);
     }
 
     playOrbCollect() {
-      if (this.isMuted || !this.ctx) return;
+      if (this.isMuted || !this.ctx || !this.sfxGain) return;
       this.resume();
       const t = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
@@ -150,17 +162,16 @@
       gain.gain.setValueAtTime(0.3, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.2);
     }
 
     playCollision() {
-      if (this.isMuted || !this.ctx) return;
+      if (this.isMuted || !this.ctx || !this.sfxGain) return;
       this.resume();
       const t = this.ctx.currentTime;
-      // Noise burst
-      const bufferSize = this.ctx.sampleRate * 0.15;
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.15);
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
@@ -177,16 +188,15 @@
       filter.frequency.exponentialRampToValueAtTime(200, t + 0.2);
       noise.connect(filter);
       filter.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       noise.start(t);
       noise.stop(t + 0.2);
     }
 
     playGameOver() {
-      if (this.isMuted || !this.ctx) return;
+      if (this.isMuted || !this.ctx || !this.sfxGain) return;
       this.resume();
       const t = this.ctx.currentTime;
-      // Descending tone
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'sawtooth';
@@ -196,13 +206,512 @@
       gain.gain.setValueAtTime(0.3, t + 0.3);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
       osc.connect(gain);
-      gain.connect(this.masterGain);
+      gain.connect(this.sfxGain);
       osc.start(t);
       osc.stop(t + 0.8);
     }
   }
 
+  /* ==========================================================================
+     Procedural Cyberpunk Industrial OST Engine (Web Audio API)
+     Relentless 140 BPM Darksynth / Industrial EBM in F minor Phrygian
+     ========================================================================== */
+  class MusicEngine {
+    constructor(soundEngine) {
+      this.soundEngine = soundEngine;
+      this.musicGain = null;
+      this.isPlaying = false;
+      this.isFading = false;
+      this.schedulerTimer = null;
+      this.nextNoteTime = 0;
+      this.currentStep = 0;
+
+      // Active oscillator/source tracking for clean teardown
+      this.activeNodes = [];
+
+      // Load preferences safely (Defaults: Music OFF, Volume 35%)
+      let enabled = false;
+      let volume = 0.35;
+      try {
+        enabled = localStorage.getItem(STORAGE_MUSIC_ENABLED) === 'true';
+        const rawVol = localStorage.getItem(STORAGE_MUSIC_VOLUME);
+        if (rawVol !== null) {
+          const parsed = parseFloat(rawVol);
+          if (!isNaN(parsed) && parsed >= 0) {
+            volume = parsed > 1 ? parsed / 100 : parsed;
+          }
+        }
+      } catch (e) {}
+      this.enabled = enabled;
+      this.volume = Math.max(0, Math.min(1, volume));
+
+      // Composition parameters: 140 BPM, F minor Phrygian dark cyberpunk
+      this.bpm = 140;
+      this.totalSteps = 64; // 4 bars * 16 steps per bar
+      this.secondsPerBeat = 60 / this.bpm;
+      this.secondsPer16th = this.secondsPerBeat / 4;
+
+      // Relentless 16th-note driving EBM/Industrial rolling bassline (64 steps)
+      this.bassPattern = [
+        // Bar 1: F minor industrial pulse
+        43.65, 43.65, 87.31, 43.65,  43.65, 87.31, 51.91, 43.65,
+        43.65, 43.65, 87.31, 43.65,  65.41, 51.91, 43.65, 87.31,
+        // Bar 2: Db heavy dark drop
+        34.65, 34.65, 69.30, 34.65,  34.65, 69.30, 43.65, 34.65,
+        34.65, 34.65, 69.30, 34.65,  51.91, 43.65, 34.65, 69.30,
+        // Bar 3: Eb/Gb Phrygian tension
+        38.89, 38.89, 77.78, 38.89,  46.25, 77.78, 38.89, 77.78,
+        38.89, 38.89, 77.78, 38.89,  58.27, 46.25, 38.89, 77.78,
+        // Bar 4: C dominant -> F turnaround
+        32.70, 32.70, 65.41, 32.70,  32.70, 65.41, 41.20, 32.70,
+        49.00, 58.27, 65.41, 77.78,  87.31, 77.78, 65.41, 51.91
+      ];
+
+      // Darksynth lead stabs / acid riff (synced to 16th note steps)
+      this.leadPattern = [
+        // Bar 1: F minor cyberpunk stabs
+        { step: 0,  note: 349.23, dur: 0.14 }, // F4
+        { step: 3,  note: 415.30, dur: 0.14 }, // Ab4
+        { step: 6,  note: 523.25, dur: 0.18 }, // C5
+        { step: 10, note: 622.25, dur: 0.14 }, // Eb5
+        { step: 12, note: 523.25, dur: 0.14 }, // C5
+        { step: 14, note: 415.30, dur: 0.14 }, // Ab4
+        // Bar 2: Db heavy stabs
+        { step: 16, note: 277.18, dur: 0.14 }, // Db4
+        { step: 19, note: 349.23, dur: 0.14 }, // F4
+        { step: 22, note: 415.30, dur: 0.18 }, // Ab4
+        { step: 26, note: 523.25, dur: 0.14 }, // C5
+        { step: 28, note: 415.30, dur: 0.14 }, // Ab4
+        { step: 30, note: 349.23, dur: 0.14 }, // F4
+        // Bar 3: Eb dark chromatic riff
+        { step: 32, note: 311.13, dur: 0.14 }, // Eb4
+        { step: 35, note: 392.00, dur: 0.14 }, // G4
+        { step: 38, note: 466.16, dur: 0.18 }, // Bb4
+        { step: 42, note: 523.25, dur: 0.14 }, // C5
+        { step: 44, note: 466.16, dur: 0.14 }, // Bb4
+        { step: 46, note: 392.00, dur: 0.14 }, // G4
+        // Bar 4: C riser into crescendo
+        { step: 48, note: 261.63, dur: 0.14 }, // C4
+        { step: 51, note: 329.63, dur: 0.14 }, // E4
+        { step: 54, note: 392.00, dur: 0.14 }, // G4
+        { step: 56, note: 466.16, dur: 0.14 }, // Bb4
+        { step: 58, note: 523.25, dur: 0.14 }, // C5
+        { step: 60, note: 622.25, dur: 0.16 }, // Eb5
+        { step: 62, note: 698.46, dur: 0.22 }, // F5 climax
+      ];
+
+      // Atmospheric dystopian drone pad (F2, C3, Ab3)
+      this.dronePattern = [
+        { step: 0,  notes: [87.31, 130.81, 174.61], dur: 1.6 }, // F2, C3, F3
+        { step: 16, notes: [69.30, 103.83, 138.59], dur: 1.6 }, // Db2, Ab2, Db3
+        { step: 32, notes: [77.78, 116.54, 155.56], dur: 1.6 }, // Eb2, Bb2, Eb3
+        { step: 48, notes: [65.41, 98.00,  130.81], dur: 1.6 }, // C2, G2, C3
+      ];
+    }
+
+    initGain() {
+      if (this.musicGain || !this.soundEngine.ctx) return;
+      this.musicGain = this.soundEngine.ctx.createGain();
+      this.musicGain.gain.value = this.enabled ? this.volume : 0;
+      this.musicGain.connect(this.soundEngine.masterGain);
+    }
+
+    setVolume(val) {
+      this.volume = Math.max(0, Math.min(1, val));
+      safeSetStorage(STORAGE_MUSIC_VOLUME, String(Math.round(this.volume * 100)));
+      if (this.musicGain && this.soundEngine.ctx && this.enabled && this.isPlaying) {
+        this.musicGain.gain.cancelScheduledValues(this.soundEngine.ctx.currentTime);
+        this.musicGain.gain.setTargetAtTime(this.volume, this.soundEngine.ctx.currentTime, 0.05);
+      }
+    }
+
+    setEnabled(on, isGameActive = false) {
+      this.enabled = !!on;
+      safeSetStorage(STORAGE_MUSIC_ENABLED, String(this.enabled));
+      if (this.enabled) {
+        if (!this.isPlaying && isGameActive) {
+          this.start();
+        }
+      } else {
+        if (this.isPlaying) {
+          this.stop();
+        }
+      }
+    }
+
+    start() {
+      if (!this.enabled || this.isPlaying) return;
+      const ctx = this.soundEngine.ctx;
+      if (!ctx) return;
+      this.soundEngine.resume();
+      this.initGain();
+      this.isFading = false;
+      this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
+      this.musicGain.gain.setTargetAtTime(this.volume, ctx.currentTime, 0.08);
+      this.isPlaying = true;
+      this.currentStep = 0;
+      this.nextNoteTime = ctx.currentTime + 0.08;
+      this._startScheduler();
+    }
+
+    pause() {
+      if (!this.isPlaying) return;
+      this._stopScheduler();
+      if (this.musicGain && this.soundEngine.ctx) {
+        this.musicGain.gain.cancelScheduledValues(this.soundEngine.ctx.currentTime);
+        this.musicGain.gain.setTargetAtTime(0, this.soundEngine.ctx.currentTime, 0.08);
+      }
+    }
+
+    unpause() {
+      if (!this.enabled || !this.isPlaying) return;
+      const ctx = this.soundEngine.ctx;
+      if (!ctx) return;
+      this.soundEngine.resume();
+      this.isFading = false;
+      this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
+      this.musicGain.gain.setTargetAtTime(this.volume, ctx.currentTime, 0.08);
+      this.nextNoteTime = ctx.currentTime + 0.05;
+      this._startScheduler();
+    }
+
+    fadeOutAndStop(duration = 0.8) {
+      if (!this.isPlaying) return;
+      this.isFading = true;
+      const ctx = this.soundEngine.ctx;
+      if (ctx && this.musicGain) {
+        this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
+        this.musicGain.gain.setTargetAtTime(0, ctx.currentTime, duration / 4);
+      }
+      setTimeout(() => {
+        if (this.isFading) {
+          this.stop();
+        }
+      }, duration * 1000 + 100);
+    }
+
+    stop() {
+      this._stopScheduler();
+      this._cleanupNodes();
+      this.isPlaying = false;
+      this.isFading = false;
+      this.currentStep = 0;
+      if (this.musicGain && this.soundEngine.ctx) {
+        this.musicGain.gain.cancelScheduledValues(this.soundEngine.ctx.currentTime);
+        this.musicGain.gain.value = 0;
+      }
+    }
+
+    _startScheduler() {
+      this._stopScheduler();
+      this.schedulerTimer = setInterval(() => this._schedule(), 40);
+    }
+
+    _stopScheduler() {
+      if (this.schedulerTimer !== null) {
+        clearInterval(this.schedulerTimer);
+        this.schedulerTimer = null;
+      }
+    }
+
+    _cleanupNodes() {
+      for (const node of this.activeNodes) {
+        try { node.stop(); } catch (e) {}
+        try { node.disconnect(); } catch (e) {}
+      }
+      this.activeNodes = [];
+    }
+
+    _schedule() {
+      const ctx = this.soundEngine.ctx;
+      if (!ctx || !this.isPlaying) return;
+
+      const lookAhead = 0.15;
+      while (this.nextNoteTime < ctx.currentTime + lookAhead) {
+        this._scheduleStep(this.currentStep % this.totalSteps, this.nextNoteTime);
+        this.nextNoteTime += this.secondsPer16th;
+        this.currentStep = (this.currentStep + 1) % this.totalSteps;
+      }
+    }
+
+    _scheduleStep(step, time) {
+      const ctx = this.soundEngine.ctx;
+
+      // 1. Relentless rolling Cyberpunk Bass (every 16th note)
+      const bassFreq = this.bassPattern[step];
+      if (bassFreq) {
+        this._playCyberBass(ctx, bassFreq, time, 0.11);
+      }
+
+      // 2. Industrial Four-on-the-Floor Kick Drum (every quarter note)
+      if (step % 4 === 0) {
+        this._playCyberKick(ctx, time);
+      }
+
+      // 3. Heavy Industrial Snare / Clap (beats 1 and 3)
+      if (step % 8 === 4) {
+        this._playCyberSnare(ctx, time);
+      }
+
+      // 4. Sizzling Metallic Cyber Hi-Hats (every 16th note, open offbeat)
+      const isOpenHat = (step % 4 === 2);
+      this._playCyberHihat(ctx, time, isOpenHat);
+
+      // 5. Darksynth Lead Stabs / Acid Riff
+      for (const lead of this.leadPattern) {
+        if (lead.step === step) {
+          this._playCyberLead(ctx, lead.note, time, lead.dur);
+        }
+      }
+
+      // 6. Deep Atmospheric Drone Chords
+      for (const drone of this.dronePattern) {
+        if (drone.step === step) {
+          this._playCyberDrone(ctx, drone.notes, time, drone.dur);
+        }
+      }
+
+      // 7. Dystopian Cyber Siren Sweep (Bar 4 tension riser)
+      if (step === 56) {
+        this._playCyberSiren(ctx, time);
+      }
+    }
+
+    _trackNode(node) {
+      this.activeNodes.push(node);
+      if (node.addEventListener) {
+        node.addEventListener('ended', () => {
+          const idx = this.activeNodes.indexOf(node);
+          if (idx >= 0) this.activeNodes.splice(idx, 1);
+        });
+      }
+    }
+
+    _playCyberBass(ctx, freq, time, dur) {
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      // Sawtooth + square sub-oscillator
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(freq, time);
+
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(freq * 0.5, time); // sub-octave weight
+
+      // Resonant lowpass filter with punchy envelope sweep
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, time);
+      filter.frequency.exponentialRampToValueAtTime(180, time + dur);
+      filter.Q.value = 6; // high resonance for gritty acid character
+
+      gain.gain.setValueAtTime(0.46, time);
+      gain.gain.setValueAtTime(0.42, time + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+
+      osc1.start(time);
+      osc2.start(time);
+      osc1.stop(time + dur + 0.03);
+      osc2.stop(time + dur + 0.03);
+      this._trackNode(osc1);
+      this._trackNode(osc2);
+    }
+
+    _playCyberLead(ctx, freq, time, dur) {
+      for (const detune of [-9, 9]) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, time);
+        osc.detune.setValueAtTime(detune, time);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2800, time);
+        filter.frequency.exponentialRampToValueAtTime(650, time + dur);
+        filter.Q.value = 5;
+
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.18, time + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.musicGain);
+
+        osc.start(time);
+        osc.stop(time + dur + 0.03);
+        this._trackNode(osc);
+      }
+    }
+
+    _playCyberDrone(ctx, freqs, time, dur) {
+      for (const freq of freqs) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, time);
+        osc.detune.setValueAtTime((Math.random() - 0.5) * 12, time);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, time);
+        filter.Q.value = 1.5;
+
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.065, time + 0.2);
+        gain.gain.setValueAtTime(0.055, time + dur * 0.7);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.musicGain);
+
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+        this._trackNode(osc);
+      }
+    }
+
+    _playCyberKick(ctx, time) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, time);
+      osc.frequency.exponentialRampToValueAtTime(38, time + 0.09);
+
+      gain.gain.setValueAtTime(0.85, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.16);
+
+      osc.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + 0.20);
+      this._trackNode(osc);
+
+      // High-frequency transient click
+      const click = ctx.createOscillator();
+      const clickGain = ctx.createGain();
+      click.type = 'triangle';
+      click.frequency.setValueAtTime(800, time);
+      click.frequency.exponentialRampToValueAtTime(80, time + 0.015);
+      clickGain.gain.setValueAtTime(0.28, time);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
+      click.connect(clickGain);
+      clickGain.connect(this.musicGain);
+      click.start(time);
+      click.stop(time + 0.025);
+      this._trackNode(click);
+    }
+
+    _playCyberSnare(ctx, time) {
+      // White noise burst
+      const bufLen = Math.floor(ctx.sampleRate * 0.12);
+      const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2200, time);
+      filter.Q.value = 2.0;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.52, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.13);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+      noise.start(time);
+      noise.stop(time + 0.15);
+      this._trackNode(noise);
+
+      // Tonal body
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(240, time);
+      osc.frequency.exponentialRampToValueAtTime(90, time + 0.06);
+      oscGain.gain.setValueAtTime(0.32, time);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+      osc.connect(oscGain);
+      oscGain.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + 0.1);
+      this._trackNode(osc);
+    }
+
+    _playCyberHihat(ctx, time, isOpen = false) {
+      const dur = isOpen ? 0.09 : 0.035;
+      const vol = isOpen ? 0.26 : 0.15;
+
+      const bufLen = Math.floor(ctx.sampleRate * (dur + 0.02));
+      const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 8500;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(vol, time);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + dur);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+      noise.start(time);
+      noise.stop(time + dur + 0.02);
+      this._trackNode(noise);
+    }
+
+    _playCyberSiren(ctx, time) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(260, time);
+      osc.frequency.exponentialRampToValueAtTime(920, time + 0.8);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(400, time);
+      filter.frequency.exponentialRampToValueAtTime(2400, time + 0.8);
+      filter.Q.value = 4.0;
+
+      gain.gain.setValueAtTime(0.05, time);
+      gain.gain.linearRampToValueAtTime(0.22, time + 0.7);
+      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.85);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.musicGain);
+
+      osc.start(time);
+      osc.stop(time + 0.9);
+      this._trackNode(osc);
+    }
+  }
+
   const sound = new SoundEngine();
+  const music = new MusicEngine(sound);
 
   /* ==========================================================================
      Game State
@@ -994,6 +1503,10 @@
   function startGame() {
     sound.init();
     sound.resume();
+    music.initGain();
+    if (music.enabled) {
+      music.start();
+    }
 
     // Reset all game state
     player = {
@@ -1043,12 +1556,14 @@
   function pauseGame() {
     if (gameState !== STATE.PLAYING) return;
     gameState = STATE.PAUSED;
+    music.pause();
     showScreen('pauseScreen', true);
   }
 
   function resumeGame() {
     if (gameState !== STATE.PAUSED) return;
     gameState = STATE.PLAYING;
+    music.unpause();
     showScreen('pauseScreen', false);
     lastTimestamp = 0;
     accumulator = 0;
@@ -1060,6 +1575,7 @@
     gameState = STATE.GAME_OVER;
 
     sound.playGameOver();
+    music.fadeOutAndStop(0.8);
 
     const finalScore = Math.floor(score);
     const isNewRecord = finalScore > highScore;
@@ -1158,6 +1674,11 @@
 
     // Pause keys
     if (key === 'p' || key === 'P' || key === 'Escape') {
+      const audioPanel = document.getElementById('audioSettingsPanel');
+      if (key === 'Escape' && audioPanel && !audioPanel.classList.contains('hidden')) {
+        toggleAudioPanel(false);
+        return;
+      }
       e.preventDefault();
       if (!pauseKeyHeld) {
         pauseKeyHeld = true;
@@ -1187,8 +1708,9 @@
 
     // Mute key
     if (key === 'm' || key === 'M') {
+      sound.init();
       const muted = sound.toggleMute();
-      updateSoundButton(muted);
+      updateSFXUI(muted);
     }
   }
 
@@ -1210,10 +1732,50 @@
     if (!btn) return;
     if (muted) {
       btn.classList.add('muted');
-      btn.title = 'Unmute Sound (M)';
+      btn.title = 'Unmute SFX (M)';
     } else {
       btn.classList.remove('muted');
-      btn.title = 'Mute Sound (M)';
+      btn.title = 'Mute SFX (M)';
+    }
+  }
+
+  function updateSFXUI(muted) {
+    const btnToggleSFX = document.getElementById('btnToggleSFX');
+    const sfxToggleText = document.getElementById('sfxToggleText');
+    if (btnToggleSFX) {
+      btnToggleSFX.classList.toggle('active', !muted);
+      btnToggleSFX.setAttribute('aria-pressed', String(!muted));
+    }
+    if (sfxToggleText) {
+      sfxToggleText.textContent = !muted ? 'ON' : 'OFF';
+    }
+    updateSoundButton(muted);
+  }
+
+  function updateMusicUI() {
+    const btnToggleMusic = document.getElementById('btnToggleMusic');
+    const musicToggleText = document.getElementById('musicToggleText');
+    if (btnToggleMusic) {
+      btnToggleMusic.classList.toggle('active', music.enabled);
+      btnToggleMusic.setAttribute('aria-pressed', String(music.enabled));
+    }
+    if (musicToggleText) {
+      musicToggleText.textContent = music.enabled ? 'ON' : 'OFF';
+    }
+  }
+
+  function toggleAudioPanel(open) {
+    const panel = document.getElementById('audioSettingsPanel');
+    const btn = document.getElementById('btnAudioSettings');
+    if (!panel) return;
+    const isClosed = panel.classList.contains('hidden');
+    const shouldOpen = open !== undefined ? open : isClosed;
+    if (shouldOpen) {
+      panel.classList.remove('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+    } else {
+      panel.classList.add('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
     }
   }
 
@@ -1305,15 +1867,79 @@
       });
     }
 
-    // Header sound button
+    // Audio settings toggle button
+    const btnAudioSettings = document.getElementById('btnAudioSettings');
+    if (btnAudioSettings) {
+      btnAudioSettings.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleAudioPanel();
+      });
+    }
+
+    // Close audio settings button
+    const btnCloseAudioPanel = document.getElementById('btnCloseAudioPanel');
+    if (btnCloseAudioPanel) {
+      btnCloseAudioPanel.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleAudioPanel(false);
+      });
+    }
+
+    // Music toggle button
+    const btnToggleMusic = document.getElementById('btnToggleMusic');
+    if (btnToggleMusic) {
+      btnToggleMusic.addEventListener('click', () => {
+        sound.init();
+        music.initGain();
+        music.setEnabled(!music.enabled, gameState === STATE.PLAYING);
+        updateMusicUI();
+      });
+    }
+
+    // Music volume slider
+    const musicVolumeSlider = document.getElementById('musicVolumeSlider');
+    const musicVolumeVal = document.getElementById('musicVolumeVal');
+    if (musicVolumeSlider) {
+      const volPercent = Math.round(music.volume * 100);
+      musicVolumeSlider.value = volPercent;
+      if (musicVolumeVal) musicVolumeVal.textContent = volPercent + '%';
+
+      musicVolumeSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        music.setVolume(val / 100);
+        if (musicVolumeVal) musicVolumeVal.textContent = val + '%';
+      });
+    }
+
+    // Sound FX toggle button
+    const btnToggleSFX = document.getElementById('btnToggleSFX');
+    if (btnToggleSFX) {
+      btnToggleSFX.addEventListener('click', () => {
+        sound.init();
+        const muted = sound.toggleMute();
+        updateSFXUI(muted);
+      });
+    }
+
+    // Quick header sound mute button
     const soundBtn = document.getElementById('btnHeaderSound');
     if (soundBtn) {
       soundBtn.addEventListener('click', () => {
         sound.init();
         const muted = sound.toggleMute();
-        updateSoundButton(muted);
+        updateSFXUI(muted);
       });
     }
+
+    // Click outside audio panel to dismiss
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('audioSettingsPanel');
+      const btn = document.getElementById('btnAudioSettings');
+      if (!panel || panel.classList.contains('hidden')) return;
+      if (!panel.contains(e.target) && (!btn || !btn.contains(e.target))) {
+        toggleAudioPanel(false);
+      }
+    });
 
     // Fullscreen button
     const fsBtn = document.getElementById('btnHeaderFullscreen');
@@ -1328,8 +1954,9 @@
       });
     }
 
-    // Initialize sound button state
-    updateSoundButton(sound.isMuted);
+    // Initialize audio controls state
+    updateSFXUI(sound.isMuted);
+    updateMusicUI();
   }
 
   /* ==========================================================================
@@ -1337,8 +1964,12 @@
      ========================================================================== */
   function initVisibilityHandler() {
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && gameState === STATE.PLAYING) {
-        pauseGame();
+      if (document.hidden) {
+        if (gameState === STATE.PLAYING) {
+          pauseGame();
+        } else {
+          music.pause();
+        }
       }
     });
   }
