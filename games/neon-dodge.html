@@ -163,6 +163,25 @@
             </div>
           </div>
 
+          <!-- Speed Selection -->
+          <div class="speed-selector-group">
+            <label class="speed-selector-label" id="speedGroupLabel">GAME SPEED</label>
+            <div class="speed-buttons-row" role="radiogroup" aria-labelledby="speedGroupLabel">
+              <button type="button" class="speed-btn" data-speed="EASY" role="radio" aria-checked="false">
+                <span class="speed-name">EASY</span>
+                <span class="speed-mult">0.80x</span>
+              </button>
+              <button type="button" class="speed-btn active" data-speed="NORMAL" role="radio" aria-checked="true">
+                <span class="speed-name">NORMAL</span>
+                <span class="speed-mult">1.00x</span>
+              </button>
+              <button type="button" class="speed-btn" data-speed="FAST" role="radio" aria-checked="false">
+                <span class="speed-name">FAST</span>
+                <span class="speed-mult">1.25x</span>
+              </button>
+            </div>
+          </div>
+
           <div class="screen-buttons-col">
             <button class="game-btn btn-play" id="btnStartGame">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -214,8 +233,27 @@
               <span class="score-stat-number primary" id="finalScoreVal">0</span>
             </div>
             <div class="score-stat-box">
-              <span class="score-stat-title">BEST SCORE</span>
+              <span class="score-stat-title">BEST (<span id="gameOverSpeedModeLabel">NORMAL</span>)</span>
               <span class="score-stat-number gold" id="gameOverBestVal">0</span>
+            </div>
+          </div>
+
+          <!-- Speed Selection for Next Run -->
+          <div class="speed-selector-group">
+            <label class="speed-selector-label" id="gameOverSpeedGroupLabel">NEXT RUN SPEED</label>
+            <div class="speed-buttons-row" role="radiogroup" aria-labelledby="gameOverSpeedGroupLabel">
+              <button type="button" class="speed-btn" data-speed="EASY" role="radio" aria-checked="false">
+                <span class="speed-name">EASY</span>
+                <span class="speed-mult">0.80x</span>
+              </button>
+              <button type="button" class="speed-btn active" data-speed="NORMAL" role="radio" aria-checked="true">
+                <span class="speed-name">NORMAL</span>
+                <span class="speed-mult">1.00x</span>
+              </button>
+              <button type="button" class="speed-btn" data-speed="FAST" role="radio" aria-checked="false">
+                <span class="speed-name">FAST</span>
+                <span class="speed-mult">1.25x</span>
+              </button>
             </div>
           </div>
 

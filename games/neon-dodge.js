@@ -11,11 +11,19 @@
      ========================================================================== */
   const V_WIDTH = 720;
   const V_HEIGHT = 900;
-  const STORAGE_HIGH_SCORE = 'playrush_neon_dodge_highscore';
+  const STORAGE_HIGH_SCORE = 'playrush_neon_dodge_highscore'; // Legacy / Normal default key
+  const STORAGE_SPEED_MODE = 'playrush_game_speed'; // 'EASY' | 'NORMAL' | 'FAST'
   const STORAGE_TOTAL_ORBS = 'playrush_total_orbs';
   const STORAGE_MUTED = 'playrush_sound_muted';
   const STORAGE_MUSIC_ENABLED = 'playrush_music_enabled';
   const STORAGE_MUSIC_VOLUME = 'playrush_music_volume';
+
+  // Game Speed configuration
+  const SPEED_CONFIGS = {
+    EASY: { key: 'EASY', label: 'EASY', mult: 0.80, storageKey: 'playrush_high_score_easy' },
+    NORMAL: { key: 'NORMAL', label: 'NORMAL', mult: 1.00, storageKey: STORAGE_HIGH_SCORE },
+    FAST: { key: 'FAST', label: 'FAST', mult: 1.25, storageKey: 'playrush_high_score_fast' }
+  };
 
   // Safe LocalStorage helpers with exception handling and validation
   function safeGetStorage(key, defaultVal = 0, maxVal = 999999999) {
@@ -721,14 +729,35 @@
 
   let currentState = GameState.MENU;
 
+  // Selected game speed setting
+  let selectedSpeedMode = 'NORMAL';
+  try {
+    const savedSpeed = localStorage.getItem(STORAGE_SPEED_MODE);
+    if (savedSpeed && SPEED_CONFIGS[savedSpeed]) {
+      selectedSpeedMode = savedSpeed;
+    }
+  } catch (e) {}
+
+  function getHighScoreForMode(mode) {
+    const config = SPEED_CONFIGS[mode] || SPEED_CONFIGS.NORMAL;
+    return safeGetStorage(config.storageKey, 0);
+  }
+
   let score = 0;
   let displayScore = 0;
-  let highScore = safeGetStorage(STORAGE_HIGH_SCORE, 0);
+  let highScore = getHighScoreForMode(selectedSpeedMode);
+  let baseRunSpeed = SPEED_CONFIGS[selectedSpeedMode].mult; // Starting base speed for active run
+  let activeRunSpeedMultiplier = baseRunSpeed; // Current effective speed (smoothly interpolated)
   let survivalFrames = 0;
   let orbsCollectedInRun = 0;
   let multiplier = 1;
   let multiplierTimer = 0;
   let shakeAmount = 0;
+
+  // Fixed timestep accumulator and timing
+  let lastTime = 0;
+  let accumulator = 0;
+  const FIXED_DELTA_MS = 1000 / 60; // 16.6667ms per simulation tick at 60Hz baseline
 
   // Input states
   const keys = {
@@ -775,7 +804,7 @@
       this.invulnerableTimer = 0;
     }
 
-    update() {
+    update(speedMult = 1.0) {
       // Keyboard input
       let moveX = 0;
       let moveY = 0;
@@ -798,18 +827,18 @@
       }
 
       // Accelerate
-      this.vx += moveX * this.acceleration;
-      this.vy += moveY * this.acceleration;
+      this.vx += moveX * this.acceleration * speedMult;
+      this.vy += moveY * this.acceleration * speedMult;
 
       // Apply friction
-      this.vx *= this.friction;
-      this.vy *= this.friction;
+      this.vx *= Math.pow(this.friction, speedMult);
+      this.vy *= Math.pow(this.friction, speedMult);
 
       // Clamp speed
       const speed = Math.hypot(this.vx, this.vy);
-      if (speed > this.maxSpeed) {
-        this.vx = (this.vx / speed) * this.maxSpeed;
-        this.vy = (this.vy / speed) * this.maxSpeed;
+      if (speed > this.maxSpeed * speedMult) {
+        this.vx = (this.vx / speed) * this.maxSpeed * speedMult;
+        this.vy = (this.vy / speed) * this.maxSpeed * speedMult;
       }
 
       // Update positions
@@ -825,25 +854,26 @@
       this.tilt = Math.max(-0.4, Math.min(0.4, this.vx * 0.05));
 
       // Thruster exhaust particles
-      if (Math.random() < 0.85) {
+      if (Math.random() < 0.85 * speedMult) {
         particles.push({
           x: this.x + (Math.random() - 0.5) * 8,
           y: this.y + 18,
           vx: (Math.random() - 0.5) * 1.5 - this.vx * 0.2,
-          vy: 4 + Math.random() * 3,
+          vy: (4 + Math.random() * 3) * speedMult,
           radius: 3 + Math.random() * 2,
           color: Math.random() > 0.4 ? '#00f0ff' : '#a855f7',
           alpha: 1,
-          decay: 0.05
+          decay: 0.05 * speedMult
         });
       }
 
       if (this.invulnerableTimer > 0) {
-        this.invulnerableTimer--;
+        this.invulnerableTimer -= speedMult;
+        if (this.invulnerableTimer < 0) this.invulnerableTimer = 0;
       }
 
       if (this.hasShield) {
-        this.shieldPulse += 0.08;
+        this.shieldPulse += 0.08 * speedMult;
       }
     }
 
@@ -937,10 +967,10 @@
       this.color = Math.random() > 0.3 ? '#ff007f' : '#f43f5e';
     }
 
-    update() {
-      this.x += this.vx;
-      this.y += this.speed;
-      this.rotation += this.rotSpeed;
+    update(speedMult = 1.0) {
+      this.x += this.vx * speedMult;
+      this.y += this.speed * speedMult;
+      this.rotation += this.rotSpeed * speedMult;
 
       // Wall bounce
       if (this.x < this.radius || this.x > V_WIDTH - this.radius) {
@@ -990,8 +1020,8 @@
       this.isLethal = false;
     }
 
-    update() {
-      this.currentFrame++;
+    update(speedMult = 1.0) {
+      this.currentFrame += speedMult;
       this.isLethal = this.currentFrame >= this.warnFrames && this.currentFrame <= this.totalFrames;
     }
 
@@ -1048,14 +1078,14 @@
       this.pulse = 0;
     }
 
-    update(playerX) {
-      this.y += this.speed;
-      this.pulse += 0.1;
+    update(playerX, speedMult = 1.0) {
+      this.y += this.speed * speedMult;
+      this.pulse += 0.1 * speedMult;
 
       // Gentle homing drift towards player X
       if (playerX !== undefined) {
         const dx = playerX - this.x;
-        this.x += Math.sign(dx) * Math.min(Math.abs(dx) * 0.02, 1.4);
+        this.x += Math.sign(dx) * Math.min(Math.abs(dx) * 0.02 * speedMult, 1.4 * speedMult);
       }
     }
 
@@ -1108,9 +1138,9 @@
       this.pulse = Math.random() * Math.PI * 2;
     }
 
-    update() {
-      this.y += this.speed;
-      this.pulse += 0.08;
+    update(speedMult = 1.0) {
+      this.y += this.speed * speedMult;
+      this.pulse += 0.08 * speedMult;
     }
 
     draw(ctx) {
@@ -1272,6 +1302,11 @@
     audio.init();
     audio.playClick();
 
+    // Lock in the chosen speed mode and reset progression for this run
+    baseRunSpeed = SPEED_CONFIGS[selectedSpeedMode].mult;
+    activeRunSpeedMultiplier = baseRunSpeed;
+    highScore = getHighScoreForMode(selectedSpeedMode);
+
     score = 0;
     displayScore = 0;
     survivalFrames = 0;
@@ -1334,6 +1369,9 @@
       hideAllScreens();
       updatePauseButtonIcon(false);
       music.unpause();
+      // Reset lastTime to prevent huge accumulator leap when unpausing
+      lastTime = performance.now();
+      accumulator = 0;
     }
   }
 
@@ -1343,12 +1381,17 @@
     updatePauseButtonIcon(false);
     music.fadeOutAndStop(1.2);
 
-    // Check & persist high score safely
+    // Check & persist high score safely for the active speed mode
     let isNewRecord = false;
-    if (score > highScore) {
+    const activeConfig = SPEED_CONFIGS[selectedSpeedMode] || SPEED_CONFIGS.NORMAL;
+    const currentModeHighScore = getHighScoreForMode(selectedSpeedMode);
+
+    if (score > currentModeHighScore) {
       highScore = score;
-      safeSetStorage(STORAGE_HIGH_SCORE, highScore);
+      safeSetStorage(activeConfig.storageKey, highScore);
       isNewRecord = true;
+    } else {
+      highScore = currentModeHighScore;
     }
 
     // Update cumulative orbs collected for daily challenge safely
@@ -1365,16 +1408,21 @@
     // Fill Game Over UI
     const finalScoreEl = document.getElementById('finalScoreVal');
     const bestScoreEl = document.getElementById('gameOverBestVal');
+    const speedModeLabel = document.getElementById('gameOverSpeedModeLabel');
     const newRecordTag = document.getElementById('newRecordBanner');
     const statsSummary = document.getElementById('runStatsSummary');
 
     if (finalScoreEl) finalScoreEl.textContent = score.toLocaleString();
     if (bestScoreEl) bestScoreEl.textContent = highScore.toLocaleString();
+    if (speedModeLabel) speedModeLabel.textContent = activeConfig.label;
     if (newRecordTag) newRecordTag.style.display = isNewRecord ? 'block' : 'none';
 
     if (statsSummary) {
       statsSummary.textContent = `Survived: ${seconds}s  •  Orbs: ${orbsCollectedInRun}`;
     }
+
+    // Ensure speed selector buttons on game over screen reflect current selection
+    updateSpeedUI();
 
     showScreen('gameOverScreen');
   }
@@ -1421,9 +1469,214 @@
   }
 
   /* ==========================================================================
-     Main Game Loop
+     Fixed Timestep Simulation Update (Target 60Hz baseline)
      ========================================================================== */
-  function gameLoop() {
+  function updatePhysics() {
+    if (currentState !== GameState.PLAYING) return;
+
+    // Continuous score-based acceleration without hard caps or discrete milestones
+    const targetSpeed = baseRunSpeed + (score * 0.00025);
+
+    // Smooth asymptotic transition to prevent sudden speed jumps (0.003 per tick ~ 0.18/sec max delta)
+    if (activeRunSpeedMultiplier < targetSpeed) {
+      activeRunSpeedMultiplier = Math.min(targetSpeed, activeRunSpeedMultiplier + 0.003);
+    } else if (activeRunSpeedMultiplier > targetSpeed) {
+      activeRunSpeedMultiplier = Math.max(targetSpeed, activeRunSpeedMultiplier - 0.003);
+    }
+
+    // Current effective speed for this simulation tick
+    const speedMult = activeRunSpeedMultiplier;
+
+    survivalFrames++;
+
+    // Increment passive survival score (+1 every 5 simulation ticks = ~12 pts/sec at 1.0x)
+    if (survivalFrames % 5 === 0) {
+      score += 1 * multiplier;
+    }
+
+    // Smooth display score animation
+    if (displayScore < score) {
+      displayScore += Math.max(1, (score - displayScore) * 0.15);
+    } else {
+      displayScore = score;
+    }
+
+    // Multiplier countdown timer
+    if (multiplierTimer > 0) {
+      multiplierTimer -= speedMult;
+      if (multiplierTimer <= 0) {
+        multiplierTimer = 0;
+        multiplier = 1;
+      }
+    }
+
+    // Calculate dynamic difficulty (0 to 10+ based on survival time)
+    const difficultyTier = Math.min(10, survivalFrames / 450); // scales every ~7.5 seconds at 60Hz
+
+    // Spawning Hazards (frequency scaled by speedMult)
+    hazardSpawnTimer += speedMult;
+    const currentSpawnThreshold = Math.max(22, 60 - difficultyTier * 4);
+    if (hazardSpawnTimer >= currentSpawnThreshold) {
+      hazardSpawnTimer = 0;
+      const rand = Math.random();
+
+      if (rand < 0.65) {
+        hazards.push(new AsteroidHazard(difficultyTier));
+      } else if (rand < 0.85) {
+        hazards.push(new TrackingMineHazard(difficultyTier));
+      } else {
+        hazards.push(new LaserBeamHazard());
+      }
+    }
+
+    // Spawning Collectibles (frequency scaled by speedMult)
+    collectibleSpawnTimer += speedMult;
+    if (collectibleSpawnTimer >= 180) { // Every ~3 seconds
+      collectibleSpawnTimer = 0;
+      const roll = Math.random();
+      if (roll < 0.65) {
+        collectibles.push(new Collectible('ORB'));
+      } else if (roll < 0.88) {
+        collectibles.push(new Collectible('SUPER'));
+      } else {
+        collectibles.push(new Collectible('SHIELD'));
+      }
+    }
+
+    // Update Player (using speedMult)
+    player.update(speedMult);
+
+    // Update & Check Hazards
+    for (let i = hazards.length - 1; i >= 0; i--) {
+      const hazard = hazards[i];
+      if (hazard.type === 'MINE') {
+        hazard.update(player.x, speedMult);
+      } else if (hazard.type === 'LASER') {
+        hazard.update(speedMult);
+      } else {
+        hazard.update(speedMult);
+      }
+
+      // Offscreen removal
+      if (hazard.y > V_HEIGHT + 50 || (hazard.currentFrame && hazard.currentFrame > hazard.totalFrames)) {
+        hazards.splice(i, 1);
+        continue;
+      }
+
+      // Collision Check with Player
+      let collided = false;
+
+      if (hazard.type === 'LASER') {
+        if (hazard.isLethal) {
+          const left = hazard.x - hazard.width / 2;
+          const right = hazard.x + hazard.width / 2;
+          if (player.x + player.radius > left && player.x - player.radius < right) {
+            collided = true;
+          }
+        }
+      } else {
+        const dist = Math.hypot(player.x - hazard.x, player.y - hazard.y);
+        if (dist < player.radius + hazard.radius) {
+          collided = true;
+        }
+      }
+
+      if (collided && player.invulnerableTimer === 0) {
+        if (player.hasShield) {
+          // Shield absorbs damage!
+          player.hasShield = false;
+          player.invulnerableTimer = 40; // ~0.6s grace period at 60Hz
+          audio.playShieldBreak();
+          shakeAmount = 14;
+          spawnExplosion(player.x, player.y, '#00ff88', 20);
+          addFloatingText('SHIELD BROKEN!', player.x, player.y - 30, '#00ff88');
+
+          // Destroy colliding hazard if not laser
+          if (hazard.type !== 'LASER') {
+            hazards.splice(i, 1);
+          }
+        } else {
+          // Player Destroyed -> Game Over
+          spawnExplosion(player.x, player.y, '#ff007f', 40);
+          triggerGameOver();
+          break;
+        }
+      }
+    }
+
+    // Update & Check Collectibles
+    for (let i = collectibles.length - 1; i >= 0; i--) {
+      const c = collectibles[i];
+      c.update(speedMult);
+
+      if (c.y > V_HEIGHT + 30) {
+        collectibles.splice(i, 1);
+        continue;
+      }
+
+      const dist = Math.hypot(player.x - c.x, player.y - c.y);
+      if (dist < player.radius + c.radius) {
+        orbsCollectedInRun++;
+
+        if (c.type === 'ORB') {
+          const pts = 50 * multiplier;
+          score += pts;
+          audio.playOrbCollect();
+          spawnCollectBurst(c.x, c.y, '#00f0ff');
+          addFloatingText(`+${pts}`, c.x, c.y, '#00f0ff');
+        } else if (c.type === 'SUPER') {
+          const pts = 150 * multiplier;
+          score += pts;
+          multiplier = 2;
+          multiplierTimer = 360; // 6 seconds at 60Hz baseline
+          audio.playSuperOrbCollect();
+          spawnCollectBurst(c.x, c.y, '#fbbf24', 25);
+          addFloatingText('2X MULTIPLIER!', c.x, c.y, '#fbbf24');
+        } else if (c.type === 'SHIELD') {
+          player.hasShield = true;
+          audio.playShieldCollect();
+          spawnCollectBurst(c.x, c.y, '#00ff88', 25);
+          addFloatingText('SHIELD READY!', c.x, c.y, '#00ff88');
+        }
+
+        collectibles.splice(i, 1);
+      }
+    }
+
+    updateHUD();
+  }
+
+  /* ==========================================================================
+     Main Game Loop with Fixed Timestep
+     ========================================================================== */
+  function gameLoop(timestamp) {
+    if (!lastTime) lastTime = timestamp;
+    let elapsed = timestamp - lastTime;
+    lastTime = timestamp;
+
+    // Clamp huge frame-time gaps (e.g. after tab switching or background throttle)
+    if (elapsed > 200) {
+      elapsed = 200;
+    }
+
+    if (currentState === GameState.PLAYING) {
+      accumulator += elapsed;
+      // Fixed 60Hz simulation updates
+      let updates = 0;
+      while (accumulator >= FIXED_DELTA_MS && updates < 5) {
+        updatePhysics();
+        accumulator -= FIXED_DELTA_MS;
+        updates++;
+      }
+      if (updates >= 5) {
+        // Discard spiral of death accumulator backlog
+        accumulator = 0;
+      }
+    } else {
+      accumulator = 0;
+    }
+
+    // --- Rendering Stage ---
     // Canvas Clear & Screen Shake
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -1443,163 +1696,6 @@
 
     // Render Ambient Space Starfield
     updateAndDrawStarfield(ctx);
-
-    if (currentState === GameState.PLAYING) {
-      survivalFrames++;
-
-      // Increment passive survival score (+1 every 5 frames = ~12 pts/sec)
-      if (survivalFrames % 5 === 0) {
-        score += 1 * multiplier;
-      }
-
-      // Smooth display score animation
-      if (displayScore < score) {
-        displayScore += Math.max(1, (score - displayScore) * 0.15);
-      } else {
-        displayScore = score;
-      }
-
-      // Multiplier countdown timer
-      if (multiplierTimer > 0) {
-        multiplierTimer--;
-        if (multiplierTimer <= 0) {
-          multiplier = 1;
-        }
-      }
-
-      // Calculate dynamic difficulty (0 to 10+ based on survival time)
-      const difficultyTier = Math.min(10, survivalFrames / 450); // scales every ~7.5 seconds
-
-      // Spawning Hazards
-      hazardSpawnTimer++;
-      const currentSpawnThreshold = Math.max(22, 60 - difficultyTier * 4);
-      if (hazardSpawnTimer >= currentSpawnThreshold) {
-        hazardSpawnTimer = 0;
-        const rand = Math.random();
-
-        if (rand < 0.65) {
-          hazards.push(new AsteroidHazard(difficultyTier));
-        } else if (rand < 0.85) {
-          hazards.push(new TrackingMineHazard(difficultyTier));
-        } else {
-          hazards.push(new LaserBeamHazard());
-        }
-      }
-
-      // Spawning Collectibles
-      collectibleSpawnTimer++;
-      if (collectibleSpawnTimer >= 180) { // Every ~3 seconds
-        collectibleSpawnTimer = 0;
-        const roll = Math.random();
-        if (roll < 0.65) {
-          collectibles.push(new Collectible('ORB'));
-        } else if (roll < 0.88) {
-          collectibles.push(new Collectible('SUPER'));
-        } else {
-          collectibles.push(new Collectible('SHIELD'));
-        }
-      }
-
-      // Update Player
-      player.update();
-
-      // Update & Check Hazards
-      for (let i = hazards.length - 1; i >= 0; i--) {
-        const hazard = hazards[i];
-        if (hazard.type === 'MINE') {
-          hazard.update(player.x);
-        } else {
-          hazard.update();
-        }
-
-        // Offscreen removal
-        if (hazard.y > V_HEIGHT + 50 || (hazard.currentFrame && hazard.currentFrame > hazard.totalFrames)) {
-          hazards.splice(i, 1);
-          continue;
-        }
-
-        // Collision Check with Player
-        let collided = false;
-
-        if (hazard.type === 'LASER') {
-          if (hazard.isLethal) {
-            const left = hazard.x - hazard.width / 2;
-            const right = hazard.x + hazard.width / 2;
-            if (player.x + player.radius > left && player.x - player.radius < right) {
-              collided = true;
-            }
-          }
-        } else {
-          const dist = Math.hypot(player.x - hazard.x, player.y - hazard.y);
-          if (dist < player.radius + hazard.radius) {
-            collided = true;
-          }
-        }
-
-        if (collided && player.invulnerableTimer === 0) {
-          if (player.hasShield) {
-            // Shield absorbs damage!
-            player.hasShield = false;
-            player.invulnerableTimer = 40; // 0.6s grace period
-            audio.playShieldBreak();
-            shakeAmount = 14;
-            spawnExplosion(player.x, player.y, '#00ff88', 20);
-            addFloatingText('SHIELD BROKEN!', player.x, player.y - 30, '#00ff88');
-
-            // Destroy colliding hazard if not laser
-            if (hazard.type !== 'LASER') {
-              hazards.splice(i, 1);
-            }
-          } else {
-            // Player Destroyed -> Game Over
-            spawnExplosion(player.x, player.y, '#ff007f', 40);
-            triggerGameOver();
-            break;
-          }
-        }
-      }
-
-      // Update & Check Collectibles
-      for (let i = collectibles.length - 1; i >= 0; i--) {
-        const c = collectibles[i];
-        c.update();
-
-        if (c.y > V_HEIGHT + 30) {
-          collectibles.splice(i, 1);
-          continue;
-        }
-
-        const dist = Math.hypot(player.x - c.x, player.y - c.y);
-        if (dist < player.radius + c.radius) {
-          orbsCollectedInRun++;
-
-          if (c.type === 'ORB') {
-            const pts = 50 * multiplier;
-            score += pts;
-            audio.playOrbCollect();
-            spawnCollectBurst(c.x, c.y, '#00f0ff');
-            addFloatingText(`+${pts}`, c.x, c.y, '#00f0ff');
-          } else if (c.type === 'SUPER') {
-            const pts = 150 * multiplier;
-            score += pts;
-            multiplier = 2;
-            multiplierTimer = 360; // 6 seconds at 60fps
-            audio.playSuperOrbCollect();
-            spawnCollectBurst(c.x, c.y, '#fbbf24', 25);
-            addFloatingText('2X MULTIPLIER!', c.x, c.y, '#fbbf24');
-          } else if (c.type === 'SHIELD') {
-            player.hasShield = true;
-            audio.playShieldCollect();
-            spawnCollectBurst(c.x, c.y, '#00ff88', 25);
-            addFloatingText('SHIELD READY!', c.x, c.y, '#00ff88');
-          }
-
-          collectibles.splice(i, 1);
-        }
-      }
-
-      updateHUD();
-    }
 
     // Draw Collectibles
     for (const c of collectibles) {
@@ -1709,7 +1805,18 @@
           keys.right = true;
           break;
         case 'KeyP':
+          if (currentState === GameState.PLAYING) pauseGame();
+          else if (currentState === GameState.PAUSED) resumeGame();
+          break;
         case 'Escape':
+          // If audio panel is open, close it on Escape first
+          const audioPanelEl = document.getElementById('audioSettingsPanel');
+          const btnAudioSettingsEl = document.getElementById('btnAudioSettings');
+          if (audioPanelEl && !audioPanelEl.classList.contains('hidden')) {
+            audioPanelEl.classList.add('hidden');
+            if (btnAudioSettingsEl) btnAudioSettingsEl.setAttribute('aria-expanded', 'false');
+            break;
+          }
           if (currentState === GameState.PLAYING) pauseGame();
           else if (currentState === GameState.PAUSED) resumeGame();
           break;
@@ -1823,6 +1930,46 @@
   /* ==========================================================================
      UI Buttons & Interactivity
      ========================================================================== */
+  function updateSpeedUI() {
+    const currentConfig = SPEED_CONFIGS[selectedSpeedMode] || SPEED_CONFIGS.NORMAL;
+
+    // Update start screen best score for currently selected speed
+    const menuHighScoreEl = document.getElementById('menuHighScoreVal');
+    if (menuHighScoreEl) {
+      menuHighScoreEl.textContent = getHighScoreForMode(selectedSpeedMode).toLocaleString();
+    }
+
+    // Update all speed button groups (start menu and game over screen)
+    document.querySelectorAll('.speed-buttons-row').forEach(row => {
+      row.querySelectorAll('.speed-btn').forEach(btn => {
+        const mode = btn.getAttribute('data-speed');
+        if (mode === selectedSpeedMode) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-checked', 'true');
+        } else {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-checked', 'false');
+        }
+      });
+    });
+
+    const speedModeLabel = document.getElementById('gameOverSpeedModeLabel');
+    if (speedModeLabel) {
+      speedModeLabel.textContent = currentConfig.label;
+    }
+  }
+
+  function setSpeedMode(mode) {
+    if (!SPEED_CONFIGS[mode]) return;
+    // Lock speed changes during active run
+    if (currentState === GameState.PLAYING || currentState === GameState.PAUSED) return;
+
+    selectedSpeedMode = mode;
+    safeSetStorage(STORAGE_SPEED_MODE, mode);
+    audio.playClick();
+    updateSpeedUI();
+  }
+
   function updateAudioUI() {
     // Update SFX header buttons and panel toggle
     const isSfxMuted = audio.isMuted;
@@ -2009,8 +2156,22 @@
       });
     }
 
+    // Speed selection buttons listener (delegated)
+    document.querySelectorAll('.speed-buttons-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        const btn = e.target.closest('.speed-btn');
+        if (btn) {
+          const mode = btn.getAttribute('data-speed');
+          if (mode) {
+            setSpeedMode(mode);
+          }
+        }
+      });
+    });
+
     // Initialize UI states from storage
     updateAudioUI();
+    updateSpeedUI();
   }
 
   /* ==========================================================================

@@ -95,9 +95,19 @@ function getSafeStorageInt(key, defaultVal = 0, maxVal = 999999999) {
   }
 }
 
+/**
+ * Calculates the player's overall personal best across all difficulty modes
+ * (Easy, Normal, Fast) so the homepage highlights their true record.
+ */
+function getOverallHighScore() {
+  const scoreNormal = getSafeStorageInt('playrush_neon_dodge_highscore', 0);
+  const scoreEasy = getSafeStorageInt('playrush_high_score_easy', 0);
+  const scoreFast = getSafeStorageInt('playrush_high_score_fast', 0);
+  return Math.max(scoreNormal, scoreEasy, scoreFast);
+}
+
 function initScoreSync() {
-  const HIGH_SCORE_KEY = 'playrush_neon_dodge_highscore';
-  const savedScore = getSafeStorageInt(HIGH_SCORE_KEY, 0);
+  const savedScore = getOverallHighScore();
 
   const navScoreEl = document.getElementById('navBestScore');
   const featuredScoreEl = document.getElementById('featuredBestScore');
@@ -433,7 +443,7 @@ function initDailyChallenges() {
   window._countdownTimer = setInterval(updateTimer, 1000);
 
   // Sync challenge progress with LocalStorage safely
-  const bestScore = getSafeStorageInt('playrush_neon_dodge_highscore', 0);
+  const bestScore = getOverallHighScore();
   const totalOrbs = getSafeStorageInt('playrush_total_orbs', 0);
 
   // Challenge 1: Score 500+ in Neon Dodge
