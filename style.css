@@ -4206,3 +4206,17 @@ body {
 @media (max-width: 340px) {
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+/* Featured card mobile — larger preview so mockup isn't cut */
+@media (max-width: 768px) {
+  .fx-art-phone {
+    height: 460px;
+    max-height: 460px;
+  }
+  .fx-phone {
+    width: min(240px, 66vw) !important;
+  }
+  .fx-card-kk, .fx-card-nd {
+    padding: 1.75rem 1.25rem;
+  }
+}
