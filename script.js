@@ -1365,13 +1365,24 @@ function initHowToPlay() {
   const tiles = section.querySelectorAll('.ht-tile');
   if (tiles.length && !reduced) {
     const order = [0, 1, 2, 1, 0];
+    const cursor = section.querySelector('.ht-cursor');
+    const demoBox = section.querySelector('.ht-demo-1');
     let ti = 0;
+    const placeCursor = (tile) => {
+      if (!cursor || !demoBox) return;
+      const dr = demoBox.getBoundingClientRect();
+      const tr = tile.getBoundingClientRect();
+      cursor.style.left = (tr.left - dr.left + tr.width / 2 - 4) + 'px';
+      cursor.style.top = (tr.bottom - dr.top + 6) + 'px';
+    };
+    placeCursor(tiles[0]);
     const tileTimer = setInterval(() => {
       tiles.forEach(t => t.classList.remove('ht-active'));
-      tiles[order[ti % order.length]].classList.add('ht-active');
+      const active = tiles[order[ti % order.length]];
+      active.classList.add('ht-active');
+      placeCursor(active);
       ti++;
     }, 1100);
-    // pause when section far offscreen is handled by CSS animation-play-state? tiles aren't animated; acceptable
   }
 
   // Step 3 score counter
@@ -1393,6 +1404,7 @@ function initHowToPlay() {
   let scoreTimer = null, loopTimer = null, score = 0, visible = false;
 
   function tick() {
+    if (demo3 && !demo3.classList.contains('on')) return;
     score += 35;
     if (scoreEl) scoreEl.textContent = score;
     if (fillEl) fillEl.style.width = `${Math.min(100, (score / 2240) * 100)}%`;

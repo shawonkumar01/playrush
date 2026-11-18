@@ -2662,3 +2662,46 @@ html, body {
 #viewNightKiller .btn-night-action:hover:not(:disabled) {
   box-shadow: 0 6px 24px rgba(181, 18, 43, 0.6);
 }
+
+/* Mobile gameplay fixes */
+@media (max-width: 768px) {
+  .arcade-controls-top {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+  .header-icon-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
+  .setup-grid {
+    grid-template-columns: 1fr;
+  }
+  .target-card-btn,
+  .nom-card-btn,
+  .vote-card-btn {
+    min-height: 40px;
+  }
+  .btn-start-game,
+  .btn-action-primary,
+  .btn-confirm-action {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+@media (max-width: 480px) {
+  .arcade-header {
+    padding: 0.45rem 0.6rem;
+  }
+  .arcade-brand {
+    font-size: 0.8rem;
+  }
+  .game-logo-title {
+    font-size: 1.6rem;
+  }
+  .setup-card,
+  .role-reveal-container,
+  .night-action-card {
+    padding: 1.1rem;
+  }
+}

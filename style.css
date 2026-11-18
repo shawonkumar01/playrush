@@ -2389,21 +2389,12 @@ button:focus-visible, a:focus-visible {
   filter: drop-shadow(0 0 4px var(--neon-cyan));
   top: 34px;
   left: 0;
-  animation: ht-cursor-move 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: ht-cursor-bob 1.1s ease-in-out infinite;
 }
 
-@keyframes ht-cursor-move {
-  0%   { transform: translateX(0); }
-  18%  { transform: translateX(30px); }
-  20%  { transform: translateX(30px); }
-  36%  { transform: translateX(105px); }
-  38%  { transform: translateX(105px); }
-  54%  { transform: translateX(180px); }
-  56%  { transform: translateX(180px); }
-  74%  { transform: translateX(105px); }
-  76%  { transform: translateX(105px); }
-  92%  { transform: translateX(30px); }
-  100% { transform: translateX(0); }
+@keyframes ht-cursor-bob {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
 }
 
 /* Step 2 demo: play button + running line */
@@ -3797,4 +3788,257 @@ button:focus-visible, a:focus-visible {
   object-fit: cover;
   object-position: center;
   display: block;
+}
+
+/* Featured card stat tiles — mobile sizing fix */
+@media (max-width: 640px) {
+  .fx-stats {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .fx-stat {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.85rem;
+    border-radius: 12px;
+  }
+  .fx-stat-value {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL RESPONSIVE FOUNDATION — mobile / tablet safety net
+   ========================================================================== */
+:root {
+  --bp-tablet: 1024px;
+  --bp-mobile: 768px;
+  --bp-small: 480px;
+  --tap-min: 44px;
+}
+
+/* Overflow guards — no horizontal scroll anywhere */
+html, body {
+  overflow-x: hidden;
+}
+img, video, canvas, svg {
+  max-width: 100%;
+}
+.container,
+main,
+section {
+  min-width: 0;
+}
+
+/* Flex/grid children can shrink instead of forcing overflow */
+* {
+  min-width: 0;
+}
+
+/* Touch targets — minimum 44px on interactive elements */
+@media (pointer: coarse) {
+  a, button, .btn-primary, .btn-secondary, .nav-link,
+  .game-card-btn, .header-icon-btn, input, select, textarea {
+    min-height: var(--tap-min);
+  }
+}
+
+/* Fluid body text — scales smoothly between mobile and desktop */
+body {
+  font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+}
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .section-title {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .section-title {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+  }
+  .section-desc {
+    font-size: 0.95rem;
+  }
+  /* Any 2+ column card grids collapse */
+  .games-grid,
+  .fx-stats,
+  .ht-steps,
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  /* Buttons go full-width where they are direct actions */
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    max-width: 340px;
+  }
+}
+
+/* Small phones (≤480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 0.95rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+  }
+  .fx-card,
+  .game-card {
+    border-radius: 12px;
+  }
+}
+
+/* Tablet landscape / small desktop safety: nothing forces overflow */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .fx-card {
+    flex-direction: column;
+  }
+  .fx-art-phone {
+    min-height: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* KK featured card — mobile: art on top, buttons full width */
+@media (max-width: 768px) {
+  .fx-card-kk {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .fx-card-kk .fx-art {
+    order: -1;
+  }
+  .fx-card-kk .fx-card-text {
+    order: 0;
+  }
+  .fx-card-kk .fx-card-text .btn-primary,
+  .fx-card-kk .fx-card-text .btn-secondary {
+    width: 100%;
+    max-width: none;
+  }
+  .fx-card-kk .fx-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+/* Neon Dodge featured card — mobile: art on top, buttons full width */
+@media (max-width: 768px) {
+  .fx-card-nd {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .fx-card-nd .fx-art {
+    order: -1;
+  }
+  .fx-card-nd .fx-card-text {
+    order: 0;
+  }
+  .fx-card-nd .fx-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .fx-card-nd .fx-actions .btn-primary,
+  .fx-card-nd .fx-actions .btn-secondary {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* Daily challenge cards — prevent overflow on narrow screens */
+.dq-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+}
+@media (max-width: 640px) {
+  .dq-box {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+  }
+  .dq-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .dq-card {
+    padding: 1.1rem;
+    border-radius: 12px;
+  }
+}
+
+/* Mobile nav dropdown — 2-column link layout */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+  }
+  .nav-menu li {
+    width: 100%;
+  }
+  .nav-menu .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+  }
+  .nav-menu .nav-link:hover {
+    background: rgba(209, 232, 226, 0.08);
+  }
+}
+@media (max-width: 380px) {
+  .nav-menu {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Footer mobile — keep link columns side-by-side (2-col) instead of long stack */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem 1.25rem;
+  }
+  .footer-grid > .footer-col:first-child,
+  .footer-grid > .footer-brand {
+    grid-column: 1 / -1;
+  }
+  .footer-col h4 {
+    font-size: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+  .footer-links {
+    gap: 0.35rem;
+  }
+  .footer-links a {
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 380px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
 }
