@@ -940,3 +940,37 @@ html, body {
     min-width: 32px;
   }
 }
+
+/* Mobile navbar — align with game card, compact buttons */
+@media (max-width: 768px) {
+  .arcade-header {
+    width: min(440px, calc(100vw - 1rem));
+    max-width: calc(100vw - 1rem);
+    margin-top: max(12px, env(safe-area-inset-top, 12px));
+    top: max(8px, env(safe-area-inset-top, 8px));
+    height: 56px;
+    padding: 8px 10px;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+  .arcade-controls-top {
+    gap: 8px;
+  }
+  .arcade-btn-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nd-hidden { display: none !important; }
+}
+@media (max-width: 360px) {
+  .arcade-brand-text, .arcade-brand .brand-text { display: none; }
+  .arcade-header {
+    width: min(400px, calc(100vw - 0.75rem));
+    padding: 8px;
+  }
+}

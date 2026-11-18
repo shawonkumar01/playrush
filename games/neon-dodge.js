@@ -403,6 +403,8 @@
       this.musicGain.gain.cancelScheduledValues(ctx.currentTime);
       this.musicGain.gain.setTargetAtTime(this.volume, ctx.currentTime, 0.08);
       this.isPlaying = true;
+      const pb = document.getElementById('btnHeaderPause');
+      if (pb) pb.classList.remove('nd-hidden');
       this.currentBeat = 0;
       this.nextNoteTime = ctx.currentTime + 0.1; // small delay for context to warm up
       this._startScheduler();
@@ -2143,6 +2145,12 @@
         }
       });
     }
+
+    // Hide unsupported controls
+    const fsBtn = document.getElementById('btnHeaderFullscreen');
+    if (fsBtn && !document.fullscreenEnabled) fsBtn.classList.add('nd-hidden');
+    const pb = document.getElementById('btnHeaderPause');
+    if (pb) pb.classList.add('nd-hidden');
 
     // Fullscreen toggle
     const btnFullscreen = document.getElementById('btnHeaderFullscreen');
