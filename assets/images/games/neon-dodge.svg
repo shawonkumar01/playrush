@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="nd-title nd-desc" xmlns:c2pa="http://c2pa.org/manifest">
+  <title id="nd-title">Neon Dodge</title>
+  <desc id="nd-desc">A cyan spaceship inside a violet protective shield dodges neon pink asteroids and a coral laser while a green energy orb floats nearby. Title reads Neon Dodge: Dodge. Survive. Repeat.</desc>
+
+  <defs>
+    <!-- Backgrounds -->
+    <linearGradient id="bgBase" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E2623"/>
+      <stop offset="1" stop-color="#2C3531"/>
+    </linearGradient>
+    <radialGradient id="stageGlow" cx="810" cy="340" r="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#116466" stop-opacity="0.6"/>
+      <stop offset="0.6" stop-color="#116466" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#116466" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="edgeShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E2623" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#1E2623" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Ship -->
+    <linearGradient id="shipBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8DF0FF"/>
+      <stop offset="0.5" stop-color="#55E6FF"/>
+      <stop offset="1" stop-color="#2BB3D1"/>
+    </linearGradient>
+    <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D1E8E2" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#55E6FF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#55E6FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="trailCyan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#55E6FF" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#55E6FF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Shield -->
+    <radialGradient id="shieldFill" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.6" stop-color="#A78BFA" stop-opacity="0.04"/>
+      <stop offset="1" stop-color="#A78BFA" stop-opacity="0.34"/>
+    </radialGradient>
+
+    <!-- Orb -->
+    <radialGradient id="orbFill" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#E4FFF0"/>
+      <stop offset="0.5" stop-color="#7CFFB2"/>
+      <stop offset="1" stop-color="#3FD98A"/>
+    </radialGradient>
+
+    <!-- Trails (pointing up from falling objects) -->
+    <linearGradient id="trailPink" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#FF4F87" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#FF4F87" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Laser -->
+    <linearGradient id="laserBeam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FF5C5C" stop-opacity="0.55"/>
+      <stop offset="0.15" stop-color="#FF5C5C"/>
+      <stop offset="0.85" stop-color="#FF5C5C"/>
+      <stop offset="1" stop-color="#FF5C5C" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- One shared, modest glow -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+
+    <!-- Asteroid, drawn once and reused -->
+    <g id="asteroid">
+      <path d="M-30,-44 L18,-50 L48,-22 L44,26 L14,50 L-28,42 L-52,8 L-46,-26 Z" fill="#FF4F87"/>
+      <path d="M-30,-44 L18,-50 L-2,-8 L-46,-26 Z" fill="#FFB0CC" opacity="0.6"/>
+      <path d="M14,50 L44,26 L48,-22 L-2,-8 Z" fill="#B81F58" opacity="0.5"/>
+      <path d="M-30,-44 L18,-50 L48,-22 L44,26 L14,50 L-28,42 L-52,8 L-46,-26 Z" fill="none" stroke="#FFB0CC" stroke-width="2" stroke-linejoin="round" opacity="0.8"/>
+      <circle cx="-18" cy="14" r="8" fill="#B81F58" opacity="0.6"/>
+      <circle cx="22" cy="-6" r="5" fill="#B81F58" opacity="0.6"/>
+      <circle cx="10" cy="30" r="4" fill="#B81F58" opacity="0.5"/>
+    </g>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <g id="background">
+    <rect width="1200" height="675" fill="url(#bgBase)"/>
+    <rect width="1200" height="675" fill="url(#stageGlow)"/>
+
+    <!-- orbital details -->
+    <g id="orbits" fill="none" stroke="#116466" stroke-width="2" opacity="0.7">
+      <ellipse cx="810" cy="340" rx="270" ry="95" transform="rotate(-22 810 340)"/>
+      <circle cx="810" cy="340" r="215" stroke-dasharray="3 12" opacity="0.7"/>
+    </g>
+    <circle cx="1018" cy="261" r="5" fill="#FFCB9A"/>
+    <circle cx="604" cy="400" r="4" fill="#D1E8E2" opacity="0.8"/>
+
+    <!-- speed streaks -->
+    <g id="speed-streaks" fill="#55E6FF" opacity="0.14">
+      <rect x="720" y="30" width="3" height="90" rx="1.5"/>
+      <rect x="900" y="110" width="3" height="60" rx="1.5"/>
+      <rect x="1140" y="200" width="3" height="110" rx="1.5"/>
+      <rect x="590" y="260" width="3" height="70" rx="1.5"/>
+      <rect x="1000" y="520" width="3" height="70" rx="1.5"/>
+      <rect x="700" y="530" width="3" height="50" rx="1.5"/>
+    </g>
+
+    <!-- stars -->
+    <g id="stars" fill="#D1E8E2" opacity="0.55">
+      <circle cx="680" cy="70" r="2"/>
+      <circle cx="960" cy="40" r="1.8"/>
+      <circle cx="1150" cy="100" r="2"/>
+      <circle cx="570" cy="140" r="1.6"/>
+      <circle cx="1170" cy="400" r="2"/>
+      <circle cx="580" cy="560" r="1.8"/>
+      <circle cx="1120" cy="620" r="1.8"/>
+      <circle cx="860" cy="640" r="1.6"/>
+    </g>
+    <rect width="1200" height="675" fill="url(#edgeShade)"/>
+  </g>
+
+  <!-- ========== TITLE BLOCK ========== -->
+  <g id="title-block" font-family="'Arial Black','Segoe UI Black','Segoe UI',Impact,system-ui,sans-serif" font-weight="900">
+    <rect x="80" y="140" width="64" height="6" rx="3" fill="#116466"/>
+    <rect x="152" y="140" width="24" height="6" rx="3" fill="#D1E8E2"/>
+    <text x="80" y="190" font-size="24" letter-spacing="5" fill="#D1E8E2" font-weight="700">PLAYRUSH ARCADE</text>
+
+    <!-- glow copy -->
+    <g opacity="0.45" filter="url(#glow)">
+      <text x="76" y="330" font-size="140" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#55E6FF">NEON</text>
+    </g>
+    <text x="76" y="330" font-size="140" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#55E6FF">NEON</text>
+    <text x="76" y="452" font-size="140" textLength="480" lengthAdjust="spacingAndGlyphs" fill="#D1E8E2">DODGE</text>
+
+    <rect x="80" y="486" width="480" height="3" rx="1.5" fill="#116466"/>
+    <text x="80" y="530" font-size="28" letter-spacing="4" fill="#FFCB9A" font-weight="700" textLength="480" lengthAdjust="spacing">DODGE. SURVIVE. REPEAT.</text>
+  </g>
+
+  <!-- ========== HAZARDS ========== -->
+  <g id="asteroid-trails" fill="url(#trailPink)">
+    <polygon points="1018,170 1062,170 1044,50 1036,50"/>
+    <polygon points="629,152 661,152 649,40 641,40"/>
+    <polygon points="1061,445 1099,445 1084,305 1076,305"/>
+    <polygon points="893,82 917,82 908,30 902,30"/>
+  </g>
+
+  <g id="asteroids">
+    <use href="#asteroid" transform="translate(1040 165) rotate(20) scale(1.15)"/>
+    <use href="#asteroid" transform="translate(645 150) rotate(-15) scale(0.7)"/>
+    <use href="#asteroid" transform="translate(1080 445) rotate(40) scale(0.95)"/>
+    <use href="#asteroid" transform="translate(905 80) rotate(10) scale(0.4)"/>
+  </g>
+
+  <g id="laser-hazard" transform="rotate(-2 905 585)">
+    <rect x="680" y="574" width="450" height="22" rx="11" fill="#FF5C5C" opacity="0.55" filter="url(#glow)"/>
+    <rect x="680" y="578" width="450" height="14" rx="7" fill="url(#laserBeam)"/>
+    <rect x="700" y="583" width="410" height="4" rx="2" fill="#FFCB9A"/>
+    <circle cx="680" cy="585" r="17" fill="#2C3531" stroke="#FF5C5C" stroke-width="4"/>
+    <circle cx="680" cy="585" r="6" fill="#FFCB9A"/>
+    <circle cx="1130" cy="585" r="17" fill="#2C3531" stroke="#FF5C5C" stroke-width="4"/>
+    <circle cx="1130" cy="585" r="6" fill="#FFCB9A"/>
+  </g>
+
+  <!-- ========== ENERGY ORB (collectible) ========== -->
+  <g id="energy-orb" transform="translate(1010 300)">
+    <circle r="46" fill="#7CFFB2" opacity="0.4" filter="url(#glow)"/>
+    <circle r="37" fill="none" stroke="#7CFFB2" stroke-width="2.5" stroke-dasharray="4 8" opacity="0.85"/>
+    <circle r="26" fill="url(#orbFill)"/>
+    <circle r="26" fill="none" stroke="#D1E8E2" stroke-width="2" opacity="0.8"/>
+    <path d="M-8,0 H8 M0,-8 V8" stroke="#1E2623" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <!-- ========== PLAYER SHIP + SHIELD ========== -->
+  <g id="player" transform="translate(810 340)">
+    <!-- engine trails -->
+    <g id="ship-trails">
+      <polygon points="-96,70 -86,70 -91,200 -91,200" fill="url(#trailCyan)"/>
+      <polygon points="86,70 96,70 91,200 91,200" fill="url(#trailCyan)"/>
+      <polygon points="-18,88 18,88 4,215 -4,215" fill="url(#trailCyan)" opacity="0.8"/>
+    </g>
+    <!-- flame -->
+    <g id="engine-flame">
+      <polygon points="-15,86 0,178 15,86" fill="url(#flame)"/>
+      <polygon points="-7,86 0,130 7,86" fill="#D1E8E2" opacity="0.9"/>
+    </g>
+
+    <!-- ship halo -->
+    <ellipse cx="0" cy="0" rx="70" ry="95" fill="#55E6FF" opacity="0.28" filter="url(#glow)"/>
+
+    <!-- hull -->
+    <g id="ship-hull">
+      <path d="M0,-92 L28,-30 L40,8 L96,60 L96,82 L46,62 L30,86 L12,70 L0,92 L-12,70 L-30,86 L-46,62 L-96,82 L-96,60 L-40,8 L-28,-30 Z" fill="url(#shipBody)" stroke="#D1E8E2" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- wing panels -->
+      <path d="M40,8 L96,60 L96,70 L38,30 Z" fill="#1E8FAE" opacity="0.55"/>
+      <path d="M-40,8 L-96,60 L-96,70 L-38,30 Z" fill="#1E8FAE" opacity="0.55"/>
+      <!-- mint spine -->
+      <path d="M0,-72 L12,-22 L9,40 L0,58 L-9,40 L-12,-22 Z" fill="#D1E8E2" opacity="0.9"/>
+      <!-- cockpit -->
+      <path d="M0,-50 L9,-16 L0,0 L-9,-16 Z" fill="#116466"/>
+      <path d="M0,-50 L4,-30 L0,-24 Z" fill="#55E6FF" opacity="0.8"/>
+      <!-- wingtip lights -->
+      <circle cx="-96" cy="71" r="4" fill="#FFCB9A"/>
+      <circle cx="96" cy="71" r="4" fill="#FFCB9A"/>
+    </g>
+
+    <!-- protective shield -->
+    <g id="protective-shield">
+      <circle r="150" fill="url(#shieldFill)"/>
+      <circle r="150" fill="none" stroke="#A78BFA" stroke-width="10" opacity="0.4" filter="url(#glow)"/>
+      <circle r="150" fill="none" stroke="#A78BFA" stroke-width="5"/>
+      <circle r="136" fill="none" stroke="#A78BFA" stroke-width="2" stroke-dasharray="6 14" opacity="0.65"/>
+      <path d="M-129.9,-75 A150,150 0 0 1 -51.3,-141" fill="none" stroke="#D1E8E2" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+      <path d="M118,-92 A150,150 0 0 1 143,-45" fill="none" stroke="#D1E8E2" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+    </g>
+  </g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYToyNTQ1NDNhNS00YzdkLTQxMWEtYWM2Ni0wNzMxMDAyODAwNGYAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaFK9S3HrLX8gol+XmXOK+eQAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo5ZDk2NWYzYS0zZmZjLTQ2ZTMtYjliNy03ZGIxYjJiYTJkYjdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoM00s6QUriDzAOV5/L9x/owAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggLM6Xm1PGnfnxvpso1yRkiTSgyI5MXTnPUDnpGh+lmLekZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaK3xKKvGQCinDFsWdcjialEAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYINh5UAZ1Rf1pCamZugrlkLfBokY7gUTaGx3/K4qfO2UrZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GSlvZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjI1NDU0M2E1LTRjN2QtNDExYS1hYzY2LTA3MzEwMDI4MDA0Zi9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjE1Mjc0MWZlLWY1MDktNDlhNy04M2ZlLTE5ZjY0YWFkNDY4ZXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCAszpebU8ad+fG+myjXJGSJNKDIjkxdOc9QOekaH6WYt6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggg3dzN1nKFWa8dpfbibpXp4pc4cgoW/V7OrCc22itVBaiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggTZw4T8j1hee3Ob3TXWtuH+urrOFvRHZSeO1p7J8pLzx0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQGIKmXlVvQgnn9tlQov1Wsop05gwf5hkiZcpOvBOv+MuhOUK1tEItqZ7eOA1hTbWGnRHAhHQBDCuy7hYw4zPQcA=</c2pa:manifest></metadata></svg>

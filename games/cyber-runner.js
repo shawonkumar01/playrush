@@ -40,27 +40,27 @@
 
   // Colors
   const C = {
-    BG_SKY_TOP: '#050711',
-    BG_SKY_BOT: '#0d122b',
-    BUILDING_DARK: '#080c1e',
-    BUILDING_MID: '#0c1228',
-    BUILDING_FRONT: '#101835',
-    PLATFORM: '#141c40',
-    PLATFORM_TOP: '#1a2350',
-    PLATFORM_EDGE: '#a855f7',
-    NEON_CYAN: '#00f0ff',
-    NEON_PURPLE: '#a855f7',
-    NEON_PINK: '#ff007f',
-    NEON_GREEN: '#00ff88',
-    NEON_AMBER: '#fbbf24',
-    PLAYER_BODY: '#0d142d',
-    PLAYER_OUTLINE: '#00f0ff',
-    PLAYER_VISOR: '#a855f7',
-    OBSTACLE_SPIKE: '#ff007f',
-    OBSTACLE_BARRIER: '#a855f7',
-    ORB_GLOW: '#00ff88',
+    BG_SKY_TOP: '#1e2623',
+    BG_SKY_BOT: '#2c3531',
+    BUILDING_DARK: '#2c3531',
+    BUILDING_MID: '#2c3531',
+    BUILDING_FRONT: '#2c3531',
+    PLATFORM: '#2c3531',
+    PLATFORM_TOP: '#2c3531',
+    PLATFORM_EDGE: '#d9b08c',
+    NEON_CYAN: '#d1e8e2',
+    NEON_PURPLE: '#d9b08c',
+    NEON_PINK: '#ffcb9a',
+    NEON_GREEN: '#8fc7a0',
+    NEON_AMBER: '#ffcb9a',
+    PLAYER_BODY: '#2c3531',
+    PLAYER_OUTLINE: '#d1e8e2',
+    PLAYER_VISOR: '#d9b08c',
+    OBSTACLE_SPIKE: '#ffcb9a',
+    OBSTACLE_BARRIER: '#d9b08c',
+    ORB_GLOW: '#8fc7a0',
     STAR: 'rgba(255, 255, 255, 0.4)',
-    GAP_WARN: 'rgba(255, 0, 127, 0.3)'
+    GAP_WARN: 'rgba(255, 203, 154, 0.3)'
   };
 
   // Safe LocalStorage helpers
@@ -1148,7 +1148,7 @@
     const skyGrad = ctx.createLinearGradient(0, 0, 0, V_HEIGHT);
     skyGrad.addColorStop(0, C.BG_SKY_TOP);
     skyGrad.addColorStop(0.6, C.BG_SKY_BOT);
-    skyGrad.addColorStop(1, '#0a0e20');
+    skyGrad.addColorStop(1, '#2c3531');
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
 
@@ -1194,7 +1194,7 @@
             const wy = by + winPadY + row * (winH + 8);
             if (wx + winW > bx + b.w - 4) continue;
             const on = Math.sin(wx * 0.3 + wy * 0.5 + distance * 0.01) > 0;
-            ctx.fillStyle = on ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255, 255, 255, 0.03)';
+            ctx.fillStyle = on ? 'rgba(209, 232, 226, 0.2)' : 'rgba(255, 255, 255, 0.03)';
             ctx.fillRect(wx, wy, winW, winH);
           }
         }
@@ -1247,7 +1247,7 @@
       ctx.shadowBlur = 0;
 
       // Surface detail lines
-      ctx.strokeStyle = 'rgba(168, 85, 247, 0.1)';
+      ctx.strokeStyle = 'rgba(217, 176, 140, 0.1)';
       ctx.lineWidth = 1;
       for (let lx = Math.ceil(p.x / 40) * 40; lx < p.x + p.w; lx += 40) {
         ctx.beginPath();
@@ -1291,14 +1291,14 @@
         ctx.shadowBlur = 0;
 
         // Hazard stripes
-        ctx.fillStyle = 'rgba(255, 0, 127, 0.3)';
+        ctx.fillStyle = 'rgba(255, 203, 154, 0.3)';
         const stripeW = 10;
         for (let sx = o.x; sx < o.x + o.w; sx += stripeW * 2) {
           ctx.fillRect(sx, o.y, stripeW, o.h);
         }
 
         // Support poles
-        ctx.fillStyle = 'rgba(168, 85, 247, 0.5)';
+        ctx.fillStyle = 'rgba(217, 176, 140, 0.5)';
         ctx.fillRect(o.x, o.y + o.h, 4, GROUND_Y - o.y - o.h);
         ctx.fillRect(o.x + o.w - 4, o.y + o.h, 4, GROUND_Y - o.y - o.h);
       } else if (o.type === 'wall') {
@@ -1329,7 +1329,7 @@
       // Outer glow
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r + 6, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 255, 136, ${0.1 * pulse})`;
+      ctx.fillStyle = `rgba(143, 199, 160, ${0.1 * pulse})`;
       ctx.fill();
 
       // Core
@@ -1396,7 +1396,7 @@
       ctx.shadowBlur = 0;
 
       // Speed lines
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.strokeStyle = 'rgba(209, 232, 226, 0.4)';
       ctx.lineWidth = 1;
       for (let i = 0; i < 3; i++) {
         const ly = py + 6 + i * 7;
@@ -1475,7 +1475,7 @@
 
       // Trail particles when running
       if (!player.isJumping && gameState === STATE.PLAYING && Math.random() > 0.5) {
-        spawnParticles(px, py + ph, 'rgba(0, 240, 255, 0.5)', 1);
+        spawnParticles(px, py + ph, 'rgba(209, 232, 226, 0.5)', 1);
       }
     }
 

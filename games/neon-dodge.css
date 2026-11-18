@@ -2,23 +2,35 @@
    Neon Dodge - Game Arcade Stylesheet
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-space: #050711;
-  --bg-overlay: rgba(5, 7, 17, 0.88);
-  --neon-cyan: #00f0ff;
-  --neon-cyan-glow: 0 0 20px rgba(0, 240, 255, 0.6);
-  --neon-purple: #a855f7;
-  --neon-pink: #ff007f;
-  --neon-pink-glow: 0 0 20px rgba(255, 0, 127, 0.6);
-  --neon-green: #00ff88;
-  --neon-amber: #fbbf24;
+  --bg-space: #1e2623;
+  --bg-deep: #2c3531;
+  --bg-teal: #116466;
+  --bg-overlay: rgba(30, 38, 35, 0.88);
+  /* Brand interface palette */
+  --brand-peach: #ffcb9a;
+  --brand-sand: #d9b08c;
+  --brand-mint: #d1e8e2;
+  --brand-sage: #93b2ad;
+  --brand-green: #7fc4a4;
+  /* Gameplay electric palette */
+  --neon-cyan: #55e6ff;
+  --neon-cyan-soft: #d1e8e2;
+  --neon-cyan-glow: 0 0 20px rgba(85, 230, 255, 0.6);
+  --neon-purple: #d9b08c;
+  --neon-pink: #ffcb9a;
+  --neon-pink-glow: 0 0 20px rgba(255, 203, 154, 0.6);
+  --neon-green: #7cffb2;
+  --neon-amber: #ffcb9a;
+  --neon-coral: #ff5c5c;
+  --neon-violet: #a78bfa;
   --text-light: #ffffff;
-  --text-muted: #94a3b8;
-  --font-game: 'Orbitron', monospace, sans-serif;
-  --font-ui: 'Outfit', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --text-muted: #93b2ad;
+  --font-game: 'Manrope', monospace, sans-serif;
+  --font-ui: 'Manrope', sans-serif;
+  --font-mono: 'Geist Mono', monospace;
 }
 
 *, *::before, *::after {
@@ -52,15 +64,15 @@ html, body {
   display: flex;
   flex-direction: column;
   position: relative;
-  background: radial-gradient(circle at center, #0d122b 0%, #050711 100%);
+  background: radial-gradient(circle at center, #2c3531 0%, #1e2623 100%);
 }
 
 /* Top Arcade Header Bar */
 .arcade-header {
   height: 56px;
-  background: rgba(10, 14, 30, 0.85);
+  background: rgba(30, 39, 36, 0.85);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  border-bottom: 1px solid rgba(209, 232, 226, 0.2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -74,7 +86,7 @@ html, body {
   align-items: center;
   gap: 0.6rem;
   font-family: var(--font-game);
-  font-weight: 900;
+  font-weight: 700;
   font-size: 1.15rem;
   color: #fff;
   text-decoration: none;
@@ -92,8 +104,8 @@ html, body {
   font-size: 0.85rem;
   color: var(--neon-cyan);
   padding: 0.2rem 0.6rem;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  background: rgba(209, 232, 226, 0.1);
+  border: 1px solid rgba(209, 232, 226, 0.3);
   border-radius: 4px;
 }
 
@@ -116,13 +128,13 @@ html, body {
   width: 280px;
   max-width: calc(100vw - 1.5rem);
   box-sizing: border-box;
-  background: rgba(10, 14, 32, 0.95);
+  background: rgba(30, 39, 36, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 240, 255, 0.35);
+  border: 1px solid rgba(209, 232, 226, 0.35);
   border-radius: 12px;
   padding: 1rem 1.15rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(209, 232, 226, 0.2);
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
@@ -145,8 +157,8 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  background: rgba(5, 7, 17, 0.65);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  background: rgba(30, 39, 36, 0.65);
+  border: 1px solid rgba(209, 232, 226, 0.2);
   border-radius: 10px;
   padding: 0.75rem;
 }
@@ -178,11 +190,11 @@ html, body {
   justify-content: center;
   gap: 0.15rem;
   transition: all 0.2s ease;
-  color: #94a3b8;
+  color: #93b2ad;
 }
 
 .speed-btn:hover {
-  background: rgba(0, 240, 255, 0.1);
+  background: rgba(209, 232, 226, 0.1);
   border-color: var(--neon-cyan);
   color: #fff;
 }
@@ -201,14 +213,14 @@ html, body {
 }
 
 .speed-btn.active {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(168, 85, 247, 0.25));
+  background: rgba(17, 100, 102, 0.55);
   border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+  color: var(--neon-cyan-soft);
+  box-shadow: 0 0 14px rgba(85, 230, 255, 0.35);
 }
 
 .speed-btn.active .speed-mult {
-  color: var(--neon-amber);
+  color: var(--neon-cyan);
   opacity: 1;
   font-weight: 700;
 }
@@ -255,7 +267,7 @@ html, body {
   flex-direction: column;
   align-items: stretch;
   gap: 0.4rem;
-  background: rgba(5, 7, 17, 0.5);
+  background: rgba(30, 39, 36, 0.5);
   padding: 0.5rem 0.6rem;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -308,7 +320,7 @@ html, body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #64748b;
+  background: #7e9994;
   transition: all 0.2s ease;
 }
 
@@ -316,14 +328,14 @@ html, body {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: #93b2ad;
   letter-spacing: 0.05em;
 }
 
 .audio-toggle-btn.active {
-  background: rgba(0, 240, 255, 0.15);
+  background: rgba(209, 232, 226, 0.15);
   border-color: var(--neon-cyan);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 10px rgba(209, 232, 226, 0.3);
 }
 
 .audio-toggle-btn.active .toggle-indicator {
@@ -389,7 +401,7 @@ html, body {
 }
 
 .arcade-btn-icon:hover {
-  background: rgba(0, 240, 255, 0.15);
+  background: rgba(209, 232, 226, 0.15);
   border-color: var(--neon-cyan);
   color: var(--neon-cyan);
 }
@@ -421,10 +433,10 @@ html, body {
   max-width: 100%;
   max-height: 100%;
   aspect-ratio: 4 / 5;
-  background-color: #04060e;
-  border: 1px solid rgba(0, 240, 255, 0.35);
+  background-color: #1e2623;
+  border: 1px solid rgba(209, 232, 226, 0.35);
   border-radius: 12px;
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), 0 20px 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 30px rgba(209, 232, 226, 0.15), 0 20px 40px rgba(0, 0, 0, 0.8);
   touch-action: none;
 }
 
@@ -445,7 +457,7 @@ html, body {
 .hud-panel {
   display: flex;
   flex-direction: column;
-  background: rgba(5, 7, 17, 0.7);
+  background: rgba(30, 39, 36, 0.7);
   backdrop-filter: blur(8px);
   padding: 0.4rem 0.9rem;
   border-radius: 8px;
@@ -469,12 +481,12 @@ html, body {
 
 .hud-value.glow-cyan {
   color: var(--neon-cyan);
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+  text-shadow: 0 0 10px rgba(85, 230, 255, 0.55);
 }
 
 .hud-value.glow-gold {
   color: var(--neon-amber);
-  text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+  text-shadow: 0 0 10px rgba(255, 203, 154, 0.6);
 }
 
 /* Multiplier Banner */
@@ -482,15 +494,15 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: linear-gradient(135deg, rgba(255, 0, 127, 0.2), rgba(168, 85, 247, 0.2));
-  border: 1px solid var(--neon-pink);
+  background: rgba(17, 100, 102, 0.6);
+  border: 1px solid var(--neon-cyan);
   padding: 0.35rem 0.75rem;
   border-radius: 9999px;
   font-family: var(--font-game);
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--neon-pink);
-  box-shadow: 0 0 12px rgba(255, 0, 127, 0.4);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 14px rgba(85, 230, 255, 0.35);
   opacity: 0;
   transform: scale(0.85);
   transition: all 0.2s ease;
@@ -519,7 +531,7 @@ html, body {
 .hud-shield-indicator svg {
   width: 14px;
   height: 14px;
-  fill: var(--neon-green);
+  fill: var(--neon-violet);
 }
 
 /* Overlay UI Screens (Start, Pause, GameOver) */
@@ -551,32 +563,39 @@ html, body {
 .screen-box {
   width: 100%;
   max-width: 440px;
-  background: rgba(15, 20, 43, 0.9);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  border-radius: 16px;
+  background: rgba(30, 38, 35, 0.92);
+  border: 1px solid rgba(85, 230, 255, 0.22);
+  border-radius: 20px;
   padding: 2.25rem 2rem;
   text-align: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(85, 230, 255, 0.12);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  animation: screenBoxIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes screenBoxIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .game-logo-large {
   font-family: var(--font-game);
   font-size: clamp(2rem, 5vw, 2.75rem);
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   line-height: 1.1;
-  background: linear-gradient(135deg, #fff 10%, var(--neon-cyan) 60%, var(--neon-purple) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+  color: var(--brand-mint);
+  text-shadow: 0 0 24px rgba(85, 230, 255, 0.45);
 }
 
 .screen-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -584,7 +603,7 @@ html, body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  background: rgba(5, 7, 17, 0.7);
+  background: rgba(30, 39, 36, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   padding: 1rem;
@@ -605,7 +624,7 @@ html, body {
 .score-stat-number {
   font-family: var(--font-game);
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .score-stat-number.primary {
@@ -613,19 +632,19 @@ html, body {
 }
 
 .score-stat-number.gold {
-  color: var(--neon-amber);
+  color: var(--neon-green);
 }
 
 .new-record-tag {
-  background: linear-gradient(90deg, #ff007f, #a855f7);
-  color: #fff;
+  background: var(--neon-green);
+  color: #1e2623;
   font-family: var(--font-game);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.3rem 0.8rem;
   border-radius: 9999px;
   align-self: center;
-  box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+  box-shadow: 0 0 15px rgba(124, 255, 178, 0.5);
   animation: pulseNewRecord 1.2s infinite;
 }
 
@@ -646,7 +665,7 @@ html, body {
   border-radius: 8px;
   font-family: var(--font-game);
   font-size: 0.95rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
@@ -658,27 +677,31 @@ html, body {
 }
 
 .game-btn.btn-play {
-  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-  color: #050711;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  background: var(--brand-peach);
+  color: #1e2623;
+  box-shadow: 0 0 18px rgba(255, 203, 154, 0.35);
 }
 
 .game-btn.btn-play:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
-  color: #000;
+  box-shadow: 0 0 26px rgba(255, 203, 154, 0.55);
+  color: #1e2623;
+}
+
+.game-btn.btn-play:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .game-btn.btn-outline {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text-light);
+  background: rgba(30, 38, 35, 0.6);
+  border: 1px solid rgba(209, 232, 226, 0.22);
+  color: var(--brand-mint);
 }
 
 .game-btn.btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(17, 100, 102, 0.45);
   border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
+  color: var(--neon-cyan-soft);
 }
 
 .controls-tips {
@@ -717,14 +740,14 @@ html, body {
   border-radius: 9999px;
   font-size: 0.75rem;
   color: var(--neon-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  border: 1px solid rgba(209, 232, 226, 0.3);
   margin: 0 auto;
 }
 
 /* Monetization: Game Bottom Ad Placeholder */
 .game-bottom-ad {
   height: 52px;
-  background: #04060c;
+  background: #1e2623;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
@@ -736,7 +759,7 @@ html, body {
 .game-bottom-ad-text {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  color: #475569;
+  color: #7e9994;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -797,5 +820,85 @@ html, body {
 
   .speed-btn .speed-name {
     font-size: 0.68rem;
+  }
+}
+
+/* Floating pill header — matches PlayRush homepage navbar */
+.arcade-header {
+  position: sticky;
+  top: 12px;
+  z-index: 300;
+  height: auto;
+  margin: 12px auto 0;
+  width: min(760px, calc(100vw - 1.5rem));
+  max-width: calc(100vw - 1.5rem);
+  padding: 0.55rem 1rem;
+  background-color: rgba(30, 38, 35, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(209, 232, 226, 0.16);
+  border-bottom: 1px solid rgba(209, 232, 226, 0.16);
+  border-radius: 9999px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 768px) {
+  .arcade-header {
+    top: 8px;
+    margin-top: 8px;
+    padding: 0.5rem 0.8rem;
+  }
+}
+
+/* Brand mark — matches homepage PlayRush logo */
+.arcade-brand {
+  color: #d1e8e2;
+  gap: 0.6rem;
+}
+
+.arcade-brand-icon {
+  width: 32px;
+  height: 32px;
+  background: #ffcb9a;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.arcade-brand-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: #2c3531;
+}
+
+.arcade-brand-accent {
+  color: #ffcb9a;
+}
+
+/* Focus states + reduced motion (Neon Dodge) */
+.game-btn:focus-visible,
+.speed-btn:focus-visible,
+.arcade-btn-icon:focus-visible,
+.touch-btn:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-box {
+    animation: none;
+  }
+
+  .new-record-tag {
+    animation: none;
+  }
+
+  .game-btn,
+  .speed-btn,
+  .hud-multiplier,
+  .screen-overlay {
+    transition: none;
   }
 }

@@ -19,30 +19,29 @@
   <meta property="og:site_name" content="PlayRush">
   <meta property="og:url" content="https://playrush-peach.vercel.app/">
   <meta property="og:title" content="PlayRush - Free Online Arcade Games | Instant Browser Play">
-  <meta property="og:description" content="Free online browser games with instant play. Jump into Neon Dodge and set the ultimate high score!">
+  <meta property="og:description" content="Free online browser games with instant play. Jump into Neon Dodge, Cyber Runner, and Killer Killer!">
   <meta property="og:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="PlayRush - Free Online Arcade Games">
-  <meta name="twitter:description" content="Free online games. Endless challenges. Play Neon Dodge now directly in your browser.">
+  <meta name="twitter:description" content="Free online games. Endless challenges. Play directly in your browser with zero installs.">
   <meta name="twitter:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2300f0ff'/><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%2305070f'/></svg>">
+
+  <!-- Typography is loaded via style.css (@import Manrope + Geist Mono) -->
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Future advertising scripts will be inserted here when approved -->
 </head>
 <body>
 
   <!-- Skip to main content (keyboard navigation) -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Navigation Bar -->
+  <!-- Navigation Bar (Glassmorphic Floating Bar) -->
   <header class="navbar" role="banner">
     <div class="container">
       <a href="index.html" class="brand" aria-label="PlayRush Home">
@@ -54,7 +53,7 @@
         PLAY<span class="brand-accent">RUSH</span>
       </a>
 
-      <!-- Desktop Nav -->
+      <!-- Desktop Navigation Menu -->
       <nav aria-label="Main Navigation">
         <ul class="nav-menu">
           <li><a href="#hero" class="nav-link active">Home</a></li>
@@ -62,11 +61,13 @@
           <li><a href="#games" class="nav-link">All Games</a></li>
           <li><a href="#challenges" class="nav-link">Daily Quests</a></li>
           <li><a href="#howtoplay" class="nav-link">How to Play</a></li>
+
           <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="about.html#contact" class="nav-link">Contact</a></li>
         </ul>
       </nav>
 
-      <!-- Nav Actions -->
+      <!-- Nav Actions (High Score & CTA) -->
       <div class="nav-actions">
         <div class="nav-score-badge" title="Your Neon Dodge High Score">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -87,81 +88,52 @@
   <main id="main-content">
     <!-- Hero Section -->
     <section id="hero" class="hero" aria-labelledby="hero-title">
-      <div class="container">
-        <div class="hero-layout">
-          <div class="hero-text-col">
-            <div class="hero-tag">
-              <span class="pulse-dot"></span>
-              NEW ARCADE SEASON LIVE
+      <canvas id="heroDemoCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+      <div class="container hero-inner">
+        <div class="hero-tag">
+          <span class="pulse-dot"></span>
+          <span>3 GAMES LIVE • ZERO INSTALL</span>
+        </div>
+        <h1 id="hero-title" class="hero-title">
+          Your Next Favorite <span class="gradient-text">Game</span><br>Starts Here.
+        </h1>
+        <p class="hero-subtitle">
+          Jump into quick arcade challenges, test your skills, and battle your friends. No downloads. Just play.
+        </p>
+        <div class="hero-buttons">
+          <a href="#games" class="btn-primary">
+            <span>EXPLORE GAMES</span>
+          </a>
+          <a href="games/killer-killer.html" class="btn-secondary">
+            <span>DISCOVER MULTIPLAYER</span>
+          </a>
+        </div>
+        <div class="hero-proof marquee" aria-label="Playable games">
+          <div class="marquee-track">
+            <div class="marquee-set">
+              <a href="games/neon-dodge.html" class="hero-proof-chip chip-nd">NEON DODGE</a>
+              <a href="games/killer-killer.html" class="hero-proof-chip chip-kk">KILLER KILLER</a>
             </div>
-            <h1 id="hero-title" class="hero-title">
-              PLAY. COMPETE. <span>REPEAT.</span>
-            </h1>
-            <p class="hero-subtitle">
-              Free online games. Endless challenges. Zero downloads or installations—dive into high-octane arcade action right in your browser.
-            </p>
-            <div class="hero-buttons">
-              <a href="games/neon-dodge.html" class="btn-primary">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-                PLAY NEON DODGE
-              </a>
-              <a href="#games" class="btn-secondary">
-                EXPLORE GAMES
-              </a>
+            <div class="marquee-set" aria-hidden="true">
+              <a href="games/neon-dodge.html" class="hero-proof-chip chip-nd">NEON DODGE</a>
+              <a href="games/killer-killer.html" class="hero-proof-chip chip-kk">KILLER KILLER</a>
             </div>
-            <div class="hero-features">
-              <div class="hero-feature-item">
-                <span class="hero-feature-value">Smooth</span>
-                <span class="hero-feature-label">Canvas Action</span>
-              </div>
-              <div class="hero-feature-item">
-                <span class="hero-feature-value">0s</span>
-                <span class="hero-feature-label">Instant Load</span>
-              </div>
-              <div class="hero-feature-item">
-                <span class="hero-feature-value">100%</span>
-                <span class="hero-feature-label">Free to Play</span>
-              </div>
+            <div class="marquee-set" aria-hidden="true">
+              <a href="games/neon-dodge.html" class="hero-proof-chip chip-nd">NEON DODGE</a>
+              <a href="games/killer-killer.html" class="hero-proof-chip chip-kk">KILLER KILLER</a>
             </div>
-          </div>
-
-          <!-- Hero Interactive Showpiece -->
-          <div class="hero-visual">
-            <div class="hero-preview-card">
-              <div class="preview-canvas-wrapper">
-                <canvas id="heroDemoCanvas" aria-label="Interactive Neon Dodge mini simulation preview"></canvas>
-                <div class="preview-overlay">
-                  <div class="live-badge">
-                    <span></span> LIVE PREVIEW
-                  </div>
-                  <div class="preview-score-pill">
-                    SCORE: 1,420
-                  </div>
-                </div>
-              </div>
-              <div class="preview-content">
-                <div class="preview-title-row">
-                  <div class="preview-game-name">
-                    NEON DODGE
-                  </div>
-                  <div class="badge-featured">FEATURED</div>
-                </div>
-                <p class="preview-desc">
-                  Pilot your glowing starship through deadly geometric obstacles. Collect pulse orbs to amplify your score.
-                </p>
-                <a href="games/neon-dodge.html" class="preview-cta-btn">
-                  LAUNCH FULLSCREEN GAME
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42 5.43 5.43H5v2.44z"/>
-                  </svg>
-                </a>
-              </div>
+            <div class="marquee-set" aria-hidden="true">
+              <a href="games/neon-dodge.html" class="hero-proof-chip chip-nd">NEON DODGE</a>
+              <a href="games/killer-killer.html" class="hero-proof-chip chip-kk">KILLER KILLER</a>
+            </div>
+            <div class="marquee-set" aria-hidden="true">
+              <a href="games/neon-dodge.html" class="hero-proof-chip chip-nd">NEON DODGE</a>
+              <a href="games/killer-killer.html" class="hero-proof-chip chip-kk">KILLER KILLER</a>
             </div>
           </div>
         </div>
       </div>
+
     </section>
 
     <!-- Ad space reserved for future display advertising -->
@@ -174,83 +146,101 @@
     <!-- Featured Game Spotlight -->
     <section id="featured" class="featured-section" aria-labelledby="featured-heading">
       <div class="container">
-        <div class="section-header">
-          <span class="section-tag">PREMIERE RELEASE</span>
-          <h2 id="featured-heading" class="section-title">FEATURED <span>GAME</span></h2>
-          <p class="section-desc">Experience our signature social deduction party game engineered for thrilling bluffing, mystery, and teamwork.</p>
+        <div class="section-header fx-header">
+          <span class="section-tag fx-reveal">PREMIERE RELEASE</span>
+          <h2 id="featured-heading" class="section-title fx-title">Featured <span class="fx-accent">Games</span></h2>
+          <p class="section-desc fx-reveal">One party game for the whole room and one arcade run for when you play alone.</p>
         </div>
 
-        <div class="featured-card">
-          <div class="featured-info">
-            <div class="featured-badge-row">
-              <span class="badge-featured">LOCAL MULTIPLAYER</span>
-              <span class="badge-genre">PARTY GAME</span>
+        <!-- Card 1: Killer Killer (art right) -->
+        <article class="fx-card fx-card-kk" aria-label="Killer Killer featured game">
+          <div class="fx-card-text">
+            <div class="fx-tags fx-reveal">
+              <span class="fx-tag fx-tag-solid">Local multiplayer</span>
+              <span class="fx-tag">Party game</span>
             </div>
-            <h3 class="featured-title">KILLER <span>KILLER</span></h3>
-            <p class="featured-description">
-              A local multiplayer social deduction game where players bluff, share secret clues, and uncover the Killer.
-            </p>
-
-            <div class="featured-stats-grid">
-              <div class="stat-item">
-                <span class="stat-label">PLAYERS</span>
-                <span class="stat-value">4–12 LOCAL</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">MODE</span>
-                <span class="stat-value">PASS &amp; PLAY</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">CHALLENGE</span>
-                <span class="stat-value highlight">SECRET WORD</span>
-              </div>
+            <h3 class="fx-game-title fx-reveal">Killer <span>Killer</span></h3>
+            <p class="fx-desc fx-reveal">One phone, one table, one secret word. Everyone but the killer knows it. Describe it without saying it, spot who is bluffing, then vote in private.</p>
+            <div class="fx-stats fx-reveal">
+              <div class="fx-stat"><span class="fx-stat-label">Players</span><span class="fx-stat-value">4 to 12</span></div>
+              <div class="fx-stat"><span class="fx-stat-label">Mode</span><span class="fx-stat-value">Pass and play</span></div>
+              <div class="fx-stat"><span class="fx-stat-label">Twist</span><span class="fx-stat-value fx-stat-peach">Secret word</span></div>
             </div>
-
-            <div class="featured-actions">
-              <a href="#games" class="btn-primary" aria-label="Browse all games in collection">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-                PLAY NOW (ALL GAMES)
-              </a>
-              <a href="games/killer-killer.html" class="btn-secondary" aria-label="Play Killer Killer now">
-                PLAY KILLER KILLER
-              </a>
-            </div>
-            <!-- Score sync element preserved for script.js & validator compatibility -->
-            <span id="featuredBestScore" style="display: none;" aria-hidden="true">0</span>
-          </div>
-
-          <div class="featured-graphic">
-            <div class="featured-graphic-inner">
-              <svg class="game-art" viewBox="0 0 300 200" aria-label="Killer Killer cyber shield mystery artwork">
-                <defs>
-                  <filter id="neonGlowKK" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
-                    <feMerge>
-                      <feMergeNode in="blur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-                <!-- Background grid lines -->
-                <line x1="0" y1="50" x2="300" y2="50" stroke="rgba(255,255,255,0.05)" />
-                <line x1="0" y1="100" x2="300" y2="100" stroke="rgba(255,255,255,0.05)" />
-                <line x1="0" y1="150" x2="300" y2="150" stroke="rgba(255,255,255,0.05)" />
-                <line x1="75" y1="0" x2="75" y2="200" stroke="rgba(255,255,255,0.05)" />
-                <line x1="150" y1="0" x2="150" y2="200" stroke="rgba(255,255,255,0.05)" />
-                <line x1="225" y1="0" x2="225" y2="200" stroke="rgba(255,255,255,0.05)" />
-
-                <!-- Secret Word & Mystery Shield Artwork -->
-                <circle cx="150" cy="100" r="75" stroke="#ff0055" stroke-width="2" stroke-dasharray="6,4" filter="url(#neonGlowKK)"/>
-                <path d="M150 35 L215 65 L215 125 C215 158 150 180 150 180 C150 180 85 158 85 125 L85 65 Z" stroke="#00f0ff" stroke-width="3" fill="#0d142d" filter="url(#neonGlowKK)"/>
-                <circle cx="150" cy="98" r="18" stroke="#ff0055" stroke-width="3" fill="none" filter="url(#neonGlowKK)"/>
-                <circle cx="150" cy="98" r="6" fill="#ff0055" filter="url(#neonGlowKK)"/>
-                <path d="M138 135 L162 135" stroke="#00ff88" stroke-width="3" stroke-linecap="round" filter="url(#neonGlowKK)"/>
-              </svg>
+            <div class="fx-actions fx-reveal">
+              <a href="games/killer-killer.html" class="btn-primary"><span>Start a game</span></a>
+              <a href="games/killer-killer.html" class="btn-secondary"><span>How it works</span></a>
             </div>
           </div>
-        </div>
+
+          <div class="fx-art fx-art-phone" role="img" aria-label="Animated smartphone showing Killer Killer pass and play screens">
+            <div class="fx-glow"></div>
+            <div class="fx-role-card fx-role-1"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Doctor</span></div>
+            <div class="fx-role-card fx-role-2"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 17c1-2 2.5-3 4-3s3 1 4 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Police</span></div>
+                        <div class="fx-role-card fx-role-3"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Citizen</span></div>
+            <div class="fx-name-chip fx-chip-1">Alex</div>
+            <div class="fx-name-chip fx-chip-2">Sam</div>
+            <div class="fx-phone">
+              <div class="fx-phone-notch"></div>
+              <div class="fx-phone-screen">
+                <div class="fx-phone-state fx-state-1">
+                  <span class="fx-state-label">Pass and play</span>
+                  <span class="fx-pass-name">Pass to Jordan</span>
+                  <span class="fx-pass-hint">Make sure nobody else is looking at the screen</span>
+                  <span class="fx-pass-btn">I'M READY</span>
+                </div>
+                <div class="fx-phone-state fx-state-2">
+                  <span class="fx-state-label">Secret role</span>
+                  <div class="fx-killer-card"><span class="fx-killer-word">KILLER</span></div>
+                  <div class="fx-killer-info">CATEGORY: FRUITS<br>Word unknown. Bluff.</div>
+                </div>
+                <div class="fx-phone-state fx-state-3">
+                  <span class="fx-state-label">Town discussion</span>
+                  <span class="fx-timer">01:42</span>
+                  <span class="fx-timer-hint">Vote in private. Nobody sees your choice.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Neon Dodge (art left) -->
+        <article class="fx-card fx-card-nd" aria-label="Neon Dodge featured game">
+          <div class="fx-art fx-art-phone fx-art-phone-nd" role="img" aria-label="Animated smartphone showing Neon Dodge gameplay">
+            <div class="fx-glow"></div>
+            <div class="fx-role-card nd-role-1" style="color:#ffcb9a" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="12,3 21,19 3,19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Asteroid</span></div>
+            <div class="fx-role-card nd-role-2" style="color:#e8907c" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16M4 12l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Laser</span></div>
+            <div class="fx-role-card nd-role-3" style="color:#7fc4a4" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg><span>Orb</span></div>
+            <div class="fx-name-chip fx-chip-1">YOU</div>
+            <div class="fx-name-chip fx-chip-2">BEST</div>
+            <div class="fx-phone">
+              <div class="fx-phone-notch"></div>
+              <div class="fx-phone-screen fx-nd-screen">
+                <canvas id="fxArenaCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="fx-card-text">
+            <div class="fx-tags fx-reveal">
+              <span class="fx-tag fx-tag-solid">Playable now</span>
+              <span class="fx-tag">Arcade</span>
+              <span class="fx-tag">Solo</span>
+            </div>
+            <h3 class="fx-game-title fx-reveal">Neon <span>Dodge</span></h3>
+            <p class="fx-desc fx-reveal">Steer a small ship through asteroids, tracking mines and lasers that warn you before they fire. Collect orbs for a score multiplier and beat your own best.</p>
+            <div class="fx-stats fx-reveal">
+              <div class="fx-stat"><span class="fx-stat-label">Players</span><span class="fx-stat-value">1 player</span></div>
+              <div class="fx-stat"><span class="fx-stat-label">Controls</span><span class="fx-stat-value">Keys or touch</span></div>
+              <div class="fx-stat"><span class="fx-stat-label">Speed</span><span class="fx-stat-value fx-stat-peach">3 modes</span></div>
+            </div>
+            <div class="fx-actions fx-reveal">
+              <a href="games/neon-dodge.html" class="btn-primary"><span>Play Neon Dodge</span></a>
+              <a href="games/neon-dodge.html" class="btn-secondary"><span>See controls</span></a>
+            </div>
+          </div>
+          <!-- Score sync element preserved for script.js & validator compatibility -->
+          <span id="featuredBestScore" style="display: none;" aria-hidden="true">0</span>
+        </article>
       </div>
     </section>
 
@@ -260,7 +250,7 @@
         <div class="section-header">
           <span class="section-tag">EXPANDING CATALOG</span>
           <h2 id="games-heading" class="section-title">ALL <span>GAMES</span></h2>
-          <p class="section-desc">Handcrafted for instant, responsive arcade gameplay — no downloads or installs required.</p>
+          <p class="section-desc">Handcrafted for instant, responsive arcade gameplay — zero downloads or installations required.</p>
         </div>
 
         <!-- Filter Tabs -->
@@ -281,12 +271,7 @@
               <div class="game-card-rating" aria-label="Original Canvas 2D Game">
                 CANVAS 2D
               </div>
-              <svg viewBox="0 0 100 100" fill="none">
-                <polygon points="50,20 75,75 50,65 25,75" stroke="#00f0ff" stroke-width="4" fill="#0a0f29"/>
-                <circle cx="50" cy="45" r="5" fill="#a855f7"/>
-                <circle cx="30" cy="35" r="4" fill="#00ff88"/>
-                <rect x="65" y="30" width="12" height="12" stroke="#ff007f" stroke-width="2"/>
-              </svg>
+              <img class="thumb-art-nd" src="assets/images/games/neon-dodge.svg" alt="Neon Dodge game artwork: spaceship with shield dodging asteroids" aria-hidden="false">
             </div>
             <div class="game-card-body">
               <div class="game-card-tags">
@@ -311,12 +296,19 @@
               <div class="game-card-rating" aria-label="Original Canvas 2D Game">
                 CANVAS 2D
               </div>
-              <svg viewBox="0 0 100 100" fill="none">
-                <line x1="10" y1="80" x2="90" y2="80" stroke="#a855f7" stroke-width="3"/>
-                <rect x="35" y="45" width="20" height="35" stroke="#00f0ff" stroke-width="3" fill="#0a0f29"/>
-                <circle cx="45" cy="35" r="8" stroke="#00f0ff" stroke-width="2"/>
-                <path d="M25 60 L15 70" stroke="#ff007f" stroke-width="3"/>
-              </svg>
+              <div class="thumb-scene scene-cr" aria-label="Cyber Runner preview: runner jumping spikes on rooftops">
+                <div class="cr-buildings">
+                  <div class="cr-bld cr-b1"></div>
+                  <div class="cr-bld cr-b2"></div>
+                  <div class="cr-bld cr-b3"></div>
+                  <div class="cr-bld cr-b1"></div>
+                  <div class="cr-bld cr-b2"></div>
+                  <div class="cr-bld cr-b3"></div>
+                </div>
+                <div class="cr-ground"></div>
+                <div class="cr-spike"></div>
+                <div class="cr-runner"></div>
+              </div>
             </div>
             <div class="game-card-body">
               <div class="game-card-tags">
@@ -325,7 +317,7 @@
               </div>
               <h3 class="game-card-title">Cyber Runner</h3>
               <p class="game-card-desc">
-                Sprint across neo-Tokyo rooftops. Jump over obstacles, slide under barriers, and collect energy orbs.
+                Sprint across neo-Tokyo rooftops. Jump over obstacles, slide under barriers, and collect glowing energy orbs.
               </p>
               <div class="game-card-footer">
                 <a href="games/cyber-runner.html" class="game-card-btn playable">PLAY GAME</a>
@@ -340,14 +332,7 @@
               <div class="game-card-rating" aria-label="Local Multiplayer Game">
                 MULTIPLAYER
               </div>
-              <svg viewBox="0 0 100 100" fill="none">
-                <!-- Glowing mystery / deduction badge -->
-                <circle cx="50" cy="50" r="32" stroke="#ff0055" stroke-width="2.5" stroke-dasharray="4,4"/>
-                <path d="M50 24 L72 35 L72 58 C72 70 50 80 50 80 C50 80 28 70 28 58 L28 35 Z" stroke="#00f0ff" stroke-width="3" fill="#0a0f29"/>
-                <circle cx="50" cy="46" r="8" stroke="#ff0055" stroke-width="2.5"/>
-                <path d="M46 62 L54 62" stroke="#00ff88" stroke-width="3" stroke-linecap="round"/>
-                <circle cx="50" cy="46" r="3" fill="#ff0055"/>
-              </svg>
+                            <img class="thumb-art-kk" src="assets/images/games/killer-killer-thumbnail.png" alt="Killer Killer game artwork: haunted manor social deduction" loading="lazy">
             </div>
             <div class="game-card-body">
               <div class="game-card-tags">
@@ -373,8 +358,8 @@
                 SOON
               </div>
               <svg viewBox="0 0 100 100" fill="none">
-                <ellipse cx="50" cy="50" rx="35" ry="20" stroke="#00f0ff" stroke-width="2" stroke-dasharray="6,4"/>
-                <polygon points="65,45 80,50 65,55" fill="#ff007f"/>
+                <ellipse cx="50" cy="50" rx="35" ry="20" stroke="#d1e8e2" stroke-width="2" stroke-dasharray="6,4"/>
+                <polygon points="65,45 80,50 65,55" fill="#ffcb9a"/>
               </svg>
             </div>
             <div class="game-card-body">
@@ -401,9 +386,9 @@
                 SOON
               </div>
               <svg viewBox="0 0 100 100" fill="none">
-                <rect x="25" y="65" width="50" height="20" stroke="#a855f7" stroke-width="3"/>
-                <line x1="50" y1="65" x2="50" y2="40" stroke="#00ff88" stroke-width="4"/>
-                <polygon points="45,30 55,30 50,20" fill="#00ff88"/>
+                <rect x="25" y="65" width="50" height="20" stroke="#d9b08c" stroke-width="3"/>
+                <line x1="50" y1="65" x2="50" y2="40" stroke="#d9b08c" stroke-width="4"/>
+                <polygon points="45,30 55,30 50,20" fill="#d9b08c"/>
               </svg>
             </div>
             <div class="game-card-body">
@@ -430,10 +415,10 @@
                 SOON
               </div>
               <svg viewBox="0 0 100 100" fill="none">
-                <line x1="20" y1="50" x2="35" y2="25" stroke="#ff007f" stroke-width="3"/>
-                <line x1="35" y1="25" x2="50" y2="75" stroke="#00f0ff" stroke-width="3"/>
-                <line x1="50" y1="75" x2="65" y2="35" stroke="#a855f7" stroke-width="3"/>
-                <line x1="65" y1="35" x2="80" y2="50" stroke="#00ff88" stroke-width="3"/>
+                <line x1="20" y1="50" x2="35" y2="25" stroke="#ffcb9a" stroke-width="3"/>
+                <line x1="35" y1="25" x2="50" y2="75" stroke="#d1e8e2" stroke-width="3"/>
+                <line x1="50" y1="75" x2="65" y2="35" stroke="#d9b08c" stroke-width="3"/>
+                <line x1="65" y1="35" x2="80" y2="50" stroke="#d9b08c" stroke-width="3"/>
               </svg>
             </div>
             <div class="game-card-body">
@@ -457,81 +442,72 @@
     <!-- Daily Challenge Section -->
     <section id="challenges" class="challenges-section" aria-labelledby="challenges-heading">
       <div class="container">
-        <div class="challenge-box">
-          <div class="challenge-header-row">
+        <div class="dq-box">
+          <div class="dq-header">
             <div>
-              <span class="section-tag">DAILY REWARDS</span>
-              <h2 id="challenges-heading" class="section-title">DAILY <span>CHALLENGES</span></h2>
+              <h2 id="challenges-heading" class="section-title">Daily <span>Challenges</span></h2>
+              <p class="dq-sub">Finish three quick goals in Neon Dodge before the day resets.</p>
             </div>
-            <div class="challenge-countdown">
-              <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-              RESETS IN: <span id="dailyCountdown">--h --m --s</span>
+            <div class="dq-chips">
+              <span class="dq-chip dq-chip-streak" id="dqStreakChip" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" fill="currentColor"/></svg>
+                <span id="dqStreakText"></span>
+              </span>
+              <span class="dq-chip dq-chip-timer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Resets in <span id="dailyCountdown">--h --m --s</span>
+              </span>
             </div>
           </div>
 
-          <div class="challenge-cards-grid">
-            <!-- Quest 1 -->
-            <div class="challenge-item">
-              <div class="challenge-top">
-                <div class="challenge-icon-box">
-                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                </div>
-                <span class="challenge-xp-badge">+250 XP</span>
-              </div>
-              <h3 class="challenge-title">HighScore Hunter</h3>
-              <p class="challenge-desc">Achieve a score of 500 or more in Neon Dodge.</p>
-              <div>
-                <div class="challenge-progress-bar-bg">
-                  <div class="challenge-progress-fill" id="c1Progress" style="width: 0%;"></div>
-                </div>
-                <div class="challenge-progress-labels">
-                  <span>PROGRESS</span>
-                  <span id="c1Label">0 / 500</span>
-                </div>
-              </div>
-            </div>
+          <div class="dq-xp-bar">
+            <span class="dq-xp-label">TODAY'S XP</span>
+            <div class="dq-xp-track"><div class="dq-xp-fill" id="dqXpFill"></div></div>
+            <span class="dq-xp-num" id="dqXpNum">0 / 700</span>
+          </div>
 
-            <!-- Quest 2 -->
-            <div class="challenge-item">
-              <div class="challenge-top">
-                <div class="challenge-icon-box">
-                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
-                </div>
-                <span class="challenge-xp-badge">+150 XP</span>
+          <div class="dq-grid">
+            <!-- Quest 1: score -->
+            <article class="dq-card" id="dqCardScore" data-quest="score">
+              <div class="dq-card-top">
+                <span class="dq-state dq-state-ready" id="dqStateScore">Ready to claim</span>
+                <span class="dq-xp-badge">+250 XP</span>
               </div>
-              <h3 class="challenge-title">Orb Harvester</h3>
-              <p class="challenge-desc">Collect 25 total energy orbs across your runs.</p>
-              <div>
-                <div class="challenge-progress-bar-bg">
-                  <div class="challenge-progress-fill" id="c2Progress" style="width: 0%;"></div>
-                </div>
-                <div class="challenge-progress-labels">
-                  <span>PROGRESS</span>
-                  <span id="c2Label">0 / 25</span>
-                </div>
+              <h3 class="dq-title">Score 500 in Neon Dodge</h3>
+              <div class="dq-meter">
+                <div class="dq-meter-fill" id="dqMeterScore"></div>
+                <div class="dq-meter-labels"><span>Score</span><span id="dqMeterScoreNum">0 / 500</span></div>
               </div>
-            </div>
+              <button type="button" class="dq-btn dq-btn-claim" id="dqClaimScore">Claim 250 XP</button>
+            </article>
 
-            <!-- Quest 3 -->
-            <div class="challenge-item">
-              <div class="challenge-top">
-                <div class="challenge-icon-box">
-                  <svg viewBox="0 0 24 24"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95 0 5.52 4.47 10 9.99 10 3.31 0 6.24-1.61 8.01-4.09l-2.45-1.45C16.14 17.9 14.21 19 12 19z"/></svg>
-                </div>
-                <span class="challenge-xp-badge">+300 XP</span>
+            <!-- Quest 2: orbs -->
+            <article class="dq-card" id="dqCardOrbs" data-quest="orbs">
+              <div class="dq-card-top">
+                <span class="dq-state dq-state-progress" id="dqStateOrbs">In progress</span>
+                <span class="dq-xp-badge">+150 XP</span>
               </div>
-              <h3 class="challenge-title">Survival Master</h3>
-              <p class="challenge-desc">Survive continuously for 45 seconds in a single run.</p>
-              <div>
-                <div class="challenge-progress-bar-bg">
-                  <div class="challenge-progress-fill" id="c3Progress" style="width: 0%;"></div>
-                </div>
-                <div class="challenge-progress-labels">
-                  <span>PROGRESS</span>
-                  <span id="c3Label">0s / 45s</span>
-                </div>
+              <h3 class="dq-title">Collect 25 energy orbs</h3>
+              <div class="dq-dots" id="dqDots" role="img" aria-label="0 of 25 orbs collected"></div>
+              <a href="games/neon-dodge.html" class="dq-btn dq-btn-play">Play to collect 25 more</a>
+            </article>
+
+            <!-- Quest 3: survival -->
+            <article class="dq-card" id="dqCardSurvival" data-quest="survival">
+              <div class="dq-card-top">
+                <span class="dq-state dq-state-progress" id="dqStateSurvival">In progress</span>
+                <span class="dq-xp-badge">+300 XP</span>
               </div>
-            </div>
+              <h3 class="dq-title">Survive 45 seconds in one run</h3>
+              <div class="dq-ring">
+                <svg viewBox="0 0 104 104" aria-hidden="true">
+                  <circle cx="52" cy="52" r="46" fill="none" stroke="rgba(217,176,140,0.18)" stroke-width="8"/>
+                  <circle id="dqRingArc" cx="52" cy="52" r="46" fill="none" stroke="#d9b08c" stroke-width="8" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" transform="rotate(-90 52 52)"/>
+                </svg>
+                <div class="dq-ring-text"><b id="dqRingSec">0s</b><span>of 45s</span></div>
+              </div>
+              <a href="games/neon-dodge.html" class="dq-btn dq-btn-play">Beat your best time</a>
+            </article>
           </div>
         </div>
       </div>
@@ -540,56 +516,114 @@
     <!-- How to Play Section -->
     <section id="howtoplay" class="how-section" aria-labelledby="how-heading">
       <div class="container">
-        <div class="section-header">
-          <span class="section-tag">PILOT MANUAL</span>
-          <h2 id="how-heading" class="section-title">HOW TO <span>PLAY</span></h2>
-          <p class="section-desc">Quick guide to master Neon Dodge and dominate the high score table.</p>
+        <div class="section-header ht-header">
+          <h2 id="how-heading" class="section-title">How to <span>play</span></h2>
+          <p class="section-desc">Three steps from opening the page to beating your best score.</p>
         </div>
 
-        <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-number">1</div>
-            <div class="step-icon">
-              <svg viewBox="0 0 24 24"><path d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 15H22V9h-5.5l-3 3 3 3z"/></svg>
-            </div>
-            <h3 class="step-title">Control Your Ship</h3>
-            <p class="step-desc">
-              Use <strong>Arrow Keys</strong> or <strong>W, A, S, D</strong> on desktop. On mobile or tablets, simply touch and drag directly across the screen.
-            </p>
-          </div>
+        <div class="ht-steps">
+          <div class="ht-rail" aria-hidden="true"></div>
 
-          <div class="step-card">
-            <div class="step-number">2</div>
-            <div class="step-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2zm0-6h2v4h-2z"/></svg>
+          <article class="ht-step ht-reveal">
+            <div class="ht-node">1</div>
+            <div class="ht-card">
+              <div class="ht-demo ht-demo-1" aria-hidden="true">
+                <div class="ht-tiles">
+                  <div class="ht-tile ht-tile-1"><svg viewBox="0 0 24 24"><polygon points="12,4 20,18 12,14 4,18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>Dodge</span></div>
+                  <div class="ht-tile ht-tile-2"><svg viewBox="0 0 24 24"><path d="M13 4l7 7-7 7M4 4l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Runner</span></div>
+                  <div class="ht-tile ht-tile-3"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7l7-4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Killer</span></div>
+                </div>
+                <div class="ht-cursor"></div>
+              </div>
+              <div class="ht-text">
+                <h3 class="ht-step-title">Pick a game</h3>
+                <p class="ht-step-desc">Choose a solo arcade game, or a party game for 4 to 12 friends on one device.</p>
+              </div>
             </div>
-            <h3 class="step-title">Dodge Hazards</h3>
-            <p class="step-desc">
-              Evade red lasers, rotating polygonal asteroids, and tracking mines. One single collision without a shield ends your run!
-            </p>
-          </div>
+          </article>
 
-          <div class="step-card">
-            <div class="step-number">3</div>
-            <div class="step-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <article class="ht-step ht-reveal">
+            <div class="ht-node">2</div>
+            <div class="ht-card">
+              <div class="ht-demo ht-demo-2" aria-hidden="true">
+                <button type="button" class="ht-play-btn" tabindex="-1">Play game</button>
+                <div class="ht-running"><span class="ht-dot"></span>Running in your browser</div>
+                <span class="ht-caption">No download, no account</span>
+              </div>
+              <div class="ht-text">
+                <h3 class="ht-step-title">Press play</h3>
+                <p class="ht-step-desc">The game opens in your browser in a second or two, on a laptop or a phone.</p>
+              </div>
             </div>
-            <h3 class="step-title">Collect Orbs</h3>
-            <p class="step-desc">
-              Grab <strong>Cyan Orbs</strong> (+50 pts), <strong>Gold Orbs</strong> (2X multiplier boost!), and rare <strong>Emerald Shields</strong> for 1-hit invulnerability.
-            </p>
-          </div>
+          </article>
 
-          <div class="step-card">
-            <div class="step-number">4</div>
-            <div class="step-icon">
-              <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 003.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+          <article class="ht-step ht-reveal">
+            <div class="ht-node">3</div>
+            <div class="ht-card">
+              <div class="ht-demo ht-demo-3" aria-hidden="true">
+                <div class="ht-score-row"><span class="ht-score-label">SCORE</span><span class="ht-score-num" id="htScore">0</span></div>
+                <div class="ht-score-bar"><div class="ht-score-fill" id="htScoreFill"></div><div class="ht-score-marker" id="htScoreMarker"><span id="htMarkerLabel">Best 2,190</span></div></div>
+                <div class="ht-newbest" id="htNewBest">New best</div>
+              </div>
+              <div class="ht-text">
+                <h3 class="ht-step-title">Beat your best</h3>
+                <p class="ht-step-desc">Your best scores are saved on your device. Finish daily challenges, or pass the phone to a friend.</p>
+              </div>
             </div>
-            <h3 class="step-title">Climb Ranks</h3>
-            <p class="step-desc">
-              Points accumulate every second you survive plus bonus orbs. Your high score persists securely in your browser's local storage.
-            </p>
+          </article>
+        </div>
+
+        <div class="ht-controls">
+          <h3 class="ht-controls-title">Controls</h3>
+          <div class="ht-controls-grid">
+            <div class="ht-ctrl-card">
+              <h4>Neon Dodge</h4>
+              <div class="ht-ctrl-row"><span>Move</span><span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span></div>
+              <div class="ht-ctrl-row"><span>Pause</span><span><kbd>Space</kbd></span></div>
+              <div class="ht-ctrl-row"><span>On a phone</span><span>Drag the ship</span></div>
+            </div>
+            <div class="ht-ctrl-card">
+              <h4>Cyber Runner</h4>
+              <div class="ht-ctrl-row"><span>Jump</span><span><kbd>Space</kbd> <kbd>W</kbd></span></div>
+              <div class="ht-ctrl-row"><span>Slide</span><span><kbd>S</kbd></span></div>
+              <div class="ht-ctrl-row"><span>On a phone</span><span>Jump and Slide buttons</span></div>
+            </div>
+            <div class="ht-ctrl-card">
+              <h4>Killer Killer</h4>
+              <div class="ht-ctrl-row"><span>Reveal role</span><span>Tap the button</span></div>
+              <div class="ht-ctrl-row"><span>Vote</span><span>Pick one player</span></div>
+              <div class="ht-ctrl-row"><span>Pass device</span><span>After every turn</span></div>
+            </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About PlayRush Section -->
+    <section id="about" class="about-section" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-blurb">
+          <span class="section-tag">ABOUT PLAYRUSH</span>
+          <h2 id="about-heading" class="section-title">A BROWSER ARCADE <span>BUILT FOR PLAY</span></h2>
+          <p class="about-text">
+            PlayRush is a free browser gaming arcade. Every title runs instantly with no downloads and no accounts, mixing quick reflex challenges with pass-and-play party games you can enjoy with friends on the same screen.
+          </p>
+          <a href="about.html" class="btn-secondary" aria-label="Read more about PlayRush">
+            <span>MORE ABOUT US</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta-section" aria-labelledby="final-cta-heading">
+      <div class="container">
+        <div class="final-cta-card">
+          <h2 id="final-cta-heading" class="final-cta-title">Ready for Your Next <span>Challenge</span>?</h2>
+          <p class="final-cta-desc">Pick a game, beat your score, or challenge a friend. It takes seconds to start.</p>
+          <a href="#games" class="btn-primary final-cta-btn" aria-label="Explore all games">
+            <span>EXPLORE ALL GAMES</span>
+          </a>
         </div>
       </div>
     </section>
@@ -616,7 +650,7 @@
           <p>
             The premium destination for free, lightning-fast browser arcade entertainment. Instant play, competitive reflex challenges, zero installs.
           </p>
-          <!-- Social links temporarily hidden for AdSense audit compliance (retains original URLs & icons) -->
+          <!-- Social links temporarily hidden for AdSense audit compliance -->
           <div class="social-links" aria-label="Social links" style="display: none;" hidden>
             <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub">
               <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>

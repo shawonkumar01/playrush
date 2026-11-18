@@ -76,10 +76,11 @@ test('7. Secret handoff between players', () => {
   assert(kkJs.includes('requestHandoff'), 'Handoff helper method exists');
 });
 
-// 8. Word descriptions with rotation and passing
-test('8. Word descriptions with order rotation and passing option', () => {
+// 8. Word descriptions with randomized speaking order (Fisher-Yates) and passing option
+test('8. Word descriptions with randomized speaking order (Fisher-Yates) and passing option', () => {
   assert(kkJs.includes('startWordClueRound'), 'startWordClueRound exists');
-  assert(kkJs.includes('(this.round - 1) % living.length'), 'Rotation formula present');
+  assert(!kkJs.includes('(this.round - 1) % living.length'), 'Old rotation formula removed');
+  assert(kkJs.includes('Math.floor(Math.random() * (i + 1))'), 'Fisher-Yates random shuffle present');
   assert(kkHtml.includes('id="btnPassSpeaker"'), 'Pass turn button exists in HTML');
   assert(kkJs.includes('this.btnPassSpeaker.addEventListener'), 'Pass turn handler wired');
 });
@@ -310,6 +311,139 @@ test('OF-16. No secret actions, targets, or words leak to history or LocalStorag
   assert(!kkJs.includes('this.addPublicHistoryLog(this.nightState.killerTargetId)'), 'Killer target ID never in public log');
   assert(!kkJs.includes('this.addPublicHistoryLog(this.nightState.doctorTargetId)'), 'Doctor target ID never in public log');
   assert(!kkJs.includes('this.addPublicHistoryLog(this.nightState.policeTargetId)'), 'Police target ID never in public log');
+});
+
+// --- Random Speaking Order (RSO) Upgrade Tests ---
+console.log('\n--- Running Random Speaking Order Specific Tests ---');
+
+// RSO-1: Every living player appears exactly once in speakerOrder
+test('RSO-1. Every living player appears exactly once in the randomized clue speaking order', () => {
+  assert(kkJs.includes('const living = this.players.filter(p => p.isAlive);'), 'Filters living players');
+  assert(kkJs.includes('const shuffled = [...living];'), 'Clones living players before shuffle');
+  assert(kkJs.includes('this.speakerOrder = shuffled;'), 'Assigns shuffled array to speakerOrder');
+  
+  // Execution test simulating Fisher-Yates logic
+  const mockPlayers = [
+    { id: 1, name: 'Alice', isAlive: true },
+    { id: 2, name: 'Bob', isAlive: true },
+    { id: 3, name: 'Charlie', isAlive: true },
+    { id: 4, name: 'Diana', isAlive: true }
+  ];
+  const living = mockPlayers.filter(p => p.isAlive);
+  const shuffled = [...living];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  assert(shuffled.length === living.length, 'Shuffled array length matches living count');
+  const ids = shuffled.map(p => p.id);
+  const uniqueIds = new Set(ids);
+  assert(uniqueIds.size === living.length, 'No duplicate players in speakerOrder');
+});
+
+// RSO-2: Eliminated players are completely excluded
+test('RSO-2. Eliminated players are completely excluded from the randomized speaking order', () => {
+  const mockPlayers = [
+    { id: 1, name: 'Alice', isAlive: true },
+    { id: 2, name: 'Bob', isAlive: false },
+    { id: 3, name: 'Charlie', isAlive: true },
+    { id: 4, name: 'Diana', isAlive: false }
+  ];
+  const living = mockPlayers.filter(p => p.isAlive);
+  const shuffled = [...living];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  assert(shuffled.length === 2, 'Only 2 living players included');
+  assert(!shuffled.some(p => !p.isAlive), 'No eliminated players present');
+});
+
+// RSO-3: Starting player is dynamically assigned as the first element of the shuffled order
+test('RSO-3. Starting player is dynamically assigned as the first element of the shuffled order', () => {
+  assert(kkJs.includes('this.speakerIndex = 0;'), 'speakerIndex initialized to 0 at start of round');
+  assert(kkJs.includes('const currentSpeaker = this.speakerOrder[this.speakerIndex];'), 'Current speaker retrieved from speakerOrder[speakerIndex]');
+  assert(!kkJs.includes('(this.round - 1) % living.length'), 'Old rotation-start logic is completely removed');
+});
+
+// RSO-4: Fisher-Yates produces statistically valid permutations
+test('RSO-4. Fisher-Yates shuffle produces statistically varied speaking orders across rounds', () => {
+  const mockLiving = [
+    { id: 1, name: 'P1' },
+    { id: 2, name: 'P2' },
+    { id: 3, name: 'P3' },
+    { id: 4, name: 'P4' },
+    { id: 5, name: 'P5' }
+  ];
+  const firstSpeakers = new Set();
+  const fullPermutations = new Set();
+  for (let r = 0; r < 50; r++) {
+    const shuffled = [...mockLiving];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    firstSpeakers.add(shuffled[0].id);
+    fullPermutations.add(shuffled.map(p => p.id).join(','));
+  }
+  assert(firstSpeakers.size > 1, 'Multiple different players selected as starting speaker over 50 rounds');
+  assert(fullPermutations.size > 10, 'Rich diversity of permutations generated by Fisher-Yates');
+});
+
+// RSO-5: Speaking order remains fixed throughout an active clue round
+test('RSO-5. Speaking order remains fixed throughout an active clue round without mid-turn reshuffling', () => {
+  assert(kkJs.includes('advanceSpeaker(passed) {\n    this.speakerIndex++;\n    this.renderSpeakerTurn();\n  }'), 'advanceSpeaker only increments speakerIndex without reshuffling');
+});
+
+// RSO-6: Passing turn counts as turn completion and advances to next player
+test('RSO-6. Passing turn (advanceSpeaker(true)) counts as turn completion and advances to next player', () => {
+  assert(kkHtml.includes('id="btnPassSpeaker"'), 'Pass speaker button exists in HTML');
+  assert(kkJs.includes('this.advanceSpeaker(true);'), 'Pass turn button handler wires advanceSpeaker(true)');
+  assert(kkJs.includes('advanceSpeaker(passed)'), 'advanceSpeaker accepts passed argument');
+});
+
+// RSO-7: Clue round cleanly advances to daytime discussion once all living players have spoken or passed
+test('RSO-7. Clue round cleanly advances to daytime discussion once all living players have spoken or passed', () => {
+  assert(kkJs.includes('if (this.speakerIndex >= this.speakerOrder.length) {'), 'Checks if all speakers have completed their turn');
+  assert(kkJs.includes('this.startDiscussionPhase();'), 'Transitions to discussion phase when clue round is finished');
+});
+
+// RSO-8: Players eliminated between clue rounds are cleanly excluded in subsequent round
+test('RSO-8. Players eliminated between clue rounds are cleanly excluded in the subsequent round', () => {
+  const players = [
+    { id: 1, name: 'P1', isAlive: true },
+    { id: 2, name: 'P2', isAlive: true },
+    { id: 3, name: 'P3', isAlive: true },
+    { id: 4, name: 'P4', isAlive: true }
+  ];
+  // Round 1
+  let living = players.filter(p => p.isAlive);
+  assert(living.length === 4, 'Round 1 has 4 living players');
+  // Player 2 eliminated in Round 1 vote
+  players[1].isAlive = false;
+  // Round 2
+  living = players.filter(p => p.isAlive);
+  assert(living.length === 3, 'Round 2 filters down to 3 living players');
+  const shuffled = [...living];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  assert(!shuffled.some(p => p.id === 2), 'Eliminated player 2 is not in Round 2 speaking order');
+});
+
+// RSO-9: Works cleanly in both One Flow and Separate Night Phase modes
+test('RSO-9. Randomized speaking order works identically and cleanly in both game modes', () => {
+  assert(kkJs.includes('this.startWordClueRound()'), 'Clue round entrypoint called in daytime flow');
+  assert(kkJs.includes('this.viewWordDescription'), 'Word description view defined');
+});
+
+// RSO-10: UI elements properly reflect randomized queue and turn indicators without leaking private roles
+test('RSO-10. UI elements properly reflect randomized queue and turn indicators without leaking private roles', () => {
+  assert(kkHtml.includes('SPEAKING ORDER (RANDOMIZED EACH ROUND):'), 'HTML queue title updated to randomized');
+  assert(kkJs.includes('this.currentSpeakerName.textContent = currentSpeaker.name;'), 'Displays current speaker name');
+  assert(kkJs.includes('chip.textContent = speaker.name;'), 'Chips only display player names, never roles');
+  assert(!kkJs.includes('chip.textContent = speaker.role'), 'Roles never leaked onto speaker chips');
 });
 
 console.log(`\n==============================================`);

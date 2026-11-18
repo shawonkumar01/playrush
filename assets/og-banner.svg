@@ -1,14 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#050711"/>
-      <stop offset="40%" stop-color="#090d22"/>
-      <stop offset="100%" stop-color="#04060e"/>
+      <stop offset="0%" stop-color="#d1e8e2"/>
+      <stop offset="55%" stop-color="#c4e0d9"/>
+      <stop offset="100%" stop-color="#d9b08c"/>
     </linearGradient>
     <linearGradient id="neon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00f0ff"/>
-      <stop offset="60%" stop-color="#a855f7"/>
-      <stop offset="100%" stop-color="#ff007f"/>
+      <stop offset="0%" stop-color="#116466"/>
+      <stop offset="100%" stop-color="#2c3531"/>
     </linearGradient>
     <filter id="glowBig" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="8" result="blur"/>
@@ -22,8 +21,8 @@
   <!-- Background -->
   <rect width="1200" height="630" fill="url(#bg)"/>
 
-  <!-- Subtle Cyber Grid -->
-  <g stroke="rgba(0, 240, 255, 0.08)" stroke-width="1">
+  <!-- Subtle Grid -->
+  <g stroke="rgba(44, 53, 49, 0.08)" stroke-width="1">
     <line x1="0" y1="100" x2="1200" y2="100"/>
     <line x1="0" y1="200" x2="1200" y2="200"/>
     <line x1="0" y1="300" x2="1200" y2="300"/>
@@ -37,38 +36,38 @@
   </g>
 
   <!-- Ambient Glow Orbs -->
-  <circle cx="200" cy="180" r="160" fill="rgba(168, 85, 247, 0.15)" filter="url(#glowBig)"/>
-  <circle cx="1020" cy="460" r="180" fill="rgba(0, 240, 255, 0.12)" filter="url(#glowBig)"/>
+  <circle cx="200" cy="180" r="160" fill="rgba(255, 203, 154, 0.5)" filter="url(#glowBig)"/>
+  <circle cx="1020" cy="460" r="180" fill="rgba(17, 100, 102, 0.18)" filter="url(#glowBig)"/>
 
   <!-- Lightning Bolt Icon -->
   <g transform="translate(120, 210) scale(2.2)">
-    <rect width="64" height="64" rx="14" fill="#0f1430" stroke="#00f0ff" stroke-width="2"/>
+    <rect width="64" height="64" rx="14" fill="#2c3531"/>
     <path d="M35 8L15 34h16l-3 22 21-28H32l3-20z" fill="url(#neon)" filter="url(#glowBig)"/>
   </g>
 
   <!-- Typography -->
-  <text x="310" y="275" font-family="'Orbitron', -apple-system, sans-serif" font-weight="900" font-size="76" fill="#ffffff" letter-spacing="4">
-    PLAY<tspan fill="#00f0ff">RUSH</tspan>
+  <text x="310" y="275" font-family="Manrope, -apple-system, sans-serif" font-weight="800" font-size="76" fill="#2c3531" letter-spacing="4">
+    PLAY<tspan fill="#116466">RUSH</tspan>
   </text>
-  <text x="315" y="340" font-family="'Outfit', -apple-system, sans-serif" font-weight="800" font-size="34" fill="#a855f7" letter-spacing="3">
+  <text x="315" y="340" font-family="Manrope, -apple-system, sans-serif" font-weight="700" font-size="34" fill="#116466" letter-spacing="3">
     PLAY. COMPETE. REPEAT.
   </text>
-  <text x="315" y="388" font-family="'Outfit', -apple-system, sans-serif" font-weight="400" font-size="22" fill="#94a3b8">
+  <text x="315" y="388" font-family="Manrope, -apple-system, sans-serif" font-weight="400" font-size="22" fill="#3e5c5f">
     Free Instant-Play Browser Arcade Gaming &bull; Featured: Neon Dodge
   </text>
 
   <!-- Badge Pill -->
-  <rect x="315" y="425" width="230" height="42" rx="21" fill="rgba(0, 240, 255, 0.12)" stroke="#00f0ff" stroke-width="1.5"/>
-  <circle cx="338" cy="446" r="6" fill="#00ff88"/>
-  <text x="355" y="453" font-family="'Orbitron', sans-serif" font-size="14" font-weight="700" fill="#00f0ff" letter-spacing="1.5">
+  <rect x="315" y="425" width="230" height="42" rx="21" fill="rgba(255, 203, 154, 0.55)" stroke="#116466" stroke-width="1.5"/>
+  <circle cx="338" cy="446" r="6" fill="#116466"/>
+  <text x="355" y="453" font-family="Geist Mono, monospace" font-size="14" font-weight="600" fill="#116466" letter-spacing="1.5">
     LIVE &bull; NO DOWNLOAD
   </text>
 
   <!-- Neon Dodge Preview Ship Graphic -->
   <g transform="translate(940, 310) scale(1.8)" filter="url(#glowBig)">
-    <polygon points="0,-40 30,24 10,18 0,30 -10,18 -30,24" fill="#0c1228" stroke="#00f0ff" stroke-width="3"/>
-    <circle cx="0" cy="-4" r="6" fill="#00ff88"/>
-    <circle cx="-60" cy="-50" r="10" fill="#ff007f"/>
-    <circle cx="50" cy="50" r="12" fill="#fbbf24"/>
+    <polygon points="0,-40 30,24 10,18 0,30 -10,18 -30,24" fill="#2c3531" stroke="#d1e8e2" stroke-width="3"/>
+    <circle cx="0" cy="-4" r="6" fill="#ffcb9a"/>
+    <circle cx="-60" cy="-50" r="10" fill="#d9b08c"/>
+    <circle cx="50" cy="50" r="12" fill="#116466"/>
   </g>
 </svg>

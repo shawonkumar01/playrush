@@ -54,11 +54,11 @@ const server = http.createServer((req, res) => {
         res.end(`
           <!DOCTYPE html>
           <html>
-          <head><title>404 Not Found - PlayRush</title><style>body{background:#070913;color:#00f0ff;font-family:sans-serif;text-align:center;padding:50px;}</style></head>
+          <head><title>404 Not Found - PlayRush</title><style>body{background:#d1e8e2;color:#2c3531;font-family:Manrope,sans-serif;text-align:center;padding:50px;}a{color:#116466;}</style></head>
           <body>
             <h1>404 - Page Not Found</h1>
             <p>The requested file <code>${escapedPath}</code> was not found on PlayRush.</p>
-            <p><a href="/" style="color:#a855f7;">Return to Portal</a></p>
+            <p><a href="/">Return to Portal</a></p>
           </body>
           </html>
         `);

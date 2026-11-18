@@ -270,205 +270,26 @@ const WORD_BANK = [
    ========================================================================== */
 class SoundFX {
   constructor() {
-    this.ctx = null;
-    this.isMuted = false;
-    this.loadMuteState();
+    this.isMuted = true;
+    this.atmoEnabled = false;
+    this.musicEnabled = false;
   }
-
-  loadMuteState() {
-    try {
-      const stored = localStorage.getItem('playrush_kk_sound_muted');
-      this.isMuted = stored === 'true';
-    } catch (e) {
-      this.isMuted = false;
-    }
-  }
-
-  saveMuteState() {
-    try {
-      localStorage.setItem('playrush_kk_sound_muted', String(this.isMuted));
-    } catch (e) {
-      // Ignored
-    }
-  }
-
-  initContext() {
-    if (!this.ctx) {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (AudioContextClass) {
-        this.ctx = new AudioContextClass();
-      }
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  }
-
-  toggleMute() {
-    this.isMuted = !this.isMuted;
-    this.saveMuteState();
-    return this.isMuted;
-  }
-
-  playClick() {
-    if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
-
-    try {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.04);
-
-      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.04);
-    } catch (e) {
-      // Audio fallback
-    }
-  }
-
-  playReveal() {
-    if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
-
-    try {
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-      notes.forEach((freq, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const startTime = this.ctx.currentTime + idx * 0.08;
-
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, startTime);
-
-        gain.gain.setValueAtTime(0.001, startTime);
-        gain.gain.linearRampToValueAtTime(0.25, startTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(startTime);
-        osc.stop(startTime + 0.36);
-      });
-    } catch (e) {}
-  }
-
-  playNight() {
-    if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
-
-    try {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(140, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(55, this.ctx.currentTime + 0.8);
-
-      gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.3, this.ctx.currentTime + 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.9);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.9);
-    } catch (e) {}
-  }
-
-  playElimination() {
-    if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
-
-    try {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(160, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.6);
-
-      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.65);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.65);
-    } catch (e) {}
-  }
-
-  playSave() {
-    if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
-
-    try {
-      const notes = [880, 1174.66, 1760]; // A5, D6, A6
-      notes.forEach((freq, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const startTime = this.ctx.currentTime + idx * 0.09;
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, startTime);
-
-        gain.gain.setValueAtTime(0.001, startTime);
-        gain.gain.linearRampToValueAtTime(0.2, startTime + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(startTime);
-        osc.stop(startTime + 0.41);
-      });
-    } catch (e) {}
-  }
-
-  playVictory() {
-    if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
-
-    try {
-      const fanfare = [
-        { f: 523.25, d: 0.12 }, // C5
-        { f: 659.25, d: 0.12 }, // E5
-        { f: 783.99, d: 0.12 }, // G5
-        { f: 1046.5, d: 0.45 }  // C6
-      ];
-      let t = this.ctx.currentTime;
-      fanfare.forEach(note => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(note.f, t);
-
-        gain.gain.setValueAtTime(0.001, t);
-        gain.gain.linearRampToValueAtTime(0.28, t + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + note.d);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(t);
-        osc.stop(t + note.d + 0.01);
-        t += note.d * 0.85;
-      });
-    } catch (e) {}
-  }
+  playClick() {} playReveal() {} playVote() {} playElimination() {}
+  playNight() {} playDay() {} playVictory() {} playWhisper() {}
+  playLaughter() {} playScream() {} playDoorCreak() {} playFootsteps() {}
+  playKnocks() {} playBell() {} playHeartbeat() {} playBuffer() {}
+  synthFallback() {} initContext() {} preloadAssets() {}
+  toggleMute() { return true; }
+  toggleAtmo() { return false; }
+  toggleMusic() { return false; }
+  startDrone() {} stopDrone() {} startScheduler() {} stopScheduler() {}
+  startHeartbeatLoop() {} stopHeartbeatLoop() {}
+  startSetupAmbience() {} stopSetupAmbience() {}
+  startSetupMelody() {} stopSetupMelody() {}
+  startMusicLayers() {} stopMusicLayers() {}
+  setPhase() {} testSound() {}
 }
 
-/* ==========================================================================
-   GAME STATE CONTROLLER
-   ========================================================================== */
 class KillerKillerGame {
   constructor() {
     this.sound = new SoundFX();
@@ -553,8 +374,6 @@ class KillerKillerGame {
      ------------------------------------------------------------------------ */
   initDomElements() {
     // Header & Global
-    this.btnHeaderSound = document.getElementById('btnHeaderSound');
-    this.soundToggleIcon = document.getElementById('soundToggleIcon');
     this.btnShowRules = document.getElementById('btnShowRules');
     this.btnShowHistory = document.getElementById('btnShowHistory');
     this.btnNewGameHeader = document.getElementById('btnNewGameHeader');
@@ -592,7 +411,6 @@ class KillerKillerGame {
     this.roleCountDoctor = document.getElementById('roleCountDoctor');
     this.roleCountCitizens = document.getElementById('roleCountCitizens');
     this.playerCountBadge = document.getElementById('playerCountBadge');
-    this.btnQuickSample = document.getElementById('btnQuickSample');
     this.inputPlayerName = document.getElementById('inputPlayerName');
     this.btnAddPlayer = document.getElementById('btnAddPlayer');
     this.setupErrorMsg = document.getElementById('setupErrorMsg');
@@ -605,7 +423,6 @@ class KillerKillerGame {
     this.btnHandoffReady = document.getElementById('btnHandoffReady');
 
     // Role Reveal
-    this.revealPlayerGreeting = document.getElementById('revealPlayerGreeting');
     this.roleCardShield = document.getElementById('roleCardShield');
     this.btnRevealRole = document.getElementById('btnRevealRole');
     this.roleCardRevealed = document.getElementById('roleCardRevealed');
@@ -751,6 +568,9 @@ class KillerKillerGame {
       activeView.classList.remove('hidden');
       activeView.classList.add('active-view');
       window.scrollTo(0, 0);
+      if (this.sound && typeof this.sound.setPhase === 'function') {
+        this.sound.setPhase(activeView.id);
+      }
     }
   }
 
@@ -758,12 +578,6 @@ class KillerKillerGame {
      Event Bindings
      ------------------------------------------------------------------------ */
   bindEvents() {
-    // Sound Toggle
-    this.btnHeaderSound.addEventListener('click', () => {
-      this.sound.playClick();
-      this.sound.toggleMute();
-      this.updateSoundIcon();
-    });
 
     // Modals
     this.btnShowRules.addEventListener('click', () => {
@@ -841,12 +655,6 @@ class KillerKillerGame {
       }
     });
 
-    this.btnQuickSample.addEventListener('click', () => {
-      this.sound.playClick();
-      this.playerNames = ['Alex', 'Jordan', 'Sam', 'Taylor', 'Morgan', 'Casey'];
-      this.renderPlayerList();
-      this.updateRoleDistributionPreview();
-    });
 
     this.toggleSecretWord.addEventListener('change', () => {
       this.sound.playClick();
@@ -1053,15 +861,7 @@ class KillerKillerGame {
     });
   }
 
-  updateSoundIcon() {
-    if (this.sound.isMuted) {
-      this.soundToggleIcon.innerHTML = `<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>`;
-      this.btnHeaderSound.classList.add('muted');
-    } else {
-      this.soundToggleIcon.innerHTML = `<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>`;
-      this.btnHeaderSound.classList.remove('muted');
-    }
-  }
+  updateSoundIcon() {}
 
   /* ------------------------------------------------------------------------
      Player Manager (Setup Screen)
@@ -1289,6 +1089,12 @@ class KillerKillerGame {
       isAlive: true,
       eliminatedInRound: null
     }));
+
+    // Shuffle player order so turn sequence differs every match
+    for (let i = this.players.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
+    }
   }
 
   /* ------------------------------------------------------------------------
@@ -1340,7 +1146,7 @@ class KillerKillerGame {
 
     if (player.role === 'KILLER') {
       this.roleCardRevealed.classList.add('theme-killer');
-      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#ff0055"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
+      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#c6283d"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
       this.roleBadgeText.textContent = 'SECRET ENEMY';
       this.roleTitleText.textContent = 'KILLER';
       this.roleDescriptionText.textContent =
@@ -1358,7 +1164,7 @@ class KillerKillerGame {
       }
     } else if (player.role === 'POLICE') {
       this.roleCardRevealed.classList.add('theme-police');
-      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#0099ff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>`;
+      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#779b83"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>`;
       this.roleBadgeText.textContent = 'INVESTIGATOR';
       this.roleTitleText.textContent = 'POLICE';
       this.roleDescriptionText.textContent =
@@ -1376,7 +1182,7 @@ class KillerKillerGame {
       }
     } else if (player.role === 'DOCTOR') {
       this.roleCardRevealed.classList.add('theme-doctor');
-      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#00ff88"><path d="M19 10.5h-5.5V5c0-.55-.45-1-1-1h-1c-.55 0-1 .45-1 1v5.5H5c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1h5.5V19c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-5.5H19c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1z"/></svg>`;
+      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#66849c"><path d="M19 10.5h-5.5V5c0-.55-.45-1-1-1h-1c-.55 0-1 .45-1 1v5.5H5c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1h5.5V19c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-5.5H19c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1z"/></svg>`;
       this.roleBadgeText.textContent = 'PROTECTOR';
       this.roleTitleText.textContent = 'DOCTOR';
       this.roleDescriptionText.textContent =
@@ -1395,7 +1201,7 @@ class KillerKillerGame {
     } else {
       // CITIZEN
       this.roleCardRevealed.classList.add('theme-citizen');
-      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#00f0ff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+      this.roleIconContainer.innerHTML = `<svg viewBox="0 0 24 24" fill="#d9d9d9"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
       this.roleBadgeText.textContent = 'INNOCENT CITIZEN';
       this.roleTitleText.textContent = 'CITIZEN';
       this.roleDescriptionText.textContent =
@@ -1415,7 +1221,7 @@ class KillerKillerGame {
   }
 
   showRoleRevealScreen(player) {
-    this.revealPlayerGreeting.textContent = `Hello, ${player.name}`;
+    if (this.revealPlayerGreeting) this.revealPlayerGreeting.textContent = `Hello, ${player.name}`;
     this.roleCardShield.classList.remove('hidden');
     this.roleCardRevealed.classList.add('hidden');
     this.oneFlowActionBox.classList.add('hidden');
@@ -1471,7 +1277,7 @@ class KillerKillerGame {
   }
 
   showOneFlowPlayerScreen(player) {
-    this.revealPlayerGreeting.textContent = `Hello, ${player.name}`;
+    if (this.revealPlayerGreeting) this.revealPlayerGreeting.textContent = `Hello, ${player.name}`;
     this.roleCardShield.classList.remove('hidden');
     this.roleCardRevealed.classList.add('hidden');
 
@@ -1849,7 +1655,7 @@ class KillerKillerGame {
     });
 
     if (this.players.every(p => p.isAlive)) {
-      this.dayEliminatedList.innerHTML = '<span style="font-size:0.75rem; color:#64748b;">None</span>';
+      this.dayEliminatedList.innerHTML = '<span style="font-size:0.75rem; color:#a1a3ad;">None</span>';
     }
 
     this.btnProceedToClues.textContent = this.secretWordEnabled
@@ -1869,9 +1675,13 @@ class KillerKillerGame {
     const living = this.players.filter(p => p.isAlive);
     if (living.length === 0) return;
 
-    // Rotate starting speaker each round
-    const offset = (this.round - 1) % living.length;
-    this.speakerOrder = [...living.slice(offset), ...living.slice(0, offset)];
+    // Fresh randomized speaking order every clue round using Fisher-Yates shuffle
+    const shuffled = [...living];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    this.speakerOrder = shuffled;
     this.speakerIndex = 0;
 
     this.renderSpeakerTurn();
@@ -2261,6 +2071,12 @@ class KillerKillerGame {
     // Advance Round and proceed to next Night
     this.round++;
     this.addPublicHistoryLog(`Round ${this.round} started.`);
+
+    // Re-shuffle player order every round
+    for (let i = this.players.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
+    }
     this.sound.playNight();
 
     if (this.gameMode === 'ONE_FLOW') {
@@ -2330,8 +2146,8 @@ class KillerKillerGame {
     this.players.forEach(p => {
       const tr = document.createElement('tr');
       const statusText = p.isAlive
-        ? '<span style="color:#6ee7b7; font-weight:700;">Survived</span>'
-        : `<span style="color:#fca5a5;">Eliminated (Round ${p.eliminatedInRound || 1})</span>`;
+        ? '<span style="color:#779b83; font-weight:700;">Survived</span>'
+        : `<span style="color:#c6283d;">Eliminated (Round ${p.eliminatedInRound || 1})</span>`;
 
       tr.innerHTML = `
         <td><strong>${this.escapeHtml(p.name)}</strong></td>
@@ -2355,7 +2171,7 @@ class KillerKillerGame {
   renderHistoryModal() {
     this.historyLogList.innerHTML = '';
     if (this.publicHistory.length === 0) {
-      this.historyLogList.innerHTML = '<p style="color:#64748b; font-size:0.85rem;">No events recorded yet.</p>';
+      this.historyLogList.innerHTML = '<p style="color:#a1a3ad; font-size:0.85rem;">No events recorded yet.</p>';
       return;
     }
 
@@ -2402,3 +2218,214 @@ class KillerKillerGame {
 document.addEventListener('DOMContentLoaded', () => {
   window.killerKillerGame = new KillerKillerGame();
 });
+
+/* ==========================================================================
+   Compact Gameplay — "?" help button + collapsible instruction text
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const COLLAPSIBLE = [
+    '.handoff-subtext', '.shield-instruction',
+    '.role-objective-desc', '.police-subnote',
+    '.nomination-desc', '.final-defense-desc', '.voting-instruction',
+    '.killer-guess-desc', '.discussion-prompt',
+    '.player-greeting', '.privacy-warning', '.shield-instruction',
+    '.role-objective-desc', '.secret-word-rules'
+  ];
+  document.querySelectorAll('.game-view').forEach(view => {
+    if (view.id === 'viewSetup') return;
+    COLLAPSIBLE.forEach(sel => {
+      view.querySelectorAll(sel).forEach(el => el.classList.add('help-collapsible'));
+    });
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'kk-help-btn';
+    btn.textContent = '?';
+    btn.setAttribute('aria-label', 'Show instructions');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = view.classList.toggle('help-open');
+      btn.classList.toggle('help-active', open);
+      btn.setAttribute('aria-expanded', String(open));
+    });
+    view.appendChild(btn);
+  });
+});
+
+/* ==========================================================================
+   Haunted Atmosphere Lightning Scheduler (Visual Depth)
+   ========================================================================== */
+(function () {
+  'use strict';
+  const atmo = document.querySelector('.kk-atmo');
+  // Extra lightning positions: left, right, bottom
+  ['pos-left','pos-right','pos-bottom','pos-tl','pos-tr','pos-bl','pos-br','pos-center'].forEach(pos => {
+    const f = document.createElement('div');
+    f.className = 'atmo-flash ' + pos;
+    atmo.appendChild(f);
+  });
+
+  let flashIdx = 0;
+  function scheduleLightning() {
+    setTimeout(() => {
+      if (!document.hidden && atmo) {
+        // Sequential traveling flash — one position at a time, like eyes blinking in turn
+        const flashes = atmo.querySelectorAll('.atmo-flash');
+        const f = flashes[flashIdx % flashes.length];
+        flashIdx++;
+        if (f) {
+          f.classList.remove('strike');
+          void f.offsetWidth;
+          f.classList.add('strike');
+        }
+      }
+      scheduleLightning();
+    }, 1200 + Math.random() * 1800);
+  }
+  scheduleLightning();
+})();
+
+/* ==========================================================================
+   Haunted Horror FX — dynamic blood/splatter/eyes/ash + phase-reactive states
+   ========================================================================== */
+(function () {
+  'use strict';
+  const atmo = document.querySelector('.kk-atmo');
+  if (!atmo || !atmo.querySelector('.atmo-image')) return;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
+
+  const fx = document.createElement('div');
+  fx.className = 'atmo-fx';
+  atmo.appendChild(fx);
+
+  // Blood drips along the top edge (varied positions/lengths)
+  const dripCount = Math.min(24, Math.floor(window.innerWidth / 60));
+  for (let i = 0; i < dripCount; i++) {
+    const d = document.createElement('div');
+    d.className = 'blood-drip';
+    const side = Math.random() < 0.5;
+    d.style.left = (side ? Math.random() * 18 : 82 + Math.random() * 18) + '%';
+    d.style.setProperty('--drip-len', (50 + Math.random() * 110) + 'px');
+    d.style.animationDelay = (-Math.random() * 9) + 's';
+    d.style.animationDuration = (6 + Math.random() * 5) + 's';
+    fx.appendChild(d);
+  }
+
+  // Red eyes — two pairs in dark zones
+  [[6,18],[14,55],[24,30],[34,70],[44,12],[54,45],[64,80],[74,22],[84,60],[90,38],[28,85],[48,28],[68,50],[88,72]].forEach(([x, y], i) => {
+    const e = document.createElement('div');
+    e.className = 'red-eyes';
+    e.style.left = x + '%'; e.style.top = y + '%';
+    e.style.animationDelay = (-i * 4 - Math.random() * 6) + 's';
+    e.style.animationDuration = (10 + Math.random() * 8) + 's';
+    fx.appendChild(e);
+  });
+
+  // Shadow figure crossing occasionally
+  const fig = document.createElement('div');
+  fig.className = 'shadow-figure';
+  fig.style.left = '0'; fig.style.bottom = '14%';
+  fig.style.animationDelay = '-6s';
+  fx.appendChild(fig);
+  const fig2 = fig.cloneNode(true);
+  fig2.style.animationDelay = '-15s';
+  fig2.style.opacity = '0.7';
+  fx.appendChild(fig2);
+
+  // Ash particles
+  for (let i = 0; i < 36; i++) {
+    const a = document.createElement('div');
+    a.className = 'atmo-ash';
+    a.style.left = Math.random() * 100 + '%';
+    a.style.top = -10 - Math.random() * 30 + 'px';
+    a.style.setProperty('--ash-dx', (Math.random() * 120 - 60) + 'px');
+    a.style.animationDuration = (14 + Math.random() * 18) + 's';
+    a.style.animationDelay = (-Math.random() * 30) + 's';
+    a.style.opacity = 0.3 + Math.random() * 0.4;
+    fx.appendChild(a);
+  }
+
+  // Edge flash element for killer action
+  const edgeFlash = document.createElement('div');
+  edgeFlash.className = 'atmo-edge-flash';
+  atmo.appendChild(edgeFlash);
+
+  function splat(xPct, yPct, big) {
+    const s = document.createElement('div');
+    s.className = 'blood-splat';
+    s.style.left = (xPct - 4) + '%';
+    s.style.top = yPct + '%';
+    s.style.transform = 'scale(' + (big ? 1.6 : 1) + ')';
+    fx.appendChild(s);
+    setTimeout(() => s.remove(), 1800);
+    if (big) {
+      [[xPct - 10, yPct + 4], [xPct + 8, yPct + 8]].forEach(([sx, sy]) => {
+        const s2 = document.createElement('div');
+        s2.className = 'blood-splat';
+        s2.style.left = sx + '%'; s2.style.top = sy + '%';
+        fx.appendChild(s2);
+        setTimeout(() => s2.remove(), 1800);
+      });
+    }
+  }
+
+  // Phase-reactive atmosphere classes
+  const FX_MAP = {
+    viewNightIntro: 'atmo-night',
+    viewNightKiller: 'atmo-night atmo-killer',
+    viewNightDoctor: 'atmo-night',
+    viewNightPolice: 'atmo-night',
+    viewPoliceResult: 'atmo-night',
+    viewVoting: 'atmo-vote',
+    viewVoteResults: '',
+    viewVictory: 'atmo-victory'
+  };
+  const FX_CLASSES = ['atmo-night','atmo-killer','atmo-vote','atmo-victory','atmo-victory-killer','atmo-victory-town'];
+
+  function refreshAtmosphere() {
+    const active = document.querySelector('.game-view:not(.hidden)');
+    if (!active) return;
+    // detect victory type from visible text
+    let victoryClass = '';
+    if (active.id === 'viewVictory') {
+      const txt = active.textContent.toLowerCase();
+      victoryClass = txt.includes('killer') && !txt.includes('citizen') && !txt.includes('town')
+        ? 'atmo-victory-killer' : 'atmo-victory-town';
+    }
+    FX_CLASSES.forEach(c => atmo.classList.remove(c));
+    const map = FX_MAP[active.id] || '';
+    map.split(' ').filter(Boolean).forEach(c => atmo.classList.add(c));
+    if (victoryClass) atmo.classList.add(victoryClass);
+    // killer action edge flash
+    if (active.id === 'viewNightKiller') {
+      edgeFlash.classList.remove('pulse'); void edgeFlash.offsetWidth; edgeFlash.classList.add('pulse');
+    }
+  }
+
+  const obs = new MutationObserver(refreshAtmosphere);
+  document.querySelectorAll('.game-view').forEach(v =>
+    obs.observe(v, { attributes: true, attributeFilter: ['class'] }));
+  refreshAtmosphere();
+
+  // Splatter on actual elimination events only
+  const elimObs = new MutationObserver(() => {
+    document.querySelectorAll('[class*="eliminat"]').forEach(el => {
+      if (el.offsetParent !== null && !el.dataset.fxSeen) {
+        el.dataset.fxSeen = '1';
+        splat(8, 12, true);
+        splat(88, 20, false);
+        splat(50, 4, false);
+      }
+    });
+  });
+  elimObs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
+  // Rare ambient splatter (very infrequent)
+  setInterval(() => {
+    if (!document.hidden && Math.random() < 0.6) {
+      splat(Math.random() * 80 + 5, Math.random() < 0.5 ? 6 + Math.random() * 10 : 80 + Math.random() * 12, false);
+    }
+  }, 20000);
+})();

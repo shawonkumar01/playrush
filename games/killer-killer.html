@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Killer Killer - Local Multiplayer Social Deduction & Secret Word Challenge | PlayRush</title>
+  <title>Killer Killer - Haunted Blood Horror Social Deduction | PlayRush</title>
 
-  <meta name="description" content="Play Killer Killer on PlayRush! Pass-and-play local multiplayer social deduction game with Killer, Police, Doctor, Citizens and an intense Secret Word Challenge.">
-  <meta name="keywords" content="killer killer, mafia game, secret word challenge, pass and play, local multiplayer, party game, social deduction, browser game, playrush">
+  <meta name="description" content="Enter the haunted mansion in Killer Killer on PlayRush! Pass-and-play psychological horror social deduction with Killer, Police, Doctor, Citizens and the Secret Word Challenge.">
+  <meta name="keywords" content="killer killer, horror game, haunted mansion, mafia game, secret word challenge, pass and play, local multiplayer, party game, social deduction, browser game, playrush">
   <meta name="author" content="PlayRush Gaming">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://playrush-peach.vercel.app/games/killer-killer.html">
@@ -14,20 +14,24 @@
   <!-- Open Graph -->
   <meta property="og:type" content="game">
   <meta property="og:site_name" content="PlayRush">
-  <meta property="og:title" content="Killer Killer - Local Multiplayer Social Deduction | PlayRush">
-  <meta property="og:description" content="Local pass-and-play social deduction party game. Catch the Killer, protect the citizens, or bluff your way through the Secret Word Challenge!">
+  <meta property="og:title" content="Killer Killer - Haunted Blood Horror Social Deduction | PlayRush">
+  <meta property="og:description" content="Local pass-and-play psychological horror party game. Catch the Killer, protect the citizens, or bluff your way through the darkness!">
   <meta property="og:url" content="https://playrush-peach.vercel.app/games/killer-killer.html">
   <meta property="og:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Killer Killer - Local Multiplayer Social Deduction | PlayRush">
-  <meta name="twitter:description" content="Pass-and-play social deduction with a Secret Word twist! Play free with 4-12 friends on one device.">
+  <meta name="twitter:title" content="Killer Killer - Haunted Blood Horror Social Deduction | PlayRush">
+  <meta name="twitter:description" content="Pass-and-play gothic horror social deduction with a Secret Word twist! Play free with 4-12 friends on one shared device.">
   <meta name="twitter:image" content="https://playrush-peach.vercel.app/assets/og-banner.svg">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%23ff0055'/><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z' fill='%23ffffff'/></svg>">
+
+  <!-- Gothic Horror Typography (Cinzel Decorative, Cinzel, Manrope, Geist Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Game Stylesheet -->
   <link rel="stylesheet" href="killer-killer.css">
@@ -35,26 +39,26 @@
 <body>
 
   <div class="arcade-viewport">
-    <!-- Top Header Bar -->
+    <!-- Top Gothic Header Bar -->
     <header class="arcade-header">
       <div class="header-left">
         <a href="../index.html" class="arcade-brand" title="Return to PlayRush Home">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-          PLAYRUSH
+          <span class="arcade-brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </span>
+          PLAY<span class="arcade-brand-accent">RUSH</span>
         </a>
-        <div class="header-badge-tag">
-          KILLER KILLER <span class="badge-mini">LOCAL PARTY</span>
-        </div>
+      </div>
+
+      <div class="arcade-title-tag">
+        KILLER KILLER v1.0
       </div>
 
       <div class="arcade-controls-top">
         <!-- Sound FX Toggle -->
-        <button class="header-icon-btn" id="btnHeaderSound" title="Toggle Sound FX" aria-label="Toggle Sound FX">
-          <svg viewBox="0 0 24 24" id="soundToggleIcon" aria-hidden="true">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-          </svg>
-        </button>
-
+        
+        <!-- Haunted Atmosphere Soundscape Toggle -->
+                
         <!-- Rules / Help Button -->
         <button class="header-icon-btn" id="btnShowRules" title="How to Play Rules" aria-label="How to Play Rules">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -79,6 +83,43 @@
       </div>
     </header>
 
+    <!-- Haunted Mansion Atmosphere Layers (12-layer atmospheric depth) -->
+    <div class="kk-atmo" aria-hidden="true">
+      <div class="atmo-fallback"></div>
+      <div class="atmo-image">
+        <!-- Glowing red mansion windows with passing shadows -->
+        <div class="mansion-window window-left"></div>
+        <div class="mansion-window window-tower"></div>
+        <div class="mansion-window window-right"></div>
+        <div class="window-shadow-silhouette"></div>
+      </div>
+      <div class="atmo-burgundy-grading"></div>
+      <div class="atmo-dark-gradient"></div>
+      <div class="atmo-moon"></div>
+      <div class="atmo-moon-cloud"></div>
+      <div class="atmo-fog atmo-fog-back"></div>
+      <div class="atmo-fog atmo-fog-mid"></div>
+      <div class="atmo-fog atmo-fog-front"></div>
+      <div class="atmo-trees"></div>
+      <div class="atmo-flash"></div>
+      <div class="atmo-vignette"></div>
+
+      <!-- Animated Blood Dripping Curtain -->
+      <div class="atmo-blood-curtain">
+        <svg class="blood-curtain-svg" viewBox="0 0 1440 90" preserveAspectRatio="none">
+          <path class="blood-curtain-path" d="M0,0 L1440,0 L1440,25 Q1380,48 1350,22 Q1300,52 1260,20 Q1200,65 1160,25 Q1110,48 1070,22 Q1010,75 970,26 Q920,50 880,24 Q820,70 780,22 Q720,54 680,25 Q620,80 580,24 Q520,50 480,22 Q420,68 380,24 Q320,52 280,22 Q220,74 180,25 Q120,48 80,22 Q40,60 0,25 Z"/>
+        </svg>
+      </div>
+
+      <!-- Blood Splatter Corners -->
+      <div class="atmo-blood-corners">
+        <div class="corner-splat top-left"></div>
+        <div class="corner-splat top-right"></div>
+        <div class="corner-splat bottom-left"></div>
+        <div class="corner-splat bottom-right"></div>
+      </div>
+    </div>
+
     <!-- Main Game Container / Screen Switcher -->
     <main class="game-container" id="gameApp">
 
@@ -87,27 +128,23 @@
            ======================================================== -->
       <section class="game-view active-view" id="viewSetup" aria-label="Game Setup">
         <div class="setup-hero">
-          <div class="game-badge-pulse">LOCAL MULTIPLAYER DEDUCTION</div>
           <h1 class="game-logo-title">KILLER <span>KILLER</span></h1>
-          <p class="setup-subtitle">
-            Pass-and-play social deduction with a Secret Word twist. 4 to 12 players on one shared device.
-          </p>
         </div>
 
         <div class="setup-grid">
           <!-- Left Column: Settings -->
           <div class="setup-card settings-card">
-            <h2 class="card-heading">GAME SETTINGS</h2>
+            <h2 class="card-heading">RITUAL SETTINGS</h2>
 
             <!-- Session Name -->
             <div class="form-group">
-              <label for="inputGameName" class="form-label">Session / Game Name (Optional)</label>
-              <input type="text" id="inputGameName" class="neon-input" maxlength="28" placeholder="e.g. Mystery Manor #1">
+              <label for="inputGameName" class="form-label">Manor Session / Match Name (Optional)</label>
+              <input type="text" id="inputGameName" class="neon-input" maxlength="28" placeholder="e.g. Midnight Seance #1">
             </div>
 
             <!-- Game Mode Selection -->
             <div class="form-group game-mode-group">
-              <label class="form-label">Game Mode</label>
+              <label class="form-label">Game Mode Selection</label>
               <div class="mode-select-grid" role="radiogroup" aria-label="Game Mode Selection">
                 <div class="mode-option-card selected" id="optModeOneFlow" role="radio" aria-checked="true" tabindex="0">
                   <div class="mode-card-header">
@@ -115,14 +152,14 @@
                     <span class="mode-title">One Flow Mode</span>
                     <span class="mode-tag-recommended">DEFAULT</span>
                   </div>
-                  <p class="mode-desc">Reveal your role, complete your secret action, and pass the device. No separate night handoff.</p>
+                  <p class="mode-desc">Reveal your role, complete your secret action immediately, and pass the device. No separate night handoff.</p>
                 </div>
                 <div class="mode-option-card" id="optModeSeparateNight" role="radio" aria-checked="false" tabindex="0">
                   <div class="mode-card-header">
                     <span class="mode-radio-dot"></span>
                     <span class="mode-title">Separate Night Phase</span>
                   </div>
-                  <p class="mode-desc">Everyone receives their roles first. Secret night actions happen later when night falls.</p>
+                  <p class="mode-desc">Everyone receives their roles first. Secret night actions happen later when midnight falls.</p>
                 </div>
               </div>
             </div>
@@ -155,10 +192,10 @@
             <div class="form-group timer-select-group">
               <label for="timerDurationSelect" class="form-label">Discussion Duration</label>
               <select id="timerDurationSelect" class="neon-select">
-                <option value="60">1 Minute (Fast)</option>
+                <option value="60">1 Minute (Fast Terror)</option>
                 <option value="90">1.5 Minutes</option>
                 <option value="120" selected>2 Minutes (Standard)</option>
-                <option value="180">3 Minutes (Extended)</option>
+                <option value="180">3 Minutes (Extended Investigation)</option>
               </select>
             </div>
 
@@ -190,13 +227,12 @@
           <!-- Right Column: Player Management -->
           <div class="setup-card players-card">
             <div class="card-heading-row">
-              <h2 class="card-heading">PLAYERS (<span id="playerCountBadge">4 / 12</span>)</h2>
-              <button type="button" class="btn-ghost-sm" id="btnQuickSample" title="Fill sample players for quick testing">Fill Sample</button>
+              <h2 class="card-heading">LIVING SOULS (<span id="playerCountBadge">4 / 12</span>)</h2>
             </div>
 
             <!-- Add Player Form -->
             <form class="player-input-row" onsubmit="return false;">
-              <input type="text" id="inputPlayerName" class="neon-input" maxlength="16" placeholder="Enter player name...">
+              <input type="text" id="inputPlayerName" class="neon-input" maxlength="16" placeholder="Enter soul name...">
               <button type="button" class="btn-action-primary" id="btnAddPlayer">+ Add</button>
             </form>
 
@@ -212,7 +248,7 @@
             <div class="setup-actions">
               <button type="button" class="btn-start-game" id="btnStartGame">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                START GAME
+                ENTER THE MANOR
               </button>
             </div>
           </div>
@@ -228,9 +264,9 @@
             <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
           </div>
           <div class="handoff-badge">PASS &amp; PLAY PRIVACY</div>
-          <h2 class="handoff-title">Pass device to:</h2>
+          <h2 class="handoff-title">Pass device secretly to:</h2>
           <div class="handoff-player-name" id="handoffPlayerName">Player</div>
-          <p class="handoff-subtext" id="handoffTaskSubtext">Make sure no one else is looking at the screen.</p>
+          <p class="handoff-subtext" id="handoffTaskSubtext">Pass the device secretly. Make sure no one else is looking at the screen.</p>
 
           <button type="button" class="btn-handoff-ready" id="btnHandoffReady">
             <span>I'M READY</span>
@@ -244,16 +280,11 @@
            ======================================================== -->
       <section class="game-view hidden" id="viewRoleReveal" aria-label="Secret Role Reveal">
         <div class="role-reveal-container">
-          <div class="reveal-header">
-            <span class="player-greeting" id="revealPlayerGreeting">Hello, Alex</span>
-            <span class="privacy-warning">Keep your role strictly confidential</span>
-          </div>
-
-          <!-- Unopened Flap / Tap to Reveal -->
+                    <!-- Unopened Flap / Tap to Reveal -->
           <div class="role-card-shield" id="roleCardShield">
             <div class="shield-scanner"></div>
             <svg viewBox="0 0 24 24" class="lock-icon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-            <p class="shield-instruction">Tap the button below to view your secret role and secret word.</p>
+            <p class="shield-instruction">Break the seal below to reveal your secret identity and secret word.</p>
             <button type="button" class="btn-reveal-action" id="btnRevealRole">REVEAL MY ROLE</button>
           </div>
 
@@ -328,7 +359,7 @@
             <svg viewBox="0 0 24 24"><path d="M12.3 2a10 10 0 0 0-1.9 20 10 10 0 0 0 11.6-11.6A10 10 0 0 1 12.3 2z"/></svg>
           </div>
           <h2 class="night-title">NIGHT HAS FALLEN</h2>
-          <p class="night-quote">"Everyone, close your eyes. The city sleeps while darkness moves..."</p>
+          <p class="night-quote">&ldquo;Close your eyes. Darkness descends upon the manor as the Killer stalks...&rdquo;</p>
           <button type="button" class="btn-night-action" id="btnStartNightActions">BEGIN NIGHT ACTIONS</button>
         </div>
       </section>
@@ -378,7 +409,7 @@
           <div class="police-badge-icon">
             <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
           </div>
-          <div class="police-confidential-tag">TOP SECRET INTELLIGENCE</div>
+          <div class="police-confidential-tag">TOP SECRET INVESTIGATION</div>
           <h2 class="police-report-heading">Investigation Outcome</h2>
           <div class="police-outcome-box" id="policeResultText">
             <!-- Injected via JS -->
@@ -405,11 +436,11 @@
           <!-- Player Status Breakdown -->
           <div class="day-player-status-grid">
             <div class="status-col">
-              <span class="status-col-title">LIVING PLAYERS</span>
+              <span class="status-col-title">LIVING SOULS</span>
               <div class="chips-flex" id="dayLivingList"></div>
             </div>
             <div class="status-col">
-              <span class="status-col-title">ELIMINATED PLAYERS</span>
+              <span class="status-col-title">FALLEN SOULS</span>
               <div class="chips-flex" id="dayEliminatedList"></div>
             </div>
           </div>
@@ -428,7 +459,7 @@
           <div class="word-round-badge" id="wordClueRoundTag">ROUND 1: WORD CLUES</div>
           <h2 class="word-round-title">Describe Your Secret Word</h2>
           <p class="word-round-rules">
-            Each living player speaks ONE verbal clue out loud. The Killer only knows the category — listen for who might be bluffing!
+            Each living player speaks ONE verbal clue out loud. The Killer only knows the category &mdash; listen for who might be bluffing!
           </p>
 
           <!-- Current Speaker Spotlight -->
@@ -450,7 +481,7 @@
 
           <!-- Speaking Order List -->
           <div class="order-queue-box">
-            <span class="queue-title">SPEAKING ORDER (ROTATES EACH ROUND):</span>
+            <span class="queue-title">SPEAKING ORDER (RANDOMIZED EACH ROUND):</span>
             <div class="order-chips-list" id="speakerOrderList"></div>
           </div>
 
@@ -694,7 +725,7 @@
           <!-- Victory Action Buttons -->
           <div class="victory-actions-row">
             <button type="button" class="btn-action-primary" id="btnPlayAgainSame">
-              PLAY AGAIN (SAME PLAYERS)
+              PLAY AGAIN (SAME SOULS)
             </button>
             <button type="button" class="btn-action-secondary" id="btnNewGameSetup">
               RETURN TO SETUP
@@ -715,7 +746,7 @@
         <div class="modal-header">
           <div class="modal-title-wrap">
             <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-            <h2 id="historyModalTitle">Public Game History</h2>
+            <h2 id="historyModalTitle">Public Manor Chronicle</h2>
           </div>
           <button type="button" class="modal-close-btn" id="btnCloseHistoryModal" aria-label="Close History Modal">&times;</button>
         </div>
@@ -756,8 +787,8 @@
             <h3>The Secret Word Challenge</h3>
             <p>Every match, a random category and secret word are chosen.</p>
             <ul class="rule-list">
-              <li><strong>Citizens, Doctor &amp; Police</strong> receive the actual secret word (e.g. "MANGO").</li>
-              <li><strong>The Killer</strong> receives ONLY the category (e.g. "FRUITS") and does NOT know the exact word!</li>
+              <li><strong>Citizens, Doctor &amp; Police</strong> receive the actual secret word (e.g. &ldquo;MANGO&rdquo;).</li>
+              <li><strong>The Killer</strong> receives ONLY the category (e.g. &ldquo;FRUITS&rdquo;) and does NOT know the exact word!</li>
               <li>During daytime, each player gives ONE verbal clue out loud. The Killer must bluff their way through!</li>
               <li>The Killer has one private chance to guess the actual word for a bonus point.</li>
             </ul>
@@ -782,7 +813,7 @@
           <h2 id="quitModalTitle">Abandon Active Match?</h2>
           <button type="button" class="modal-close-btn" id="btnCancelQuit" aria-label="Cancel">&times;</button>
         </div>
-        <p class="modal-subtext">Are you sure you want to end this game and return to setup? Current match progress will be lost.</p>
+        <p class="modal-subtext">Are you sure you want to end this game and return to setup? Current match progress will be lost in the shadows.</p>
         <div class="modal-actions-row">
           <button type="button" class="btn-ghost-sm" id="btnCancelQuit2">Stay in Game</button>
           <button type="button" class="btn-danger-action" id="btnConfirmQuit">Quit to Setup</button>

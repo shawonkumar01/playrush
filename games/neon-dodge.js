@@ -861,7 +861,7 @@
           vx: (Math.random() - 0.5) * 1.5 - this.vx * 0.2,
           vy: (4 + Math.random() * 3) * speedMult,
           radius: 3 + Math.random() * 2,
-          color: Math.random() > 0.4 ? '#00f0ff' : '#a855f7',
+          color: Math.random() > 0.4 ? '#55e6ff' : '#d1e8e2',
           alpha: 1,
           decay: 0.05 * speedMult
         });
@@ -891,24 +891,24 @@
       if (this.hasShield) {
         ctx.save();
         const shieldR = 34 + Math.sin(this.shieldPulse) * 3;
-        ctx.strokeStyle = '#00ff88';
-        ctx.shadowColor = '#00ff88';
+        ctx.strokeStyle = '#a78bfa';
+        ctx.shadowColor = '#a78bfa';
         ctx.shadowBlur = 15;
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.arc(0, 0, shieldR, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.fillStyle = 'rgba(0, 255, 136, 0.15)';
+        ctx.fillStyle = 'rgba(167, 139, 250, 0.15)';
         ctx.fill();
         ctx.restore();
       }
 
-      // Glowing Ship Silhouette
-      ctx.shadowColor = '#00f0ff';
+      // Glowing Ship Silhouette — electric cyan energy
+      ctx.shadowColor = '#55e6ff';
       ctx.shadowBlur = 18;
-      ctx.strokeStyle = '#00f0ff';
-      ctx.fillStyle = '#080d24';
+      ctx.strokeStyle = '#55e6ff';
+      ctx.fillStyle = '#2c3531';
       ctx.lineWidth = 2.5;
 
       // Triangular sleek fuselage
@@ -924,7 +924,7 @@
       ctx.stroke();
 
       // Wing accents
-      ctx.strokeStyle = '#a855f7';
+      ctx.strokeStyle = '#55e6ff';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(-10, 4);
@@ -933,9 +933,9 @@
       ctx.stroke();
 
       // Glowing Cockpit Core
-      ctx.fillStyle = '#ffffff';
-      ctx.shadowColor = '#00f0ff';
-      ctx.shadowBlur = 10;
+      ctx.fillStyle = '#55e6ff';
+      ctx.shadowColor = '#55e6ff';
+      ctx.shadowBlur = 12;
       ctx.beginPath();
       ctx.arc(0, -2, 4, 0, Math.PI * 2);
       ctx.fill();
@@ -964,7 +964,7 @@
         const r = this.radius * (0.8 + Math.random() * 0.4);
         this.points.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
       }
-      this.color = Math.random() > 0.3 ? '#ff007f' : '#f43f5e';
+      this.color = '#ff4f87';
     }
 
     update(speedMult = 1.0) {
@@ -986,7 +986,7 @@
       ctx.shadowColor = this.color;
       ctx.shadowBlur = 12;
       ctx.lineWidth = 2.5;
-      ctx.fillStyle = 'rgba(15, 10, 25, 0.85)';
+      ctx.fillStyle = 'rgba(30, 39, 36, 0.85)';
 
       ctx.beginPath();
       ctx.moveTo(this.points[0].x, this.points[0].y);
@@ -997,9 +997,9 @@
       ctx.fill();
       ctx.stroke();
 
-      // Inner polygon core
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.lineWidth = 1;
+      // Inner polygon core — light pink highlight
+      ctx.strokeStyle = '#ffb0cc';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.arc(0, 0, this.radius * 0.3, 0, Math.PI * 2);
       ctx.stroke();
@@ -1031,7 +1031,7 @@
       if (this.currentFrame < this.warnFrames) {
         // Telegraph warning line
         const alpha = (Math.sin(this.currentFrame * 0.3) + 1) * 0.4 + 0.2;
-        ctx.strokeStyle = `rgba(255, 0, 127, ${alpha})`;
+        ctx.strokeStyle = `rgba(255, 92, 92, ${alpha})`;
         ctx.lineWidth = 2;
         ctx.setLineDash([8, 8]);
         ctx.beginPath();
@@ -1040,7 +1040,7 @@
         ctx.stroke();
 
         // Warning triangles top & bottom
-        ctx.fillStyle = '#ff007f';
+        ctx.fillStyle = '#ff5c5c';
         ctx.beginPath();
         ctx.moveTo(this.x - 10, 20);
         ctx.lineTo(this.x + 10, 20);
@@ -1052,11 +1052,11 @@
         const fireProgress = (this.currentFrame - this.warnFrames) / this.fireFrames;
         const intensity = Math.sin(fireProgress * Math.PI);
 
-        ctx.shadowColor = '#ff007f';
+        ctx.shadowColor = '#ff5c5c';
         ctx.shadowBlur = 25 * intensity;
 
         // Outer glow beam
-        ctx.fillStyle = `rgba(255, 0, 127, ${0.4 * intensity})`;
+        ctx.fillStyle = `rgba(255, 92, 92, ${0.45 * intensity})`;
         ctx.fillRect(this.x - this.width / 2, 0, this.width, V_HEIGHT);
 
         // Core white beam
@@ -1094,11 +1094,11 @@
       ctx.translate(this.x, this.y);
       ctx.rotate(this.pulse);
 
-      ctx.strokeStyle = '#a855f7';
-      ctx.shadowColor = '#a855f7';
+      ctx.strokeStyle = '#d9b08c';
+      ctx.shadowColor = '#d9b08c';
       ctx.shadowBlur = 14;
       ctx.lineWidth = 2.5;
-      ctx.fillStyle = '#150a24';
+      ctx.fillStyle = '#2c3531';
 
       // 4-point star spike mine
       ctx.beginPath();
@@ -1116,7 +1116,7 @@
 
       // Pulsing core
       const coreR = 4 + Math.sin(this.pulse * 2) * 1.5;
-      ctx.fillStyle = '#ff007f';
+      ctx.fillStyle = '#ff5c5c';
       ctx.beginPath();
       ctx.arc(0, 0, coreR, 0, Math.PI * 2);
       ctx.fill();
@@ -1147,9 +1147,9 @@
       ctx.save();
       ctx.translate(this.x, this.y);
 
-      let color = '#00f0ff';
-      if (this.type === 'SUPER') color = '#fbbf24';
-      if (this.type === 'SHIELD') color = '#00ff88';
+      let color = '#7cffb2';
+      if (this.type === 'SUPER') color = '#ffcb9a';
+      if (this.type === 'SHIELD') color = '#a78bfa';
 
       ctx.shadowColor = color;
       ctx.shadowBlur = 16;
@@ -1175,7 +1175,7 @@
   /* ==========================================================================
      Particle & Visual Effect Helpers
      ========================================================================== */
-  function spawnExplosion(x, y, baseColor = '#ff007f', count = 30) {
+  function spawnExplosion(x, y, baseColor = '#ffcb9a', count = 30) {
     audio.playExplosion();
     shakeAmount = 18;
 
@@ -1205,7 +1205,7 @@
     }
   }
 
-  function spawnCollectBurst(x, y, color = '#00f0ff', count = 16) {
+  function spawnCollectBurst(x, y, color = '#d1e8e2', count = 16) {
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = 1.5 + Math.random() * 5;
@@ -1222,7 +1222,7 @@
     }
   }
 
-  function addFloatingText(text, x, y, color = '#00f0ff') {
+  function addFloatingText(text, x, y, color = '#d1e8e2') {
     floatingTexts.push({
       text,
       x,
@@ -1257,7 +1257,7 @@
         star.y = 0;
         star.x = Math.random() * V_WIDTH;
       }
-      ctx.fillStyle = `rgba(200, 230, 255, ${star.alpha})`;
+      ctx.fillStyle = `rgba(209, 232, 226, ${star.alpha})`;
       ctx.fillRect(star.x, star.y, star.size, star.size);
     }
     ctx.restore();
@@ -1588,8 +1588,8 @@
           player.invulnerableTimer = 40; // ~0.6s grace period at 60Hz
           audio.playShieldBreak();
           shakeAmount = 14;
-          spawnExplosion(player.x, player.y, '#00ff88', 20);
-          addFloatingText('SHIELD BROKEN!', player.x, player.y - 30, '#00ff88');
+          spawnExplosion(player.x, player.y, '#a78bfa', 20);
+          addFloatingText('SHIELD BROKEN!', player.x, player.y - 30, '#a78bfa');
 
           // Destroy colliding hazard if not laser
           if (hazard.type !== 'LASER') {
@@ -1597,7 +1597,7 @@
           }
         } else {
           // Player Destroyed -> Game Over
-          spawnExplosion(player.x, player.y, '#ff007f', 40);
+          spawnExplosion(player.x, player.y, '#ff5c5c', 40);
           triggerGameOver();
           break;
         }
@@ -1622,21 +1622,21 @@
           const pts = 50 * multiplier;
           score += pts;
           audio.playOrbCollect();
-          spawnCollectBurst(c.x, c.y, '#00f0ff');
-          addFloatingText(`+${pts}`, c.x, c.y, '#00f0ff');
+          spawnCollectBurst(c.x, c.y, '#7cffb2');
+          addFloatingText(`+${pts}`, c.x, c.y, '#7cffb2');
         } else if (c.type === 'SUPER') {
           const pts = 150 * multiplier;
           score += pts;
           multiplier = 2;
           multiplierTimer = 360; // 6 seconds at 60Hz baseline
           audio.playSuperOrbCollect();
-          spawnCollectBurst(c.x, c.y, '#fbbf24', 25);
-          addFloatingText('2X MULTIPLIER!', c.x, c.y, '#fbbf24');
+          spawnCollectBurst(c.x, c.y, '#ffcb9a', 25);
+          addFloatingText('2X MULTIPLIER!', c.x, c.y, '#ffcb9a');
         } else if (c.type === 'SHIELD') {
           player.hasShield = true;
           audio.playShieldCollect();
-          spawnCollectBurst(c.x, c.y, '#00ff88', 25);
-          addFloatingText('SHIELD READY!', c.x, c.y, '#00ff88');
+          spawnCollectBurst(c.x, c.y, '#a78bfa', 25);
+          addFloatingText('SHIELD READY!', c.x, c.y, '#a78bfa');
         }
 
         collectibles.splice(i, 1);
@@ -1770,7 +1770,7 @@
       ctx.fillStyle = ft.color;
       ctx.shadowColor = ft.color;
       ctx.shadowBlur = 8;
-      ctx.font = 'bold 18px "Orbitron", sans-serif';
+      ctx.font = 'bold 18px "Manrope", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(ft.text, ft.x, ft.y);
       ctx.restore();
