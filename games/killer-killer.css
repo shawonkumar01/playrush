@@ -2705,3 +2705,12 @@ html, body {
     padding: 1.1rem;
   }
 }
+
+.reveal-player-greeting {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--kk-bone-white);
+  text-align: center;
+}

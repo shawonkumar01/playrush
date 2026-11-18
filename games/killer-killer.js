@@ -275,7 +275,7 @@ class SoundFX {
     this.musicEnabled = false;
   }
   playClick() {} playReveal() {} playVote() {} playElimination() {}
-  playNight() {} playDay() {} playVictory() {} playWhisper() {}
+  playNight() {} playDay() {} playVictory() {} playWhisper() {} playSave() {} playClick2() {}
   playLaughter() {} playScream() {} playDoorCreak() {} playFootsteps() {}
   playKnocks() {} playBell() {} playHeartbeat() {} playBuffer() {}
   synthFallback() {} initContext() {} preloadAssets() {}
@@ -426,6 +426,7 @@ class KillerKillerGame {
     this.roleCardShield = document.getElementById('roleCardShield');
     this.btnRevealRole = document.getElementById('btnRevealRole');
     this.roleCardRevealed = document.getElementById('roleCardRevealed');
+    this.revealPlayerGreeting = document.getElementById('revealPlayerGreeting');
     this.roleIconContainer = document.getElementById('roleIconContainer');
     this.roleBadgeText = document.getElementById('roleBadgeText');
     this.roleTitleText = document.getElementById('roleTitleText');
@@ -1250,6 +1251,7 @@ class KillerKillerGame {
     };
 
     // Filter living players only (dead players excluded completely)
+    this.nightResolved = false;
     this.oneFlowLivingPlayers = this.players.filter(p => p.isAlive);
     this.oneFlowPlayerIndex = 0;
     this.promptNextOneFlowPlayer();
@@ -1264,6 +1266,8 @@ class KillerKillerGame {
     }
 
     const player = this.oneFlowLivingPlayers[this.oneFlowPlayerIndex];
+    // Safety: if win condition hit mid-flow (e.g. Killer sole survivor), end game
+    if (this.checkWinConditions()) return;
     // Exact neutral handoff text for every player (never leaks role or action presence)
     const subtext = this.round === 1
       ? 'Pass the device secretly. Make sure no one else is looking at the screen.'
@@ -1435,6 +1439,7 @@ class KillerKillerGame {
       savedByDoctor: false
     };
 
+    this.nightResolved = false;
     // Step 1: Killer
     const killer = this.players.find(p => p.role === 'KILLER');
     if (killer && killer.isAlive) {
@@ -1589,6 +1594,8 @@ class KillerKillerGame {
      NIGHT RESOLUTION
      ------------------------------------------------------------------------ */
   resolveNightActions() {
+    if (this.nightResolved) return;
+    this.nightResolved = true;
     const killerTarget = this.players.find(p => p.id === this.nightState.killerTargetId);
     const doctorTarget = this.players.find(p => p.id === this.nightState.doctorTargetId);
 
@@ -1768,6 +1775,7 @@ class KillerKillerGame {
   }
 
   updateTimerDisplay() {
+    if (!this.timerEnabled) { this.discussionTimerDisplay.textContent = 'UNTIL VOTING'; return; }
     const mins = Math.floor(this.discussionSecondsRemaining / 60);
     const secs = this.discussionSecondsRemaining % 60;
     const str = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
@@ -1795,22 +1803,13 @@ class KillerKillerGame {
      PHASE 8: KILLER SECRET WORD GUESS
      ------------------------------------------------------------------------ */
   promptKillerGuessHandoff() {
-    const killer = this.players.find(p => p.role === 'KILLER');
-    if (!killer || !killer.isAlive || this.killerHasGuessed) {
-      this.startNominationPhase();
-      return;
-    }
-
-    this.requestHandoff(
-      killer.name,
-      'Private Killer Opportunity: Guess the Secret Word for a bonus point!',
-      () => this.showKillerGuessScreen(killer)
-    );
+    this.requestHandoff("Killer only", "Only the Killer should tap IM READY.", () => this.showKillerGuessScreen());
   }
 
   showKillerGuessScreen(killer) {
     this.killerGuessCategory.textContent = this.currentCategory.toUpperCase();
     this.inputKillerWordGuess.value = '';
+    this.inputKillerWordGuess.disabled = false;
     this.killerGuessFeedback.className = 'guess-feedback-box hidden';
     this.btnSubmitKillerGuess.disabled = false;
     this.btnSkipKillerGuess.disabled = false;
