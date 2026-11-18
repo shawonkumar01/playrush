@@ -4086,3 +4086,123 @@ body {
   .fx-role-2 { right: 0 !important; }
   .fx-role-3 { left: 4% !important; }
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVE FIXES — navbar, featured card, footer (per spec)
+   ========================================================================== */
+
+/* --- 1. Navbar hamburger: clean 44px target, mint bars --- */
+@media (max-width: 768px) {
+  .mobile-toggle {
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .mobile-toggle span {
+    width: 22px;
+    height: 2px;
+    background: var(--neon-cyan);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+  .mobile-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .mobile-toggle.active span:nth-child(2) { opacity: 0; transform: translateX(-8px); }
+  .mobile-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-toggle span { transition: none; }
+}
+
+/* --- 2. Featured cards (KK + ND): text first, bounded preview at bottom --- */
+@media (max-width: 768px) {
+  .fx-card-kk, .fx-card-nd {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    overflow: hidden;
+    padding: 1.5rem 1.1rem;
+  }
+  .fx-card-kk > *, .fx-card-nd > * {
+    min-width: 0;
+  }
+  /* text first, art last — overrides earlier order:-1 */
+  .fx-card-kk .fx-card-text, .fx-card-nd .fx-card-text { order: 0; }
+  .fx-card-kk .fx-art, .fx-card-nd .fx-art { order: 1; }
+  /* readability gradient over mansion art */
+  .fx-card-kk {
+    background-image:
+      linear-gradient(180deg, rgba(8, 6, 8, 0.55) 0%, rgba(8, 6, 8, 0.35) 45%, rgba(8, 6, 8, 0.85) 100%),
+      url('assets/images/games/hauntedback.jpeg');
+    background-position: center 30%;
+  }
+  /* stat tiles already row layout; ensure buttons */
+  .fx-card-kk .fx-actions .btn-primary,
+  .fx-card-kk .fx-actions .btn-secondary,
+  .fx-card-nd .fx-actions .btn-primary,
+  .fx-card-nd .fx-actions .btn-secondary {
+    width: 100%;
+    min-height: 48px;
+  }
+  /* bounded preview area */
+  .fx-art-phone {
+    height: 400px;
+    max-height: 400px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fx-phone {
+    width: min(220px, 62vw) !important;
+    transform: rotate(2deg);
+    flex-shrink: 0;
+  }
+  .fx-role-card {
+    font-size: 11px;
+    padding: 0.3rem 0.5rem;
+    gap: 0.25rem;
+  }
+  .fx-role-card svg { width: 14px; height: 14px; }
+  /* hide name pills on small phones */
+  @media (max-width: 400px) {
+    .fx-name-chip { display: none; }
+    .fx-role-3 { display: none; }
+  }
+  .fx-role-1 { left: 2%; top: 12%; }
+  .fx-role-2 { right: 2%; top: 22%; }
+  .fx-role-3 { left: 4%; bottom: 10%; }
+  /* gentler float on mobile */
+  .fx-role-card { animation-duration: 8s; }
+}
+
+/* --- 3. Footer: 2-column link grid on mobile --- */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .footer-grid > .footer-brand-col {
+    grid-column: 1 / -1;
+  }
+  .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.5rem;
+  text-align: center;
+}
+@media (max-width: 340px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
