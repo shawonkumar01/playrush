@@ -902,3 +902,41 @@ html, body {
     transition: none;
   }
 }
+
+/* Mobile header — compact controls, no overflow */
+@media (max-width: 768px) {
+  .arcade-header {
+    padding: 0 0.6rem;
+    gap: 0.4rem;
+  }
+  .arcade-controls-top {
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+  .arcade-btn-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+  .arcade-btn-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+  .audio-settings-wrapper {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 400px) {
+  .arcade-header {
+    padding: 0 0.4rem;
+    gap: 0.25rem;
+  }
+  .arcade-brand {
+    font-size: 0.9rem;
+  }
+  .arcade-btn-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+}
