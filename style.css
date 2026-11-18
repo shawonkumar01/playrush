@@ -4042,3 +4042,47 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Footer mobile — brand column spans full width (correct class) */
+@media (max-width: 768px) {
+  .footer-grid > .footer-brand-col {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Navbar mobile — prevent overflow on narrow phones */
+@media (max-width: 480px) {
+  .navbar .container {
+    width: calc(100vw - 1rem);
+    padding: 0.4rem 0.55rem;
+    gap: 0.35rem;
+  }
+  .brand {
+    font-size: 1rem;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  .mobile-toggle {
+    flex-shrink: 0;
+  }
+}
+
+/* Featured card floating elements — keep inside card bounds on mobile */
+@media (max-width: 768px) {
+  .fx-art-phone {
+    overflow: visible;
+    position: relative;
+  }
+  .fx-role-card,
+  .fx-name-chip {
+    max-width: 45%;
+  }
+  .fx-role-1 { left: 0 !important; }
+  .fx-role-2 { right: 0 !important; }
+  .fx-role-3 { left: 4% !important; }
+}
