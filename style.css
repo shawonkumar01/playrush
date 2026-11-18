@@ -4133,8 +4133,8 @@ body {
     min-width: 0;
   }
   /* text first, art last — overrides earlier order:-1 */
+  .fx-card-kk .fx-art, .fx-card-nd .fx-art { order: -1; }
   .fx-card-kk .fx-card-text, .fx-card-nd .fx-card-text { order: 0; }
-  .fx-card-kk .fx-art, .fx-card-nd .fx-art { order: 1; }
   /* readability gradient over mansion art */
   .fx-card-kk {
     background-image:
